@@ -460,6 +460,81 @@ point into a gap leaves it where it was (`native.drag`: `no_convergence`),
 while GeoGebra may move it to the end of the piece; a point on an `If`
 interval (`If(a ≤ x ≤ b, …)`) is not clamped to the interval by drag.
 
+### Conic elements (registry 1.13, mapVersion 10)
+
+`has("conic_elements")` announces five new operations: the owned circle
+adapter, directrices, asymptotes, point polars and conjugate diameters.
+The earlier center, focus, vertex and axis operations retain their signatures,
+slot policies and minimum versions. Only the five additions belong to the
+`conic_elements` module group.
+
+| GeoGebra source | Native lowering |
+|---|---|
+| `Center(K)` | `conic.center`; actual native circle inputs use `point.center` |
+| `Focus(K)`, `Vertex(K)`, `Axes(K)` | existing `conic.foci`, `conic.vertices`, `conic.axes` |
+| `FirstAxis` / `MajorAxis` | `conic.axes`, bind only `focal` |
+| `SecondAxis` / `MinorAxis` | `conic.axes`, bind only `conjugate` |
+| `Directrix(K)` | `conic.directrices` |
+| `Asymptote(K)` | `conic.asymptotes`; only hyperbolas have finite lines |
+| `Polar(P,K)` | `line.polar_conic`, including circle inputs |
+| `Diameter(d,K)` / `ConjugateDiameter(d,K)` | `line.conjugate_diameter`, line/vector inputs |
+
+The importer captures source commands before classic parsing and retains raw
+names, labels and numeric aN ordinals. Aliases do not require a classic
+implementation. Safe inline point/vector formulas and quadratic equations
+use the existing native AST language with live references; arbitrary nested
+classic commands are not executed to recover an operand.
+
+Subtype routing uses the actual native element type. Circle foci, vertices
+and axes, including selectors, use a hidden, locked `conic.from_circle`
+adapter whose output is always `conic`. Its element has `role: aux` and
+`origin: {kind: auto, source: <owner operation ID>}`. Deletion cleans the
+owned graph, shared dependencies survive with a new owner, and undo/reload
+retain IDs. Center needs no adapter. Correct routing does not make an
+undefined input circle defined; a saved finite center against an undefined
+native circle remains an honest `differs/value_mismatch`.
+
+Point and line groups bind injectively by saved value, prioritizing finite
+matches, then explicit undefined evidence, then original ordinal. Points
+use homogeneous coordinates; lines use normalized `[a,b,c]` with safe
+scaling of overflowing norms and `tol.import`. Coincident circle foci occupy
+the separate `first` and `second` slots. Coincident named saved lines in
+distinct-line groups refuse the whole group with `unsupported_signature`.
+The separate tangency multiplicity rule is unchanged. Missing coordinates
+are `value_unchecked`, not evidence of undefined. Finite XML coefficients
+remain line evidence even when an external app API would report undefined
+under its own epsilon rules. Native/saved disagreement stays `differs`.
+
+Empty `aN=""` labels create no element and do not shift following ordinals.
+Named undefined outputs keep their slots and may recover. Repeated line
+capacity is at least two and covers every raw ordinal, within 1…100; unused
+slots follow `branch_absent` or the empty-set reason. Old conic parts do not
+gain `found`; only the new repeated sets report it. A GeoGebra parabola's
+second axis has no defined native conjugate slot and stays a mismatch rather
+than becoming a fabricated perpendicular line.
+
+Existing Python DSL Center/Focus/Vertex/Axes/MajorAxis/MinorAxis/Directrix/Polar
+factories use the same lowering, including the classic reversed polar alias.
+Asymptote, conjugate diameter and the representation adapter have no classic
+dispatch key and remain in `opsWithoutClassic`; no factories are invented.
+Scalars, line poles, function asymptotes and source segment/ray diameters
+are explicit `unsupported_signature` refusals. The Commands grammar is
+separate: new operations report `unprintable_operation` where it has no syntax.
+
+Native frame signs and fixed ranks may differ from GeoGebra eigenvectors;
+the saved-value matcher settles the import frame without promising identical
+motion history. Native retains finite near-center polars and distant diameters
+where GeoGebra may apply an absolute epsilon. Degenerate conics remain
+undefined, even when GeoGebra continues algebraic parts.
+
+`tests/native/import/conic_elements/` and `parity/v1/ggb/ggb_conic_elements_*`
+contain synthetic sources and unchanged GeoGebra 5.4.936.0 archives, including
+changed inputs, sparse outputs, recovery and direct saved-coordinate checks.
+Reproduce them with `python -m tests.native.ggb_conic_elements_fixtures [--check]`.
+Historical fixture registry labels stay frozen by `_fixture_registry.py`;
+new documents declare their minimum required registry instead of relabeling
+the whole corpus at every release.
+
 ## 2. Keys and IDs
 
 `id = uuid5(id_namespace, key)`. Keys: a `.ggb` object — `ggb:<label>`; a DSL

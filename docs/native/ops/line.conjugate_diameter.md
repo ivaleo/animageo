@@ -11,3 +11,11 @@ For a parabola t²=2ps the equation is dv t=p du. Exactly dv=0 gives `no_finite_
 The native line uses the projection of the world origin. Orientation `conic_normal_ccw` first selects the unit normal sign: nx>0 when |nx|>decide.scalar, otherwise ny>0, without zeroing nx. Then dir=CCW90(normal). This is invariant under d↔−d.
 
 Checks `conjugacy` and, for central conics, `through_center` measure the bilinear direction relation, the parabola midpoint equation and center incidence. Residuals are lengths, with angular errors multiplied by S. Step kind: `conjugate_diameter`.
+
+Map 10 accepts the GeoGebra XML name `Diameter` and public alias
+`ConjugateDiameter`, with a line or vector followed by a conic or circle.
+Segment/ray inputs are refused by this source reader despite the broader
+native family. Safe inline vectors and quadratic equations use owned helpers.
+There is no classic dispatch key or new Python factory; the op remains in
+`opsWithoutClassic`. `has("conic_elements")` is true. The Commands printer
+reports `unprintable_operation` until an explicit grammar exists.

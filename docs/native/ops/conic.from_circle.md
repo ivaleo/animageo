@@ -10,4 +10,9 @@ The catalog marks this conversion `helper: {ownership:"owned", role:"aux"}`. An 
 
 Check `same_circle` compares centers and both radii in length units, and the selected axis with an angular error multiplied by scene scale S. Step kind: `conic_conversion`.
 
-This catalog addition does not announce import support or the `has("conic_elements")` capability.
+`has("conic_elements")` is true. Import map 10 uses this operation as a hidden,
+locked, owned `aux` helper for circle foci, vertices and axes, including axis
+selectors. Its stable output slot is `conic`; `origin: {kind: auto, source:
+<owner operation ID>}` records ownership. Deleting the owner cleans nested
+helpers; surviving users adopt shared helpers. Center uses `point.center`
+directly and needs no adapter. This representation has no classic factory.

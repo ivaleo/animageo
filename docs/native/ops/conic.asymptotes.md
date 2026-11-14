@@ -12,3 +12,10 @@ Only a hyperbola s²/a²−t²/b²=1 has this set. Both lines pass through C. In
 Scale a,b by max(a,b) before normalization. Here a is the transverse radius, even if b>a. Equal radii still give two different perpendicular lines. Policies `conic_asymptote_order` and `conic_asymptote_frame` fix order and orientation, invariant under M↔−M. GeoGebra raw coefficient signs are not an orientation promise.
 
 Checks `through_center` and `asymptotic_direction` inspect every defined slot. The first is a distance; the second measures angular deviation from the ordered quadratic null direction and unit-direction error multiplied by scene scale S. Step kind: `conic_asymptotes`. Function asymptotes are outside this operation.
+
+Map 10 reads `Asymptote(K)` from GeoGebra XML, preserving saved labels,
+ordinals and undefined branches. The operation remains in `opsWithoutClassic`
+because no classic dispatch key exists; no new Python DSL factory is added.
+Function and list searches are explicit `unsupported_signature` refusals.
+`has("conic_elements")` is true. The Commands printer reports
+`unprintable_operation` until its grammar is extended.

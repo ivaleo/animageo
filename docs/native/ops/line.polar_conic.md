@@ -14,3 +14,10 @@ The point may be inside, on or outside the conic. At the exact center of a centr
 The result stores the projection p of the world origin and dir=CCW90 of the canonical normal. The sign is F(C)<0 for central conics and positive nonzero quadratic eigenvalue for a parabola, shared with conic tangency. On the curve the line and its direction agree with `line.tangent_conic_at`. No extra normal-sign flip is applied to the polar.
 
 Scaled local products avoid world coefficient matrices, axis squares and unnecessary intermediate overflow. Exact binary significands are summed before the final binary64 rounding, preserving small terms when large translated terms cancel. Check `polar_incidence` measures the normalized bilinear relation, perpendicularity and oriented unit-direction error, all in length units (angular errors times S). Step kind: `polar_line`. This is the point-to-line polar; the pole of a line is outside its scope.
+
+Map 10 lowers GeoGebra `Polar(Point,Conic/Circle)` and the existing Python
+DSL factories, including its reversed `Polar(K,P)` alias. Safe inline point
+and quadratic expressions retain live references through owned aux helpers.
+Line-to-point poles and scalar inputs are `unsupported_signature`.
+`has("conic_elements")` is true; the separate Commands printer reports
+`unprintable_operation` for this operation.

@@ -11,3 +11,10 @@ Policy: `conic_directrix_order`; orientation: `conic_normal_ccw`. Scaling the so
 The focal distance uses the difference of the axes before division; all computations use local geometry and scaled products. Degenerate inputs give `degenerate_conic` or inherited `upstream`, distinct from the empty circle set.
 
 Check `focus_directrix` tests |X−F|=e dist(X,d) at independent curve points for **each defined slot**, including partial sets, and measures orientation error times S. Residuals are lengths. Step kind: `conic_directrices`.
+
+Import map 10 reads `Directrix(K)` directly from XML, including circles and
+named undefined outputs. The existing Python DSL factory uses the same
+lowering. Saved lines select slots as a group by normalized coefficients;
+the assignment remains fixed when inputs change. Empty source labels do not
+consume elements or shift later ordinals. `has("conic_elements")` is true.
+The separate Commands grammar reports `unprintable_operation` for this op.

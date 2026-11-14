@@ -13,9 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and asymptotes, point polars and conjugate diameters. The five new operations
   use the `conic_elements` module group, canonical native-frame order, fixed
   output slots, length-based checks and analytic parity fixtures. Existing
-  conic-part and tangency signatures and fixtures remain unchanged. Import
-  lowering and the `conic_elements` capability are deferred; the public API
-  snapshot records the new registry version.
+  conic-part and tangency signatures and fixtures remain unchanged.
+  `has("conic_elements")` announces the complete module and import support.
+- GGB import map 10 reads conic elements independently of classic dispatch,
+  including public axis and diameter aliases. Saved points and lines bind
+  injectively to fixed output slots, preserving sparse labels, undefined
+  objects and two coincident circle foci. Circle parts use hidden owned
+  adapters; Center selects `point.center` for actual circle inputs.
+  Existing DSL conic factories share these lowerings. Unsupported scalar,
+  pole and function-asymptote signatures keep explicit refusals.
 
 ## [1.18.0] - 2026-11-14
 
