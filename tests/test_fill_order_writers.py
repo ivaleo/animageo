@@ -127,3 +127,38 @@ def test_leader_keeps_its_depth_below_an_intermediate_fixed_fill():
     for refs in (tikz_parts(s), json.loads(s.exportJSXGraph(output='spec'))['paintOrder']['partOrder']):
         refs = [{k: r[k] for k in ('id', 'part')} for r in refs]
         assert refs.index({'id': 'inner', 'part': 'leader'}) < refs.index({'id': 'outer', 'part': 'fill'}) < refs.index({'id': 'inner', 'part': 'label'})
+
+
+@pytest.mark.parametrize('through_document', [False, True])
+def test_native_arc_at_a_nonzero_start_keeps_a_full_turn(through_document):
+    import math
+    import re
+    from animageo import AnimaGeoScene
+    from animageo.fill_order import arc_sweep
+    from animageo.geo.construction import Element
+    from animageo.native.kernel.bridge import to_classic
+    from animageo.native.paint_fixtures import _Doc
+    scene = AnimaGeoScene()
+    if through_document:
+        d = _Doc('almost_full_arc', bounds=(-3,-3,3,3)).free('O',0,0)
+        start, end = 1.736, math.nextafter(1.736, -math.inf)
+        d.free('A',2*math.cos(start),2*math.sin(start))
+        d.free('B',2*math.cos(end),2*math.sin(end)).arc('arc','O','A','B')
+        scene.loadDocument(d.doc)
+        elem = scene.geo.element(scene.native_names.by_id['arc'])
+    else:
+        scene.applyStyle(style={'rendering': {'fill_order': 'area'}})
+        elem = Element('arc', to_classic('arc', {'c':[0,0], 'r':2, 'a0':2.8, 'a1':2.8+math.tau}))
+        scene.geo.add(elem)
+    assert elem.data.angles[1] - elem.data.angles[0] > 6
+    assert arc_sweep(elem.data, mode='area') == pytest.approx(math.tau)
+    group = scene.CreateMObject(elem)
+    assert group[1].width > 3.9 and group[1].height > 3.9
+    unit = scene.style.export.get('ptUnit_style', scene.style.export['ptUnit'])
+    assert group._animageo_fill_part.area_style_px2 == pytest.approx(4*math.pi*unit**2)
+    turns = re.findall(r'arc \(([-\d.]+):([-\d.]+):2\)', scene.exportTikZ())
+    assert turns and all(float(b)-float(a) == pytest.approx(360, abs=.002) for a,b in turns)
+    spec = json.loads(scene.exportJSXGraph(output='spec'))
+    stroke = next(e for e in spec['elements'] if e.get('name') == elem.name)
+    assert max(stroke['parents'][0]) - min(stroke['parents'][0]) > 3.9
+    assert max(stroke['parents'][1]) - min(stroke['parents'][1]) > 3.9

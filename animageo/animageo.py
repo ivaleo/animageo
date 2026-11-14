@@ -3051,7 +3051,10 @@ class AnimaGeoScene(MovingCameraScene):
 
     def _fill_display_enabled(self):
         return self._fill_order_mode() == 'area' or any(
-            self._has_fill_override(e) for e in self.geo.elements)
+            (type(e.data) in (geo.Polygon, geo.Angle) or
+             (type(e.data) is geo.Conic and e.data.type in (ConicType.CIRCLE, ConicType.ELLIPSE)
+              and getattr(e.data, 'native_value', None) is None)) and self._has_fill_override(e)
+            for e in self.geo.elements)
 
     def get_moving_mobjects(self, *animations):
         if self._fill_display_enabled():
@@ -3066,7 +3069,9 @@ class AnimaGeoScene(MovingCameraScene):
         kind = type(elem.data).__name__
         filled = kind in ('Polygon', 'Angle', 'Circle', 'Arc', 'CircleSector', 'CircleSegment', 'Region')
         if kind == 'Conic':
-            filled = elem.data.type in (ConicType.CIRCLE, ConicType.ELLIPSE)
+            filled = elem.data.type in (ConicType.CIRCLE, ConicType.ELLIPSE) and (
+                getattr(elem.data, 'native_value', None) is not None
+                or ctx.fill_mode == 'area' or self._has_fill_override(elem))
         mobject._animageo_fill_part = ctx.fill_part
         local = {'fill': 0, 'body': 0, 'stroke': 1, 'ticks': 2, 'parallel': 3,
                  'labelHalo': 4, 'label': 5, 'leader': 6}
@@ -3082,7 +3087,9 @@ class AnimaGeoScene(MovingCameraScene):
                 tag(child, part)
 
         for i, child in enumerate(mobject.submobjects):
-            body = kind in ('Point', 'Text') or (kind == 'Conic' and elem.data.type == ConicType.POINT)
+            body = kind in ('Point', 'Text') or (kind == 'Conic' and (
+                elem.data.type == ConicType.POINT or (
+                    elem.data.type in (ConicType.CIRCLE, ConicType.ELLIPSE) and not filled)))
             part = 'body' if body else ('fill' if filled and i == 0 else 'stroke')
             tag(child, part)
 
@@ -3745,18 +3752,22 @@ class AnimaGeoScene(MovingCameraScene):
             zz_label = Z_FILL_LABEL if zz == Z_FILL else Z_LABEL
         from .fill_order import fill_layer, make_fill_part
         fill_mode = self._fill_order_mode()
-        fill_part = make_fill_part(self, elem, id=elem.name, base_z=zz, tie=z_tie, mode=fill_mode)
-        if type(elem.data) in (geo.Polygon, geo.Angle, geo.Circle, geo.Arc, geo.CircleSector,
+        display_parts = self._fill_display_enabled()
+        fill_part = (make_fill_part(self, elem, id=elem.name, base_z=zz, tie=z_tie, mode=fill_mode)
+                     if display_parts else None)
+        if display_parts and type(elem.data) in (geo.Polygon, geo.Angle, geo.Circle, geo.Arc, geo.CircleSector,
                                 geo.CircleSegment, geo.Conic, geo.Region):
             zz_fill = fill_layer(self, elem, zz, z_tie, mode=fill_mode)[0]
         else:
-            zz_fill = _ordered_z(zz_fill)
+            # Legacy polygons/angles filled at their body layer. Existing
+            # circular fill overrides need no structural display adapter.
+            zz_fill = _ordered_z(zz if type(elem.data) in (geo.Polygon, geo.Angle) else zz_fill)
         zz = _ordered_z(zz)
         zz_stroke = Z_STROKE + z_tie
         zz_label = zz_label + z_tie
 
         return SimpleNamespace(
-            fill_mode=fill_mode, fill_part=fill_part,
+            fill_mode=fill_mode, fill_part=fill_part, display_parts=display_parts,
             dash_explicit=_resolve_style(self, elem, 'stroke_dash_pattern_px', default=None) is not None,
             style=style,
             ptUnit=ptUnit, ptUnit_style=ptUnit_style, ptUnit_ggb=ptUnit_ggb,
@@ -4968,7 +4979,7 @@ class AnimaGeoScene(MovingCameraScene):
                 )
                 return None
             mobject = renderer(elem, ctx)
-            if mobject is not None and self._fill_display_enabled():
+            if mobject is not None and ctx.display_parts:
                 self._tag_display_parts(mobject, elem, ctx)
             return mobject
         except Exception as e:

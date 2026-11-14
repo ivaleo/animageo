@@ -101,6 +101,9 @@ def _polygon_area(vertices, rule):
         return 0.0
     ox, oy = points[0]
     points = [(x - ox, y - oy) for x, y in points]
+    if _simple_polygon(points):
+        return abs(math.fsum(a[0]*b[1] - b[0]*a[1]
+                             for a, b in zip(points, points[1:] + points[:1]))) / 2
     edges = [(a, b) for a, b in zip(points, points[1:] + points[:1]) if a[1] != b[1]]
     levels = {p[1] for p in points}
     for i, (a, b) in enumerate(edges):
@@ -136,6 +139,41 @@ def _polygon_area(vertices, rule):
                      for lo, hi in zip(levels, levels[1:]))
 
 
+def _simple_polygon(points):
+    """Conservative edge sweep: use shoelace only for a simple contour.
+
+    X intervals prune inactive edges; disjoint Y intervals cannot intersect.
+    Nonadjacent touches and overlaps use the winding-aware strip integrator,
+    as do backtracking adjacent edges. Ordinary collinear vertices are safe.
+    """
+    edges = [(a, b) for a, b in zip(points, points[1:] + points[:1]) if a != b]
+    if len(edges) < 3:
+        return False
+    def cross(a, b, c):
+        return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])
+    records = sorted((min(a[0],b[0]), max(a[0],b[0]), min(a[1],b[1]), max(a[1],b[1]), i, a, b)
+                     for i, (a,b) in enumerate(edges))
+    active = []
+    n = len(edges)
+    for record in records:
+        lo, hi, bottom, top, i, a, b = record
+        active = [old for old in active if old[1] >= lo]
+        for _, _, old_bottom, old_top, j, c, d in active:
+            if old_top < bottom or top < old_bottom:
+                continue
+            if (i-j) % n in (1, n-1):
+                common, p, q = (a,b,c) if a == d else (b,a,d)
+                if cross(common,p,q) == 0 and ((p[0]-common[0])*(q[0]-common[0]) +
+                                               (p[1]-common[1])*(q[1]-common[1])) > 0:
+                    return False
+                continue
+            u, v, w, z = cross(a,b,c), cross(a,b,d), cross(c,d,a), cross(c,d,b)
+            if (u <= 0 <= v or v <= 0 <= u) and (w <= 0 <= z or z <= 0 <= w):
+                return False
+        active.append(record)
+    return True
+
+
 def circle_segment_area(radius, sweep) -> float:
     """Chord-closed arc area, stable for a small positive sweep."""
     t = float(sweep)
@@ -147,8 +185,10 @@ def arc_sweep(data, *, mode):
     a, b = (float(v) for v in data.angles)
     delta = b - a
     if type(data).__name__ == 'Arc':
-        if mode == 'area' and (getattr(data, '_native', None) is not None or getattr(data, 'native_value', None) is not None) and delta == math.tau:
-            return math.tau
+        if mode == 'area' and (getattr(data, '_native', None) is not None or getattr(data, 'native_value', None) is not None):
+            # Native angles already delimit the prepared counterclockwise
+            # domain. Modulo would turn a rounded full turn into a tiny arc.
+            return math.tau if abs(delta - math.tau) <= 8 * math.ulp(math.tau) else delta
         return delta % math.tau
     return delta
 
