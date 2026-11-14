@@ -357,6 +357,8 @@ CHECK_OPTIONAL_SLOTS = {
     'intersect.function_conic': frozenset({'point'}),
     'line.tangents_from_point_conic': frozenset({'tangent', 'touch'}),
     'line.tangents_parallel_conic': frozenset({'tangent', 'touch'}),
+    'conic.directrices': frozenset({'directrix'}),
+    'conic.asymptotes': frozenset({'asymptote'}),
 }
 
 
