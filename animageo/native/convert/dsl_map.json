@@ -1,6 +1,6 @@
 {
  "format": "animageo-dsl-map/v1",
- "mapVersion": 8,
+ "mapVersion": 9,
  "registry": "1.12",
  "commands": {
   "abs_i": {
@@ -4863,7 +4863,13 @@
    "ggb": [
     "Slope"
    ],
-   "unmapped": "no_registry_op"
+   "op": "line.slope",
+   "args": [
+    "line"
+   ],
+   "outputs": [
+    "number"
+   ]
   },
   "sqrt_i": {
    "factory": "Sqrt",
@@ -5020,16 +5026,34 @@
    "ggb": [
     "Tangent"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.tangents_parallel_conic",
+   "args": [
+    "conic",
+    "base"
+   ],
+   "outputs": {
+    "byValue": [
+     "tangent.1",
+     "tangent.2"
+    ]
+   }
   },
   "tangent_Kp": {
    "factory": "Tangent",
    "ggb": [
     "Tangent"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.tangents_from_point_conic",
+   "args": [
+    "conic",
+    "point"
+   ],
+   "outputs": {
+    "byValue": [
+     "tangent.1",
+     "tangent.2"
+    ]
+   }
   },
   "tangent_cc": {
    "factory": "Tangent",
@@ -5044,40 +5068,77 @@
    "ggb": [
     "Tangent"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.tangent_function_at",
+   "args": [
+    "x",
+    "function"
+   ],
+   "outputs": [
+    "line"
+   ]
   },
   "tangent_lK": {
    "factory": "Tangent",
    "ggb": [
     "Tangent"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.tangents_parallel_conic",
+   "args": [
+    "base",
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "tangent.1",
+     "tangent.2"
+    ]
+   }
   },
   "tangent_mF": {
    "factory": "Tangent",
    "ggb": [
     "Tangent"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.tangent_function_at",
+   "args": [
+    "x",
+    "function"
+   ],
+   "outputs": [
+    "line"
+   ]
   },
   "tangent_pF": {
    "factory": "Tangent",
    "ggb": [
     "Tangent"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.tangent_function_at",
+   "args": [
+    "x",
+    "function"
+   ],
+   "outputs": [
+    "line"
+   ],
+   "pointAbscissa": true
   },
   "tangent_pK": {
    "factory": "Tangent",
    "ggb": [
     "Tangent"
    ],
-   "unmapped": "no_registry_op",
-   "note": "coordinates, conics and functions: the ops come with stage L4"
+   "op": "line.tangents_from_point_conic",
+   "args": [
+    "point",
+    "conic"
+   ],
+   "outputs": {
+    "byValue": [
+     "tangent.1",
+     "tangent.2"
+    ]
+   }
   },
   "tangent_pc": {
    "factory": "Tangent",
@@ -5461,11 +5522,7 @@
   }
  },
  "opsWithoutClassic": {
-  "line.tangent_conic_at": "native strict conic tangent; classic lowering is not yet implemented",
-  "line.tangents_from_point_conic": "native conic tangents; classic lowering is not yet implemented",
-  "line.tangents_parallel_conic": "native parallel conic tangents; classic lowering is not yet implemented",
-  "line.tangent_function_at": "native graph tangent; classic lowering is not yet implemented",
-  "line.slope": "native line slope; classic lowering is not yet implemented",
+  "line.tangent_conic_at": "strict membership tangent at the input point; classic Tangent(Point,Conic) searches through the point instead",
   "angle.between_lines": "no classic Angle(line, line) dispatch key",
   "angle.between_vectors": "no classic Angle(vector, vector) dispatch key",
   "angle.by_size": "classic Angle(A, B, \u03b1) is not a dispatch key",

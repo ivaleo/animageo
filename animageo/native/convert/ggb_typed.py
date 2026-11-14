@@ -119,7 +119,8 @@ def commands_with_source(constr, ctx):
     pending = sorted(ctx.source_commands, key=lambda c: ctx.order[c.outputs[0]])
     result, chunk = [], []
     for cmd in constr.commands:
-        if any(str(getattr(o, 'name', o)) in ctx.function_analysis for o in cmd.outputs):
+        if any(str(getattr(o, 'name', o)) in ctx.function_analysis or str(getattr(o, 'name', o)) in ctx.tangency
+               for o in cmd.outputs):
             continue
         chunk.append(cmd)
         names = [str(getattr(o, 'name', o)) for o in cmd.outputs]

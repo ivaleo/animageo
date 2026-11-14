@@ -91,7 +91,12 @@ def inline_arguments(doc, entries, records, refs_of):
     helpers = {}
     for entry in entries:
         info = entry['info']
-        supported = info.get('command') in allowed or info['type'] == 'text' or \
+        tangency = info.get('command') in ('Tangent', 'Slope') and any(
+            doc['operations'][doc['elements'][eid]['producer']['operationId']]['op'] in (
+                'line.tangent_function_at', 'line.tangents_from_point_conic',
+                'line.tangents_parallel_conic', 'line.slope')
+            for eid in entry['native_ids'] if eid in doc['elements'])
+        supported = info.get('command') in allowed or tangency or info['type'] == 'text' or \
             info.get('command') == 'Expression' and (info['type'] in ('point', 'vector', 'conic') or any(
                 doc['operations'][doc['elements'][eid]['producer']['operationId']]['op'] == 'function.value'
                 for eid in entry['native_ids'] if eid in doc['elements']))

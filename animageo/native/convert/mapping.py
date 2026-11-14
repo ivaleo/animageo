@@ -44,6 +44,12 @@ explicit locus parameters are read from the source as ``point.on_locus``.
 ``mapVersion`` 8 (registry 1.11): the seven function analysis operations
 remain without classic lowerings; the GGB source reader translates their
 supported signatures directly from XML.
+``mapVersion`` 9 (registry 1.12): graph tangents, conic tangents through a
+point or parallel to a line, and scalar line slopes have classic lowerings.
+``pointAbscissa: true`` lowers the point input of ``tangent_pF`` to a private
+numeric x-coordinate dependency. The XML reader captures original arguments
+and output ordinals before classic parsing; new conic groups match lines by
+normalized coefficients and refuse coincident named saved outputs.
 """
 from __future__ import annotations
 

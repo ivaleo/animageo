@@ -108,6 +108,7 @@ class Context:
     typed_errors: dict = field(default_factory=dict)    # source/phantom → explicit formula refusal
     source_commands: list = field(default_factory=list)  # XML commands absent from the classic graph
     function_analysis: dict = field(default_factory=dict)  # source output -> grouped analysis plan
+    tangency: dict = field(default_factory=dict)      # source output -> grouped tangency plan
 
 
 @dataclass
@@ -598,6 +599,10 @@ class _Builder:
                 self.source_definition(o)
 
     def build(self, cmd, sig, inputs, outs, recs):
+        if outs[0] in self.ctx.tangency:
+            from .ggb_tangency import build_tangency
+            build_tangency(self, self.ctx.tangency[outs[0]], outs, recs)
+            return
         if outs[0] in self.ctx.function_analysis:
             from .ggb_function_analysis import build_analysis
             build_analysis(self, self.ctx.function_analysis[outs[0]], outs, recs)
@@ -639,6 +644,9 @@ class _Builder:
                                 else f'команда {cmd.name} не переносится')
         if 'unmapped' in row:
             raise _Untranslated(row['unmapped'], NOTE_DETAILS.get(row.get('note')))
+        from .ggb_tangency import build_classic_tangency
+        if build_classic_tangency(self, row, inputs, outs, recs):
+            return
         if 'free' in row and row['free'] in ('number', 'angle'):
             # a DSL AngleSize(0.7): a free angle when its argument is a literal
             arg = inputs[0] if inputs else None
@@ -809,7 +817,7 @@ def _validate(builder: _Builder):
 
 def _expected(builder: _Builder, rec: Record):
     exp = builder.ctx.expected.get(rec.name)
-    if rec.name in builder.ctx.function_analysis:
+    if rec.name in builder.ctx.function_analysis or rec.name in builder.ctx.tangency:
         return exp  # Missing source coordinates are not classic value evidence.
     if exp is not None:
         return exp
@@ -832,6 +840,10 @@ def _resolve_by_value(builder: _Builder, doc, scale: float):
             _project_on_path(builder, [paths[op_id]])
         info = builder.by_value.get(op_id)
         if info is None:
+            continue
+        if info.get('tangency'):
+            from .ggb_tangency import resolve_slots
+            resolve_slots(builder, op_id, info, scale)
             continue
         if info.get('function_analysis'):
             from .ggb_function_analysis import resolve_slots

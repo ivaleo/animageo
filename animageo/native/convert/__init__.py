@@ -58,11 +58,15 @@ def from_construction(constr, *, mode: str = 'strict', id_namespace, key_of=None
                 keys[obj.name] = str(key)
                 display[obj.name] = str(key).split(':', 1)[-1]
     ctx = Context(namespace=ns, prefix='dsl', mode=mode, display=display, keys=keys, origin_of=origin_of)
+    from .ggb_tangency import read_classic_curves
+    read_classic_curves(constr, ctx)
     with _quiet():
         tr = translate(constr, ctx)
     rep = construction_report(tr)
-    _prune(tr.document, {nid for e in rep['elements'] if e['category'] in ('editable', 'differs')
-                         for nid in e['native_ids']})
+    keep = {nid for e in rep['elements'] if e['category'] in ('editable', 'differs') for nid in e['native_ids']}
+    from .ggb_tangency import keep_owned_helpers
+    keep_owned_helpers(tr.document, keep)
+    _prune(tr.document, keep)
     if mode == 'strict' and rep['untranslated']:
         raise ConvertError(rep['untranslated'])
     doc = tr.document if tr.document['operations'] else None
@@ -250,6 +254,8 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     macro_names = set()
     if macro_root is not None:
         macro_names = {m.attrib.get('cmdName') for m in macro_root.iter('macro') if m.attrib.get('cmdName')}
+    from .ggb_tangency import read_tangency, snapshot_commands
+    tangency_commands = snapshot_commands(root)
     with _quiet():
         constr, parse_errors = _classic_parse(root, macro_root, sc)
     from ...geo.construction import normalize_name
@@ -362,6 +368,7 @@ def from_ggb(path_or_bytes, *, id_namespace, mode: str = 'partial', limits=None,
     read_expressions(infos, norm, ctx, constr)
     from .ggb_function_analysis import read_analysis
     read_analysis(root, infos, norm, ctx)
+    read_tangency(tangency_commands, infos, norm, ctx)
     with _quiet():
         tr = translate(constr, ctx)
     from .ggb_conic import check_line_orientations
