@@ -13,7 +13,8 @@ GROUPS = {
 }
 ANALYSIS_OPS = ('roots_polynomial', 'extrema_polynomial', 'value', 'root_near',
                 'root_interval', 'roots_interval', 'extrema_interval')
-GROUPS.update({'line.tangent_function_at': 'tangency', 'line.slope': 'tangency'})
+GROUPS.update({'line.'+name: 'tangency' for name in ('tangent_function_at', 'tangent_conic_at',
+              'tangents_from_point_conic', 'tangents_parallel_conic', 'slope')})
 GROUPS.update({'function.' + name: 'function_analysis' for name in ANALYSIS_OPS})
 
 

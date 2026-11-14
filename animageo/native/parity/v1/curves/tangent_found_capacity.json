@@ -1,0 +1,1047 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "tangent_found_capacity",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "tangent_found_capacity",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_capacity1_": {
+    "id": "op_capacity1_",
+    "op": "line.tangents_from_point_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "count": {
+      "kind": "number",
+      "value": 1
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "capacity1_1"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "capacity1__touch1"
+     }
+    ]
+   },
+   "op_capacity2_": {
+    "id": "op_capacity2_",
+    "op": "line.tangents_from_point_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "capacity2_1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "capacity2_2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "capacity2__touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "capacity2__touch2"
+     }
+    ]
+   },
+   "op_capacity4_": {
+    "id": "op_capacity4_",
+    "op": "line.tangents_from_point_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "count": {
+      "kind": "number",
+      "value": 4
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "capacity4_1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "capacity4_2"
+     },
+     {
+      "slot": "tangent.3",
+      "elementId": "capacity4_3"
+     },
+     {
+      "slot": "tangent.4",
+      "elementId": "capacity4_4"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "capacity4__touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "capacity4__touch2"
+     },
+     {
+      "slot": "touch.3",
+      "elementId": "capacity4__touch3"
+     },
+     {
+      "slot": "touch.4",
+      "elementId": "capacity4__touch4"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "conic",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "conic"
+    }
+   },
+   "capacity1_1": {
+    "id": "capacity1_1",
+    "type": "line",
+    "displayName": "capacity1_1",
+    "producer": {
+     "operationId": "op_capacity1_",
+     "slot": "tangent.1"
+    }
+   },
+   "capacity1__touch1": {
+    "id": "capacity1__touch1",
+    "type": "point",
+    "displayName": "capacity1__touch1",
+    "producer": {
+     "operationId": "op_capacity1_",
+     "slot": "touch.1"
+    }
+   },
+   "capacity2_1": {
+    "id": "capacity2_1",
+    "type": "line",
+    "displayName": "capacity2_1",
+    "producer": {
+     "operationId": "op_capacity2_",
+     "slot": "tangent.1"
+    }
+   },
+   "capacity2_2": {
+    "id": "capacity2_2",
+    "type": "line",
+    "displayName": "capacity2_2",
+    "producer": {
+     "operationId": "op_capacity2_",
+     "slot": "tangent.2"
+    }
+   },
+   "capacity2__touch1": {
+    "id": "capacity2__touch1",
+    "type": "point",
+    "displayName": "capacity2__touch1",
+    "producer": {
+     "operationId": "op_capacity2_",
+     "slot": "touch.1"
+    }
+   },
+   "capacity2__touch2": {
+    "id": "capacity2__touch2",
+    "type": "point",
+    "displayName": "capacity2__touch2",
+    "producer": {
+     "operationId": "op_capacity2_",
+     "slot": "touch.2"
+    }
+   },
+   "capacity4_1": {
+    "id": "capacity4_1",
+    "type": "line",
+    "displayName": "capacity4_1",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "tangent.1"
+    }
+   },
+   "capacity4_2": {
+    "id": "capacity4_2",
+    "type": "line",
+    "displayName": "capacity4_2",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "tangent.2"
+    }
+   },
+   "capacity4_3": {
+    "id": "capacity4_3",
+    "type": "line",
+    "displayName": "capacity4_3",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "tangent.3"
+    }
+   },
+   "capacity4_4": {
+    "id": "capacity4_4",
+    "type": "line",
+    "displayName": "capacity4_4",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "tangent.4"
+    }
+   },
+   "capacity4__touch1": {
+    "id": "capacity4__touch1",
+    "type": "point",
+    "displayName": "capacity4__touch1",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "touch.1"
+    }
+   },
+   "capacity4__touch2": {
+    "id": "capacity4__touch2",
+    "type": "point",
+    "displayName": "capacity4__touch2",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "touch.2"
+    }
+   },
+   "capacity4__touch3": {
+    "id": "capacity4__touch3",
+    "type": "point",
+    "displayName": "capacity4__touch3",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "touch.3"
+    }
+   },
+   "capacity4__touch4": {
+    "id": "capacity4__touch4",
+    "type": "point",
+    "displayName": "capacity4__touch4",
+    "producer": {
+     "operationId": "op_capacity4_",
+     "slot": "touch.4"
+    }
+   }
+  },
+  "inputs": {
+   "P": {
+    "kind": "point",
+    "value": [
+     0.0,
+     -1.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "two",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "capacity1_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity1__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2_2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       -0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2__touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4_2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       -0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4_3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity4_4": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity4__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4__touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4__touch3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "capacity4__touch4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_capacity1_:through_point": "passed",
+    "op_capacity1_:on_curve": "passed",
+    "op_capacity1_:tangent": "passed",
+    "op_capacity2_:through_point": "passed",
+    "op_capacity2_:on_curve": "passed",
+    "op_capacity2_:tangent": "passed",
+    "op_capacity4_:through_point": "passed",
+    "op_capacity4_:on_curve": "passed",
+    "op_capacity4_:tangent": "passed"
+   }
+  },
+  {
+   "name": "one",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "capacity1_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "capacity1__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "capacity2_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "capacity2_2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity2__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "capacity2__touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "capacity4_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "capacity4_2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity4_3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity4_4": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity4__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "capacity4__touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "capacity4__touch3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "capacity4__touch4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_capacity1_:through_point": "passed",
+    "op_capacity1_:on_curve": "passed",
+    "op_capacity1_:tangent": "passed",
+    "op_capacity2_:through_point": "passed",
+    "op_capacity2_:on_curve": "passed",
+    "op_capacity2_:tangent": "passed",
+    "op_capacity4_:through_point": "passed",
+    "op_capacity4_:on_curve": "passed",
+    "op_capacity4_:tangent": "passed"
+   }
+  },
+  {
+   "name": "none",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "capacity1_1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "capacity1__touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "capacity2_1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "capacity2_2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "capacity2__touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "capacity2__touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "capacity4_1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "capacity4_2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "capacity4_3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "capacity4_4": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "capacity4__touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "capacity4__touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "capacity4__touch3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "capacity4__touch4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "capacity1_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity1__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2_2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       -0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity2__touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4_1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4_2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       -0.894427191
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4_3": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity4_4": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "capacity4__touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4__touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 1
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "capacity4__touch3": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "capacity4__touch4": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_capacity1_:through_point": "passed",
+    "op_capacity1_:on_curve": "passed",
+    "op_capacity1_:tangent": "passed",
+    "op_capacity2_:through_point": "passed",
+    "op_capacity2_:on_curve": "passed",
+    "op_capacity2_:tangent": "passed",
+    "op_capacity4_:through_point": "passed",
+    "op_capacity4_:on_curve": "passed",
+    "op_capacity4_:tangent": "passed"
+   }
+  }
+ ]
+}

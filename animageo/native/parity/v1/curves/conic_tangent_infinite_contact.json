@@ -1,0 +1,1099 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_tangent_infinite_contact",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_tangent_infinite_contact",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "line.tangents_from_point_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "h"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "t1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "t2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "t_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "t_touch2"
+     }
+    ]
+   },
+   "op_distant": {
+    "id": "op_distant",
+    "op": "line.tangents_from_point_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "distant1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "distant2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "distant_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "distant_touch2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "conic",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "conic"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "t1": {
+    "id": "t1",
+    "type": "line",
+    "displayName": "t1",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "tangent.1"
+    }
+   },
+   "t2": {
+    "id": "t2",
+    "type": "line",
+    "displayName": "t2",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "tangent.2"
+    }
+   },
+   "t_touch1": {
+    "id": "t_touch1",
+    "type": "point",
+    "displayName": "t_touch1",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch.1"
+    }
+   },
+   "t_touch2": {
+    "id": "t_touch2",
+    "type": "point",
+    "displayName": "t_touch2",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch.2"
+    }
+   },
+   "distant1": {
+    "id": "distant1",
+    "type": "line",
+    "displayName": "distant1",
+    "producer": {
+     "operationId": "op_distant",
+     "slot": "tangent.1"
+    }
+   },
+   "distant2": {
+    "id": "distant2",
+    "type": "line",
+    "displayName": "distant2",
+    "producer": {
+     "operationId": "op_distant",
+     "slot": "tangent.2"
+    }
+   },
+   "distant_touch1": {
+    "id": "distant_touch1",
+    "type": "point",
+    "displayName": "distant_touch1",
+    "producer": {
+     "operationId": "op_distant",
+     "slot": "touch.1"
+    }
+   },
+   "distant_touch2": {
+    "id": "distant_touch2",
+    "type": "point",
+    "displayName": "distant_touch2",
+    "producer": {
+     "operationId": "op_distant",
+     "slot": "touch.2"
+    }
+   }
+  },
+  "inputs": {
+   "P": {
+    "kind": "point",
+    "value": [
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "one_finite",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "distant1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "distant2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "distant_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "distant_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_distant:through_point": "passed",
+    "op_distant:on_curve": "passed",
+    "op_distant:tangent": "passed",
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  },
+  {
+   "name": "empty",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "distant1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "distant2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "distant_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "distant_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "t_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    }
+   },
+   "checks": {
+    "op_distant:through_point": "passed",
+    "op_distant:on_curve": "passed",
+    "op_distant:tangent": "passed"
+   }
+  },
+  {
+   "name": "on",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      1.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "distant1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.941176471,
+       -0.235294118
+      ],
+      "dir": [
+       0.242535625,
+       0.9701425
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "distant2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "distant_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 4.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "distant_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_distant:through_point": "passed",
+    "op_distant:on_curve": "passed",
+    "op_distant:tangent": "passed",
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  },
+  {
+   "name": "two",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 2.0
+     }
+    },
+    "distant1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "distant2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "distant_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "distant_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.745355992,
+       0.333333333
+      ],
+      "dir": [
+       -0.40824829,
+       0.912870929
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.745355992,
+       0.333333333
+      ],
+      "dir": [
+       -0.40824829,
+       -0.912870929
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.118033989,
+      "y": -0.5
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.118033989,
+      "y": -0.5
+     },
+     "detail": {
+      "found": 2
+     }
+    }
+   },
+   "checks": {
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  },
+  {
+   "name": "overflow",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      1e+200,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1e+200,
+      "y": 0.0
+     }
+    },
+    "distant1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "non_finite"
+    },
+    "distant2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "non_finite"
+    },
+    "distant_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite"
+    },
+    "distant_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "t_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "distant1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "distant2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "distant_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 1
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "distant_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_distant:through_point": "passed",
+    "op_distant:on_curve": "passed",
+    "op_distant:tangent": "passed",
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  }
+ ]
+}

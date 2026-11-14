@@ -1,4 +1,4 @@
-"""Tangency catalog, staged conic operations and frozen earlier signatures."""
+"""Complete tangency catalog and frozen earlier signatures."""
 import copy
 import json
 
@@ -11,7 +11,7 @@ from tests.native.conftest import NATIVE_DIR
 
 NAMES = {'line.' + name for name in ('tangent_function_at', 'tangent_conic_at',
          'tangents_from_point_conic', 'tangents_parallel_conic', 'slope')}
-ACTIVE = {'line.tangent_function_at', 'line.slope'}
+ACTIVE = NAMES
 
 
 def catalog():

@@ -1,0 +1,1904 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_tangents_parallel",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_tangents_parallel",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_O": {
+    "id": "op_O",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_R": {
+    "id": "op_R",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "R"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_circle": {
+    "id": "op_circle",
+    "op": "circle.center_point",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "O"
+     },
+     "through": {
+      "kind": "ref",
+      "elementId": "R"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "circle"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_base": {
+    "id": "op_base",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "base"
+     }
+    ]
+   },
+   "op_ct": {
+    "id": "op_ct",
+    "op": "line.tangents_parallel_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "circle"
+     },
+     "base": {
+      "kind": "ref",
+      "elementId": "base"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "ct1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "ct2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "ct_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "ct_touch2"
+     }
+    ]
+   },
+   "op_et": {
+    "id": "op_et",
+    "op": "line.tangents_parallel_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "e"
+     },
+     "base": {
+      "kind": "ref",
+      "elementId": "base"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "et1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "et2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "et_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "et_touch2"
+     }
+    ]
+   },
+   "op_pt": {
+    "id": "op_pt",
+    "op": "line.tangents_parallel_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     },
+     "base": {
+      "kind": "ref",
+      "elementId": "base"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "pt1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "pt2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "pt_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "pt_touch2"
+     }
+    ]
+   },
+   "op_ht": {
+    "id": "op_ht",
+    "op": "line.tangents_parallel_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "h"
+     },
+     "base": {
+      "kind": "ref",
+      "elementId": "base"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "ht1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "ht2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "ht_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "ht_touch2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    }
+   },
+   "R": {
+    "id": "R",
+    "type": "point",
+    "displayName": "R",
+    "producer": {
+     "operationId": "op_R",
+     "slot": "point"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "circle": {
+    "id": "circle",
+    "type": "circle",
+    "displayName": "circle",
+    "producer": {
+     "operationId": "op_circle",
+     "slot": "circle"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "conic",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "conic"
+    }
+   },
+   "base": {
+    "id": "base",
+    "type": "line",
+    "displayName": "base",
+    "producer": {
+     "operationId": "op_base",
+     "slot": "line"
+    }
+   },
+   "ct1": {
+    "id": "ct1",
+    "type": "line",
+    "displayName": "ct1",
+    "producer": {
+     "operationId": "op_ct",
+     "slot": "tangent.1"
+    }
+   },
+   "ct2": {
+    "id": "ct2",
+    "type": "line",
+    "displayName": "ct2",
+    "producer": {
+     "operationId": "op_ct",
+     "slot": "tangent.2"
+    }
+   },
+   "ct_touch1": {
+    "id": "ct_touch1",
+    "type": "point",
+    "displayName": "ct_touch1",
+    "producer": {
+     "operationId": "op_ct",
+     "slot": "touch.1"
+    }
+   },
+   "ct_touch2": {
+    "id": "ct_touch2",
+    "type": "point",
+    "displayName": "ct_touch2",
+    "producer": {
+     "operationId": "op_ct",
+     "slot": "touch.2"
+    }
+   },
+   "et1": {
+    "id": "et1",
+    "type": "line",
+    "displayName": "et1",
+    "producer": {
+     "operationId": "op_et",
+     "slot": "tangent.1"
+    }
+   },
+   "et2": {
+    "id": "et2",
+    "type": "line",
+    "displayName": "et2",
+    "producer": {
+     "operationId": "op_et",
+     "slot": "tangent.2"
+    }
+   },
+   "et_touch1": {
+    "id": "et_touch1",
+    "type": "point",
+    "displayName": "et_touch1",
+    "producer": {
+     "operationId": "op_et",
+     "slot": "touch.1"
+    }
+   },
+   "et_touch2": {
+    "id": "et_touch2",
+    "type": "point",
+    "displayName": "et_touch2",
+    "producer": {
+     "operationId": "op_et",
+     "slot": "touch.2"
+    }
+   },
+   "pt1": {
+    "id": "pt1",
+    "type": "line",
+    "displayName": "pt1",
+    "producer": {
+     "operationId": "op_pt",
+     "slot": "tangent.1"
+    }
+   },
+   "pt2": {
+    "id": "pt2",
+    "type": "line",
+    "displayName": "pt2",
+    "producer": {
+     "operationId": "op_pt",
+     "slot": "tangent.2"
+    }
+   },
+   "pt_touch1": {
+    "id": "pt_touch1",
+    "type": "point",
+    "displayName": "pt_touch1",
+    "producer": {
+     "operationId": "op_pt",
+     "slot": "touch.1"
+    }
+   },
+   "pt_touch2": {
+    "id": "pt_touch2",
+    "type": "point",
+    "displayName": "pt_touch2",
+    "producer": {
+     "operationId": "op_pt",
+     "slot": "touch.2"
+    }
+   },
+   "ht1": {
+    "id": "ht1",
+    "type": "line",
+    "displayName": "ht1",
+    "producer": {
+     "operationId": "op_ht",
+     "slot": "tangent.1"
+    }
+   },
+   "ht2": {
+    "id": "ht2",
+    "type": "line",
+    "displayName": "ht2",
+    "producer": {
+     "operationId": "op_ht",
+     "slot": "tangent.2"
+    }
+   },
+   "ht_touch1": {
+    "id": "ht_touch1",
+    "type": "point",
+    "displayName": "ht_touch1",
+    "producer": {
+     "operationId": "op_ht",
+     "slot": "touch.1"
+    }
+   },
+   "ht_touch2": {
+    "id": "ht_touch2",
+    "type": "point",
+    "displayName": "ht_touch2",
+    "producer": {
+     "operationId": "op_ht",
+     "slot": "touch.2"
+    }
+   }
+  },
+  "inputs": {
+   "O": {
+    "kind": "point",
+    "value": [
+     0.0,
+     0.0
+    ]
+   },
+   "R": {
+    "kind": "point",
+    "value": [
+     2.0,
+     0.0
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     0.0,
+     0.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     -1.0,
+     0.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "left",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": 0.0
+     }
+    },
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "base": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "circle": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 2.0
+     }
+    },
+    "ct1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -2.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 2.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       1.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -1.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "ht2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "ht_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "ht_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pt2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "pt_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pt_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_base:through_a": "passed",
+    "op_base:through_b": "passed",
+    "op_circle:through_on_circle": "passed",
+    "op_ct:on_curve": "passed",
+    "op_ct:tangent": "passed",
+    "op_ct:parallel": "passed",
+    "op_et:on_curve": "passed",
+    "op_et:tangent": "passed",
+    "op_et:parallel": "passed",
+    "op_pt:on_curve": "passed",
+    "op_pt:tangent": "passed",
+    "op_pt:parallel": "passed"
+   }
+  },
+  {
+   "name": "right",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "base": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     }
+    },
+    "circle": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 2.0
+     }
+    },
+    "ct1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -2.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       2.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -2.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 2.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       -1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       1.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": -1.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "ht2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "ht_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "ht_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       1.0,
+       0.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pt2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "pt_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0,
+      "y": 0
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pt_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_base:through_a": "passed",
+    "op_base:through_b": "passed",
+    "op_circle:through_on_circle": "passed",
+    "op_ct:on_curve": "passed",
+    "op_ct:tangent": "passed",
+    "op_ct:parallel": "passed",
+    "op_et:on_curve": "passed",
+    "op_et:tangent": "passed",
+    "op_et:parallel": "passed",
+    "op_pt:on_curve": "passed",
+    "op_pt:tangent": "passed",
+    "op_pt:parallel": "passed"
+   }
+  },
+  {
+   "name": "up",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "base": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "circle": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 2.0
+     }
+    },
+    "ct1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 0.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -2.0,
+      "y": 0.0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ht2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ht_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ht_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1,
+      "y": 0
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "pt2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "pt_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "pt_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    }
+   },
+   "checks": {
+    "op_base:through_a": "passed",
+    "op_base:through_b": "passed",
+    "op_circle:through_on_circle": "passed",
+    "op_ct:on_curve": "passed",
+    "op_ct:tangent": "passed",
+    "op_ct:parallel": "passed",
+    "op_et:on_curve": "passed",
+    "op_et:tangent": "passed",
+    "op_et:parallel": "passed",
+    "op_ht:on_curve": "passed",
+    "op_ht:tangent": "passed",
+    "op_ht:parallel": "passed"
+   }
+  },
+  {
+   "name": "diagonal",
+   "inputs": {
+    "B": {
+     "kind": "point",
+     "value": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    },
+    "R": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "base": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       0.0
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     }
+    },
+    "circle": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       0.0,
+       0.0
+      ],
+      "r": 2.0
+     }
+    },
+    "ct1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.414213562,
+       -1.414213562
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.414213562,
+       1.414213562
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.414213562,
+      "y": -1.414213562
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "ct_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.414213562,
+      "y": 1.414213562
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.118033989,
+       -1.118033989
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -1.118033989,
+       1.118033989
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.788854382,
+      "y": -0.447213595
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "et_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.788854382,
+      "y": 0.447213595
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "ht2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "no_tangent"
+    },
+    "ht_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "ht_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "no_tangent"
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.125,
+       -0.125
+      ],
+      "dir": [
+       0.707106781,
+       0.707106781
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pt2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "pt_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.5,
+      "y": 0.25
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "pt_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_base:through_a": "passed",
+    "op_base:through_b": "passed",
+    "op_circle:through_on_circle": "passed",
+    "op_ct:on_curve": "passed",
+    "op_ct:tangent": "passed",
+    "op_ct:parallel": "passed",
+    "op_et:on_curve": "passed",
+    "op_et:tangent": "passed",
+    "op_et:parallel": "passed",
+    "op_pt:on_curve": "passed",
+    "op_pt:tangent": "passed",
+    "op_pt:parallel": "passed"
+   }
+  }
+ ]
+}

@@ -1,0 +1,932 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_tangent_at",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_tangent_at",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_e": {
+    "id": "op_e",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "var": "x"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "e"
+     }
+    ]
+   },
+   "op_p": {
+    "id": "op_p",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "^",
+         "args": [
+          {
+           "var": "x"
+          },
+          {
+           "num": 2
+          }
+         ]
+        },
+        {
+         "var": "y"
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "p"
+     }
+    ]
+   },
+   "op_h": {
+    "id": "op_h",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "-",
+         "args": [
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "x"
+            },
+            {
+             "num": 2
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "var": "y"
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "h"
+     }
+    ]
+   },
+   "op_et": {
+    "id": "op_et",
+    "op": "line.tangent_conic_at",
+    "args": {
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "e"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "et"
+     }
+    ]
+   },
+   "op_pt": {
+    "id": "op_pt",
+    "op": "line.tangent_conic_at",
+    "args": {
+     "point": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "p"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "pt"
+     }
+    ]
+   },
+   "op_ht": {
+    "id": "op_ht",
+    "op": "line.tangent_conic_at",
+    "args": {
+     "point": {
+      "kind": "ref",
+      "elementId": "B"
+     },
+     "conic": {
+      "kind": "ref",
+      "elementId": "h"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "ht"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "e": {
+    "id": "e",
+    "type": "conic",
+    "displayName": "e",
+    "producer": {
+     "operationId": "op_e",
+     "slot": "conic"
+    }
+   },
+   "p": {
+    "id": "p",
+    "type": "conic",
+    "displayName": "p",
+    "producer": {
+     "operationId": "op_p",
+     "slot": "conic"
+    }
+   },
+   "h": {
+    "id": "h",
+    "type": "conic",
+    "displayName": "h",
+    "producer": {
+     "operationId": "op_h",
+     "slot": "conic"
+    }
+   },
+   "et": {
+    "id": "et",
+    "type": "line",
+    "displayName": "et",
+    "producer": {
+     "operationId": "op_et",
+     "slot": "line"
+    }
+   },
+   "pt": {
+    "id": "pt",
+    "type": "line",
+    "displayName": "pt",
+    "producer": {
+     "operationId": "op_pt",
+     "slot": "line"
+    }
+   },
+   "ht": {
+    "id": "ht",
+    "type": "line",
+    "displayName": "ht",
+    "producer": {
+     "operationId": "op_ht",
+     "slot": "line"
+    }
+   }
+  },
+  "inputs": {
+   "P": {
+    "kind": "point",
+    "value": [
+     2.0,
+     0.0
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     1.0,
+     1.0
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     1.0,
+     0.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "vertical",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_et:through_point": "passed",
+    "op_et:on_curve": "passed",
+    "op_et:tangent": "passed",
+    "op_ht:through_point": "passed",
+    "op_ht:on_curve": "passed",
+    "op_ht:tangent": "passed",
+    "op_pt:through_point": "passed",
+    "op_pt:on_curve": "passed",
+    "op_pt:tangent": "passed"
+   }
+  },
+  {
+   "name": "horizontal",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 0.0,
+      "y": 1.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.0,
+       1.0
+      ],
+      "dir": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_et:through_point": "passed",
+    "op_et:on_curve": "passed",
+    "op_et:tangent": "passed",
+    "op_ht:through_point": "passed",
+    "op_ht:on_curve": "passed",
+    "op_ht:tangent": "passed",
+    "op_pt:through_point": "passed",
+    "op_pt:on_curve": "passed",
+    "op_pt:tangent": "passed"
+   }
+  },
+  {
+   "name": "off_curve",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      4.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4.0,
+      "y": 0.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "not_on_curve"
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_ht:through_point": "passed",
+    "op_ht:on_curve": "passed",
+    "op_ht:tangent": "passed",
+    "op_pt:through_point": "passed",
+    "op_pt:on_curve": "passed",
+    "op_pt:tangent": "passed"
+   }
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      2.0,
+      0.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 1.0
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.0,
+      "y": 0.0
+     }
+    },
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2.0,
+      "y": 0.0
+     }
+    },
+    "e": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "et": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       2.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "h": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "hyperbola",
+      "c": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 1.0,
+      "b": 1.0
+     }
+    },
+    "ht": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "p": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "parabola",
+      "vertex": [
+       0.0,
+       0.0
+      ],
+      "axis": [
+       0.0,
+       1.0
+      ],
+      "p": 0.5
+     }
+    },
+    "pt": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.4,
+       -0.2
+      ],
+      "dir": [
+       0.447213595,
+       0.894427191
+      ]
+     }
+    }
+   },
+   "checks": {
+    "op_et:through_point": "passed",
+    "op_et:on_curve": "passed",
+    "op_et:tangent": "passed",
+    "op_ht:through_point": "passed",
+    "op_ht:on_curve": "passed",
+    "op_ht:tangent": "passed",
+    "op_pt:through_point": "passed",
+    "op_pt:on_curve": "passed",
+    "op_pt:tangent": "passed"
+   }
+  }
+ ]
+}

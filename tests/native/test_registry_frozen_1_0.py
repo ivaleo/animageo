@@ -142,11 +142,9 @@ def test_the_registry_keeps_the_1_0_contract(frozen):
 
 def test_index_matches_the_records(frozen):
     """INDEX.json carries the same signature hashes (``registry index --check``)."""
-    from animageo.native.registry import _PENDING_OPS
     index = json.loads((OPS_DIR / 'INDEX.json').read_text(encoding='utf-8'))
     now = summary(current())
-    assert not set(index['ops']) & _PENDING_OPS
-    assert {op: row['signatureHash'] for op, row in now['ops'].items() if op not in _PENDING_OPS} == index['ops']
+    assert {op: row['signatureHash'] for op, row in now['ops'].items()} == index['ops']
 
 
 def test_the_package_reports_the_version():

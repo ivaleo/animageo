@@ -1,0 +1,660 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "tangent_slot_changes",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "tangent_slot_changes",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_P": {
+    "id": "op_P",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "P"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "conic.equation",
+    "args": {
+     "expr": {
+      "kind": "expr",
+      "ast": {
+       "op": "-",
+       "args": [
+        {
+         "op": "+",
+         "args": [
+          {
+           "op": "/",
+           "args": [
+            {
+             "op": "^",
+             "args": [
+              {
+               "op": "-",
+               "args": [
+                {
+                 "var": "x"
+                },
+                {
+                 "num": 3
+                }
+               ]
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 4
+            }
+           ]
+          },
+          {
+           "op": "^",
+           "args": [
+            {
+             "op": "+",
+             "args": [
+              {
+               "var": "y"
+              },
+              {
+               "num": 2
+              }
+             ]
+            },
+            {
+             "num": 2
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "num": 1
+        }
+       ]
+      }
+     },
+     "refs": {
+      "kind": "list",
+      "items": []
+     }
+    },
+    "outputs": [
+     {
+      "slot": "conic",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "line.tangents_from_point_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "point": {
+      "kind": "ref",
+      "elementId": "P"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "t1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "t2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "t_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "t_touch2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "P": {
+    "id": "P",
+    "type": "point",
+    "displayName": "P",
+    "producer": {
+     "operationId": "op_P",
+     "slot": "point"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "conic",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "conic"
+    }
+   },
+   "t1": {
+    "id": "t1",
+    "type": "line",
+    "displayName": "t1",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "tangent.1"
+    }
+   },
+   "t2": {
+    "id": "t2",
+    "type": "line",
+    "displayName": "t2",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "tangent.2"
+    }
+   },
+   "t_touch1": {
+    "id": "t_touch1",
+    "type": "point",
+    "displayName": "t_touch1",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch.1"
+    }
+   },
+   "t_touch2": {
+    "id": "t_touch2",
+    "type": "point",
+    "displayName": "t_touch2",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch.2"
+    }
+   }
+  },
+  "inputs": {
+   "P": {
+    "kind": "point",
+    "value": [
+     7.0,
+     -2.0
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "right",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      7.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 7.0,
+      "y": -2.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       3.0,
+       -2.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.005522828,
+       0.019131639
+      ],
+      "dir": [
+       -0.960768923,
+       0.277350098
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.071400248,
+       -3.711439331
+      ],
+      "dir": [
+       0.960768923,
+       0.277350098
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4,
+      "y": -1.133974596
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4,
+      "y": -2.866025404
+     },
+     "detail": {
+      "found": 2
+     }
+    }
+   },
+   "checks": {
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  },
+  {
+   "name": "left",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      -1.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": -1.0,
+      "y": -2.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       3.0,
+       -2.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       -0.609861787,
+       -2.112623201
+      ],
+      "dir": [
+       0.960768923,
+       -0.277350098
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.456015633,
+       -1.579684491
+      ],
+      "dir": [
+       -0.960768923,
+       -0.277350098
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2,
+      "y": -2.866025404
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 2,
+      "y": -1.133974596
+     },
+     "detail": {
+      "found": 2
+     }
+    }
+   },
+   "checks": {
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  },
+  {
+   "name": "merge",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      5.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5.0,
+      "y": -2.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       3.0,
+       -2.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       5.0,
+       0.0
+      ],
+      "dir": [
+       0.0,
+       1.0
+      ]
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "branch_absent"
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 5,
+      "y": -2
+     },
+     "detail": {
+      "found": 1
+     }
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "branch_absent"
+    }
+   },
+   "checks": {
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  },
+  {
+   "name": "inside",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      3.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 3.0,
+      "y": -2.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       3.0,
+       -2.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "point_inside"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "point_inside"
+    },
+    "t_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "point_inside"
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "point_inside"
+    }
+   },
+   "checks": {}
+  },
+  {
+   "name": "recovery",
+   "inputs": {
+    "P": {
+     "kind": "point",
+     "value": [
+      7.0,
+      -2.0
+     ]
+    }
+   },
+   "scale": 20.0,
+   "expect": {
+    "P": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 7.0,
+      "y": -2.0
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "conic",
+     "value": {
+      "kind": "ellipse",
+      "c": [
+       3.0,
+       -2.0
+      ],
+      "axis": [
+       1.0,
+       0.0
+      ],
+      "a": 2.0,
+      "b": 1.0
+     }
+    },
+    "t1": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       0.005522828,
+       0.019131639
+      ],
+      "dir": [
+       -0.960768923,
+       0.277350098
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t2": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.071400248,
+       -3.711439331
+      ],
+      "dir": [
+       0.960768923,
+       0.277350098
+      ]
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch1": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4,
+      "y": -1.133974596
+     },
+     "detail": {
+      "found": 2
+     }
+    },
+    "t_touch2": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 4,
+      "y": -2.866025404
+     },
+     "detail": {
+      "found": 2
+     }
+    }
+   },
+   "checks": {
+    "op_t:through_point": "passed",
+    "op_t:on_curve": "passed",
+    "op_t:tangent": "passed"
+   }
+  }
+ ]
+}

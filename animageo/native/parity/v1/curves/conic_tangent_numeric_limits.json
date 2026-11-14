@@ -1,0 +1,318 @@
+{
+ "format": "animageo-parity/v1",
+ "id": "conic_tangent_numeric_limits",
+ "registry": "1.12",
+ "generatedBy": "animageo 1.17.0",
+ "document": {
+  "format": "animageo-construction/v1",
+  "documentId": "conic_tangent_numeric_limits",
+  "operationRegistryVersion": "1.12",
+  "operations": {
+   "op_O": {
+    "id": "op_O",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "O"
+     }
+    ]
+   },
+   "op_A": {
+    "id": "op_A",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "A"
+     }
+    ]
+   },
+   "op_B": {
+    "id": "op_B",
+    "op": "point.free",
+    "args": {},
+    "outputs": [
+     {
+      "slot": "point",
+      "elementId": "B"
+     }
+    ]
+   },
+   "op_base": {
+    "id": "op_base",
+    "op": "line.by_points",
+    "args": {
+     "a": {
+      "kind": "ref",
+      "elementId": "A"
+     },
+     "b": {
+      "kind": "ref",
+      "elementId": "B"
+     }
+    },
+    "outputs": [
+     {
+      "slot": "line",
+      "elementId": "base"
+     }
+    ]
+   },
+   "op_c": {
+    "id": "op_c",
+    "op": "circle.center_radius",
+    "args": {
+     "center": {
+      "kind": "ref",
+      "elementId": "O"
+     },
+     "radius": {
+      "kind": "number",
+      "value": 1e+307
+     }
+    },
+    "outputs": [
+     {
+      "slot": "circle",
+      "elementId": "c"
+     }
+    ]
+   },
+   "op_t": {
+    "id": "op_t",
+    "op": "line.tangents_parallel_conic",
+    "args": {
+     "conic": {
+      "kind": "ref",
+      "elementId": "c"
+     },
+     "base": {
+      "kind": "ref",
+      "elementId": "base"
+     },
+     "count": {
+      "kind": "number",
+      "value": 2
+     }
+    },
+    "outputs": [
+     {
+      "slot": "tangent.1",
+      "elementId": "t1"
+     },
+     {
+      "slot": "tangent.2",
+      "elementId": "t2"
+     },
+     {
+      "slot": "touch.1",
+      "elementId": "t_touch1"
+     },
+     {
+      "slot": "touch.2",
+      "elementId": "t_touch2"
+     }
+    ]
+   }
+  },
+  "elements": {
+   "O": {
+    "id": "O",
+    "type": "point",
+    "displayName": "O",
+    "producer": {
+     "operationId": "op_O",
+     "slot": "point"
+    }
+   },
+   "A": {
+    "id": "A",
+    "type": "point",
+    "displayName": "A",
+    "producer": {
+     "operationId": "op_A",
+     "slot": "point"
+    }
+   },
+   "B": {
+    "id": "B",
+    "type": "point",
+    "displayName": "B",
+    "producer": {
+     "operationId": "op_B",
+     "slot": "point"
+    }
+   },
+   "base": {
+    "id": "base",
+    "type": "line",
+    "displayName": "base",
+    "producer": {
+     "operationId": "op_base",
+     "slot": "line"
+    }
+   },
+   "c": {
+    "id": "c",
+    "type": "circle",
+    "displayName": "c",
+    "producer": {
+     "operationId": "op_c",
+     "slot": "circle"
+    }
+   },
+   "t1": {
+    "id": "t1",
+    "type": "line",
+    "displayName": "t1",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "tangent.1"
+    }
+   },
+   "t2": {
+    "id": "t2",
+    "type": "line",
+    "displayName": "t2",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "tangent.2"
+    }
+   },
+   "t_touch1": {
+    "id": "t_touch1",
+    "type": "point",
+    "displayName": "t_touch1",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch.1"
+    }
+   },
+   "t_touch2": {
+    "id": "t_touch2",
+    "type": "point",
+    "displayName": "t_touch2",
+    "producer": {
+     "operationId": "op_t",
+     "slot": "touch.2"
+    }
+   }
+  },
+  "inputs": {
+   "O": {
+    "kind": "point",
+    "value": [
+     1.45e+308,
+     1.45e+308
+    ]
+   },
+   "A": {
+    "kind": "point",
+    "value": [
+     1.45e+308,
+     1.45e+308
+    ]
+   },
+   "B": {
+    "kind": "point",
+    "value": [
+     1.4117316567634909e+308,
+     1.5423879532511285e+308
+    ]
+   }
+  },
+  "viewDefaults": {
+   "bounds": [
+    -10,
+    -10,
+    10,
+    10
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "projection_overflow",
+   "scale": 9.999999999999994e+306,
+   "expect": {
+    "A": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.45e+308,
+      "y": 1.45e+308
+     }
+    },
+    "B": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.4117316567634909e+308,
+      "y": 1.5423879532511285e+308
+     }
+    },
+    "O": {
+     "state": "defined",
+     "type": "point",
+     "value": {
+      "x": 1.45e+308,
+      "y": 1.45e+308
+     }
+    },
+    "base": {
+     "state": "defined",
+     "type": "line",
+     "value": {
+      "p": [
+       1.7503048327204939e+308,
+       7.250000000000022e+307
+      ],
+      "dir": [
+       -0.382683432,
+       0.923879533
+      ]
+     }
+    },
+    "c": {
+     "state": "defined",
+     "type": "circle",
+     "value": {
+      "c": [
+       1.45e+308,
+       1.45e+308
+      ],
+      "r": 1e+307
+     }
+    },
+    "t1": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "non_finite"
+    },
+    "t2": {
+     "state": "undefined",
+     "type": "line",
+     "reason": "non_finite"
+    },
+    "t_touch1": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite"
+    },
+    "t_touch2": {
+     "state": "undefined",
+     "type": "point",
+     "reason": "non_finite"
+    }
+   },
+   "checks": {
+    "op_base:through_a": "passed",
+    "op_base:through_b": "passed",
+    "op_c:matches": "passed"
+   }
+  }
+ ]
+}

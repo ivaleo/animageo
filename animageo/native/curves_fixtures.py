@@ -921,6 +921,8 @@ def build_fixtures() -> dict:
     out.update(function_analysis_fixtures())
     from .tangency_fixtures import build_fixtures as tangency_fixtures
     out.update(tangency_fixtures())
+    from .conic_tangency_fixtures import build_fixtures as conic_tangency_fixtures
+    out.update(conic_tangency_fixtures())
     return out
 
 

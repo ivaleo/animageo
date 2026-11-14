@@ -177,6 +177,16 @@ def test_every_reason_of_every_op_is_covered():
     # defensive adapter is exercised with zero decide.scalar in tangency tests.
     assert 1 / native.registry().numeric['tolerances']['decide']['scalar'] < 1e308
     missing['line.slope'] = [r for r in missing['line.slope'] if r != 'non_finite']
+    # A degenerate conic producer has no defined value to pass downstream:
+    # document fixtures cover upstream/cause. Defensive canonical-value
+    # refusals are exercised directly by the conic tangency adapter tests.
+    adapter_reasons = {
+        'line.tangent_conic_at': {'degenerate_conic', 'non_finite'},
+        'line.tangents_from_point_conic': {'degenerate_conic'},
+        'line.tangents_parallel_conic': {'degenerate_conic'},
+    }
+    for op, reasons in adapter_reasons.items():
+        missing[op] = [reason for reason in missing[op] if reason not in reasons]
     assert {op: m for op, m in missing.items() if m} == {}
 
 

@@ -71,7 +71,8 @@ LOCUS_OPS = {'point.on_locus'}      # registry 1.10
 FUNCTION_ANALYSIS_OPS = {'function.roots_polynomial', 'function.extrema_polynomial', 'function.value',
                          'function.root_near', 'function.root_interval', 'function.roots_interval',
                          'function.extrema_interval'}
-TANGENCY_OPS = {'line.tangent_function_at', 'line.slope'}
+TANGENCY_OPS = {'line.tangent_function_at', 'line.slope', 'line.tangent_conic_at',
+                'line.tangents_from_point_conic', 'line.tangents_parallel_conic'}
 ALL_OPS = TANGENCY_OPS | FUNCTION_ANALYSIS_OPS | LOCUS_OPS | EXPRESSION_OPS | REGION_OPS | MEET_OPS | MARK_18_OPS | SCHOOL_B_OPS | L0_OPS | L1_OPS | L2A1_OPS | L2A2_OPS | L2A4_OPS | L2A5_OPS | L3A1_OPS | G2_OPS
 # Registries 1.1–1.7 extend 1.0: earlier operations keep their signatures.
 # Registry 1.6 is frozen since 1.11.0rc5; new school operations go to 1.7.
@@ -264,7 +265,8 @@ def test_record_fields(op):
                   'intersect.function_function', 'intersect.function_line', 'line.common_tangents', 'triangle.cevian',
                   'intersect.function_conic', 'mark.parallel', 'function.area_between',
                   'function.roots_polynomial', 'function.extrema_polynomial',
-                  'function.roots_interval', 'function.extrema_interval'):
+                  'function.roots_interval', 'function.extrema_interval',
+                  'line.tangents_from_point_conic', 'line.tangents_parallel_conic'):
         assert record['params'] == []
     for param in record['params']:
         assert {'slot', 'type', 'unit', 'text'} <= set(param) <= {'slot', 'type', 'unit', 'optional',
