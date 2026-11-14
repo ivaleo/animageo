@@ -21,5 +21,7 @@ For y=2x−1 the result is 2; for its normal y=−x/2+3/2 it is −1/2.
 A horizontal line gives +0. A vertical line gives no finite scalar.
 This operation accepts lines; construct a carrier line explicitly for a
 segment, ray or vector. The output is neither an angle nor a slope triangle.
-Classic command conversion is not yet provided. All five tangency operations
-are active; the complete `tangency` capability waits for import integration.
+Map 9 translates GGB and Python DSL `Slope(l)`; a saved nonfinite numeric value
+checks as undefined, including vertical input lines. The input dependency
+remains live when it becomes defined again. `has("tangency")` is true.
+The separate Commands grammar reports `unprintable_operation` for this op.

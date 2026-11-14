@@ -48,6 +48,10 @@ this is y=−x/2+3/2; at 0 the tangent is horizontal and the normal vertical.
 No separate normal operation is needed. Selecting an external point A uses
 only x(A) in this mode; the tangent and normal pass through Q.
 
-All five tangency operations are active in registry 1.12. `has("tangency")`
-remains false until the module's import integration is available. Classic
-command conversion is not yet provided.
+`has("tangency")` is true. Import map 9 lowers `Tangent(x,f)` and
+`Tangent(A,f)` to this operation; the point form creates an owned, hidden
+x-coordinate dependency on A. Its ordinate is ignored. Existing Python DSL
+factories use the same lowering through `from_construction`. This is not a
+search for tangents through an external point. See [import.md](../import.md).
+The separate Commands grammar has no tangent syntax and reports
+`unprintable_operation`.

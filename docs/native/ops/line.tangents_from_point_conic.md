@@ -43,4 +43,10 @@ requested set; an unconfirmed candidate is never silently dropped from found.
 
 The frozen [`line.tangents_from_point`](line.tangents_from_point.md) circle
 operation keeps its own side order and duplicate branches on the circle.
-Classic conversion and `has("tangency")` remain deferred.
+`has("tangency")` is true. Map 9 lowers GGB and Python DSL `Tangent(P,K)`
+to this search, including when the saved P lies on K. Saved line coefficients
+select distinct native slots once; labels and IDs remain fixed after edits.
+Two coincident named saved lines refuse the group with `unsupported_signature`
+and a multiplicity explanation. An empty output label creates no element and
+does not shift later ordinals. The Commands printer has no grammar for this
+operation and reports `unprintable_operation`.

@@ -13,8 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   composed normals and scalar line slopes. Graph corners, jumps and infinite
   derivatives are undefined. Strict conic tangents, distinct tangents through
   a point and tangents parallel to an oriented line support finite contacts,
-  paired fixed slots and deterministic geometric order. The complete
-  `tangency` capability waits for import integration.
+  paired fixed slots and deterministic geometric order. `has("tangency")`
+  announces all five operations, their reasons, policies and parity fixtures.
+- GGB import map 9 and existing Python DSL factories now translate graph
+  tangents, conic tangents through a point or parallel to a line, and line
+  slopes. XML definitions survive classic failures. Point/function tangents
+  use a live x-coordinate helper, and grouped conic outputs match normalized
+  saved line coefficients. Sparse labels keep their original ordinals;
+  coincident named conic tangents explicitly refuse the whole group.
+  Earlier point/circle tangents and circle/circle import behavior are unchanged.
 
 ## [1.17.0] - 2026-11-14
 

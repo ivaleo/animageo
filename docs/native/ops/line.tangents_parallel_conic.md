@@ -39,5 +39,8 @@ set, including when finite intermediate values cannot meet the geometric
 check tolerance. A partial set is not advertised as the complete result.
 
 The `conic_section` family is used only by this new operation. Existing circle
-operations and the `conical` family keep their previous semantics. Classic
-conversion and `has("tangency")` remain deferred.
+operations and the `conical` family keep their previous semantics.
+`has("tangency")` is true. Map 9 reads GGB `Tangent(l,K)`, including circular
+XML conics, and lowers the existing Python DSL factory and its reversed
+classic alias. Saved lines bind distinct slots by normalized coefficients.
+The Commands printer reports `unprintable_operation` until a grammar exists.

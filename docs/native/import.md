@@ -220,6 +220,79 @@ and saved GeoGebra 5.4.936.0 scenes. Their `ggb_function_*` fixtures in
 `parity/v1/ggb/` include import report expectations and changed inputs;
 analytical assertions check roots and extrema independently of generation.
 
+### Tangents, normals and slopes (registry 1.12, mapVersion 9)
+
+`has("tangency")` announces five operations: graph tangent at an abscissa,
+strict tangent at a conic point, distinct conic tangents through a point,
+conic tangents parallel to an oriented line, and scalar line slope.
+
+| Source | Native lowering |
+|---|---|
+| `Tangent(x,f)` | `line.tangent_function_at(function=f,x=x)` |
+| `Tangent(A,f)` | the same op with an owned live x(A) helper; y(A) is ignored |
+| `Tangent(P,K)`, noncircular K | `line.tangents_from_point_conic` |
+| `Tangent(l,K)`, including a circle | `line.tangents_parallel_conic` with `conic_section` |
+| `Slope(l)` | `line.slope` |
+| `OrthogonalLine(Q,t)` | existing `line.perpendicular`; Q remains its dependency |
+
+The importer captures original XML commands before classic parsing, preserving
+signatures even when classic fails on undefined or infinite values. Native
+curve definitions and numeric inputs supply the calculation. Saved line
+coefficients are normalized as `[a,b,c]` for ax+by+c=0 and compared using
+`tol.import`; slopes and intercepts are not matching keys. Missing coordinates
+give `differs/value_unchecked`; unmatched coordinates give
+`differs/value_mismatch`. Neither case becomes a free line.
+
+Conic outputs are matched as a group. Finite evidence takes priority;
+undefined saved outputs reserve distinct undefined slots, preferring their
+source ordinal. Without saved evidence, an unused ordinal is retained.
+Two named coincident saved lines refuse the entire new conic producer with
+`unsupported_signature` and a multiplicity explanation; dependents form the
+normal unsupported closure. Many-to-one aliases are not introduced. Labels,
+IDs, visibility and original aN ordinals are retained. An empty `aN=""`
+creates no element and never shifts a later output.
+
+Slot bindings stay fixed after import. The native ordering follows the
+canonical polar direction for tangents through a point and the oriented base
+normal for parallel tangents; see the operation pages. At a merged contact,
+native has one distinct tangent (`found=1`) and an absent second branch;
+GeoGebra can retain two coincident named lines. Native elements do not appear
+or disappear during evaluation, and `found` counts the full solution set
+before output capacity. A saved match is evidence for that frame, not a
+promise of equal branch history under every edit.
+
+Graph tangents expose `line` and `touch`. Build a normal through the contact
+with `line.perpendicular(point=touch,base=line)`; for a strict conic tangent
+use the original point. Imported source Q→tangent→normal dependencies remain
+live. Inline curves and coordinate helpers are hidden, locked, `role: aux`,
+with `origin: {kind: auto,source: <owner operation ID>}`. The scalar x(A)
+dependency is composed from point expressions and distances so the earlier
+number-only expression contract is unchanged. Deletion cleans private
+helpers and retains those shared by another owner; reload and undo keep IDs.
+
+The existing Python DSL `Tangent(A,K)`, `Tangent(x,f)`, `Tangent(A,f)`,
+`Tangent(l,K)` and `Slope(l)` lower through `from_construction`, including
+reversed classic conic aliases. Formula-defined curves used by these tangents
+are read independently. The native strict `line.tangent_conic_at` remains
+in `opsWithoutClassic`: a general `Tangent(P,K)` must never become strict
+from a single saved on-curve frame. The separate Commands grammar is unchanged;
+its printer reports `unprintable_operation` for the five new operations.
+
+Earlier `Tangent(Point,Circle)` and its by-value assignment are unchanged,
+as is unsupported `Tangent(Circle,Circle)`. Arbitrary implicit/parametric
+curves and other unsupported signatures refuse explicitly. Point/function
+means tangent at x(P), with no external-point search. Infinite graph
+derivatives are `not_differentiable`; vertical conic tangents remain valid.
+Slope of a vertical line is `vertical_line`. A jump in `If` refuses a native
+tangent where GeoGebra may use one branch; smooth joins, holes and poles
+follow the documented native profile. No slope triangle is imported.
+
+`tests/native/import/tangency/` contains synthetic source XML and unchanged
+GeoGebra 5.4.936.0 archives. Their `ggb_tangency_*` scenes and shared fixtures
+include changed inputs, undefined/recovery and explicit refusals. Direct XML
+coefficient assertions and analytical curves independently check geometry.
+Reproduce them with `python -m tests.native.ggb_tangency_fixtures [--check]`.
+
 Reproduce the source archives, scenes and parity fixtures with
 `python -m tests.native.ggb_expression_fixtures [--check]`. The four
 `parity/v1/ggb/ggb_{point_expression,vector_expression,vector_rotate,expression_refused}.json`

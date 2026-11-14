@@ -29,5 +29,8 @@ Nonfinite geometry or a line whose contact cannot be represented within the
 geometric check tolerance gives `non_finite`. Restoring inputs restores the tangent.
 
 This operation accepts `conic`; the existing circle operation is
-[`line.tangent_at`](line.tangent_at.md). Classic conversion and the complete
-`has("tangency")` capability are not yet advertised.
+[`line.tangent_at`](line.tangent_at.md). `has("tangency")` is true.
+This strict operation has no classic equivalent and remains in
+`opsWithoutClassic`: `Tangent(A,K)` searches through A and is never rewritten
+as a strict tangent from one saved frame. Use the native operation for a
+strict construction. The Commands printer reports `unprintable_operation`.
