@@ -1,0 +1,958 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_polar",
+  "registry": "1.13",
+  "generatedBy": "animageo 1.18.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_polar",
+    "operationRegistryVersion": "1.13",
+    "operations": {
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 1
+      },
+      "ec6aeb85-6d6f-563b-946c-334913eddbfd": {
+        "id": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          }
+        ],
+        "seq": 3
+      },
+      "29d8b6cd-1bb8-5a1b-abf3-8f70cc5a39f3": {
+        "id": "29d8b6cd-1bb8-5a1b-abf3-8f70cc5a39f3",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "0bcae345-19f8-57fc-b2fd-7457a2bb7de5"
+          }
+        ],
+        "seq": 4
+      },
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          }
+        ],
+        "seq": 6
+      },
+      "03c64d68-6804-5156-91d5-284cbc41480a": {
+        "id": "03c64d68-6804-5156-91d5-284cbc41480a",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "ref": 0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 9.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 36.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        ],
+        "seq": 2
+      },
+      "16776152-92ab-51a2-9143-dc6d2a939449": {
+        "id": "16776152-92ab-51a2-9143-dc6d2a939449",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "0bcae345-19f8-57fc-b2fd-7457a2bb7de5"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "ad958bda-23b7-5bca-a975-a12535038a18"
+          }
+        ],
+        "seq": 5
+      },
+      "80a2c862-e465-51f8-ae72-fd439625606c": {
+        "id": "80a2c862-e465-51f8-ae72-fd439625606c",
+        "op": "line.polar_conic",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          },
+          "point": {
+            "kind": "ref",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          }
+        ],
+        "seq": 7
+      },
+      "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913": {
+        "id": "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913",
+        "op": "line.polar_conic",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "ad958bda-23b7-5bca-a975-a12535038a18"
+          },
+          "point": {
+            "kind": "ref",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "58c35f0a-5076-5742-a395-3c25ac6a87f0"
+          }
+        ],
+        "seq": 8
+      }
+    },
+    "elements": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "id": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1",
+        "type": "point",
+        "producer": {
+          "operationId": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+        "id": "0bcae345-19f8-57fc-b2fd-7457a2bb7de5",
+        "type": "number",
+        "producer": {
+          "operationId": "29d8b6cd-1bb8-5a1b-abf3-8f70cc5a39f3",
+          "slot": "number"
+        },
+        "displayName": "r"
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "point"
+        },
+        "displayName": "P"
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "id": "7dd23c39-d910-5294-89eb-c434449ddced",
+        "type": "conic",
+        "producer": {
+          "operationId": "03c64d68-6804-5156-91d5-284cbc41480a",
+          "slot": "conic"
+        },
+        "displayName": "K"
+      },
+      "ad958bda-23b7-5bca-a975-a12535038a18": {
+        "id": "ad958bda-23b7-5bca-a975-a12535038a18",
+        "type": "circle",
+        "producer": {
+          "operationId": "16776152-92ab-51a2-9143-dc6d2a939449",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "id": "06a17f48-500f-58b8-8cda-395c93ed8b20",
+        "type": "line",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "line"
+        },
+        "displayName": "s"
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "id": "58c35f0a-5076-5742-a395-3c25ac6a87f0",
+        "type": "line",
+        "producer": {
+          "operationId": "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913",
+          "slot": "line"
+        },
+        "displayName": "t"
+      }
+    },
+    "inputs": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 4.0
+      },
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "kind": "point",
+        "value": [
+          1.0,
+          -2.0
+        ]
+      },
+      "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+        "kind": "number",
+        "value": 3.0
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "kind": "point",
+        "value": [
+          2.0,
+          0.0
+        ]
+      }
+    },
+    "appearance": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad958bda-23b7-5bca-a975-a12535038a18": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": "O",
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": "r",
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P",
+        "7dd23c39-d910-5294-89eb-c434449ddced": "K",
+        "ad958bda-23b7-5bca-a975-a12535038a18": "c",
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": "s",
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": "t"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              4.5,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              1.2,
+              2.4
+            ],
+            "dir": [
+              -0.8944271909999159,
+              0.4472135954999579
+            ]
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 3.0,
+            "b": 2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:matches": "passed",
+        "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913:polar_incidence": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:polar_incidence": "passed"
+      }
+    },
+    {
+      "name": "ellipse_center",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            0,
+            0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_finite_line"
+        },
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.7999999999999999,
+              1.5999999999999999
+            ],
+            "dir": [
+              -0.8944271909999159,
+              -0.4472135954999579
+            ]
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 3.0,
+            "b": 2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:matches": "passed",
+        "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913:polar_incidence": "passed"
+      }
+    },
+    {
+      "name": "circle_center",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            1,
+            -2
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.42352941176470577,
+              -1.905882352941176
+            ],
+            "dir": [
+              0.9761870601839526,
+              0.21693045781865614
+            ]
+          }
+        },
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_finite_line"
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 3.0,
+            "b": 2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:matches": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:polar_incidence": "passed"
+      }
+    },
+    {
+      "name": "near_center",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            1e-12,
+            0
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              9000000000000.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.7999999999997204,
+              1.6000000000010404
+            ],
+            "dir": [
+              -0.8944271910000947,
+              -0.4472135954996002
+            ]
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 3.0,
+            "b": 2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1e-12,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:matches": "passed",
+        "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913:polar_incidence": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:polar_incidence": "passed"
+      }
+    },
+    {
+      "name": "outside",
+      "inputs": {
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "kind": "point",
+          "value": [
+            6,
+            2
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.9600000000000002,
+              0.7200000000000002
+            ],
+            "dir": [
+              -0.6000000000000001,
+              0.8
+            ]
+          }
+        },
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.7317073170731708,
+              0.5853658536585367
+            ],
+            "dir": [
+              -0.6246950475544242,
+              0.7808688094430303
+            ]
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 3.0,
+            "b": 2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 6.0,
+            "y": 2.0
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:matches": "passed",
+        "4b13cac1-f4da-5ad0-81c0-cc8fc0ee4913:polar_incidence": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:polar_incidence": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"numeric\" label=\"a\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"4\"/></element><expression label=\"K\" exp=\"a*x^2+9*y^2=36\" type=\"conic\"/><element type=\"conic\" label=\"K\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"4\" A1=\"9\" A2=\"-36\" A3=\"0\" A4=\"0\" A5=\"0\"/></element><element type=\"point\" label=\"O\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1.0\" y=\"-2.0\" z=\"1\"/></element><element type=\"numeric\" label=\"r\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"3\"/></element><command name=\"Circle\"><input a0=\"O\" a1=\"r\"/><output a0=\"c\"/></command><element type=\"conic\" label=\"c\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"1\" A1=\"1\" A2=\"-4\" A3=\"0\" A4=\"-1\" A5=\"2\"/></element><element type=\"point\" label=\"P\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"2.0\" y=\"0.0\" z=\"1\"/></element><command name=\"Polar\"><input a0=\"P\" a1=\"K\"/><output a0=\"s\"/></command><element type=\"line\" label=\"s\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"8\" y=\"0\" z=\"-36\"/></element><command name=\"Polar\"><input a0=\"P\" a1=\"c\"/><output a0=\"t\"/></command><element type=\"line\" label=\"t\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"1\" y=\"2\" z=\"-6\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "a",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+        ]
+      },
+      {
+        "ggb_name": "K",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7dd23c39-d910-5294-89eb-c434449ddced"
+        ]
+      },
+      {
+        "ggb_name": "O",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+        ]
+      },
+      {
+        "ggb_name": "r",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "0bcae345-19f8-57fc-b2fd-7457a2bb7de5"
+        ]
+      },
+      {
+        "ggb_name": "c",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "ad958bda-23b7-5bca-a975-a12535038a18"
+        ]
+      },
+      {
+        "ggb_name": "P",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+        ]
+      },
+      {
+        "ggb_name": "s",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "06a17f48-500f-58b8-8cda-395c93ed8b20"
+        ]
+      },
+      {
+        "ggb_name": "t",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "58c35f0a-5076-5742-a395-3c25ac6a87f0"
+        ]
+      }
+    ]
+  }
+}

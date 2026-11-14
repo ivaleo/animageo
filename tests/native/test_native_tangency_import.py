@@ -240,7 +240,7 @@ def test_existing_dsl_factories_lower_through_map(code, expected):
 def test_tangency_capability_and_strict_native_only_reason():
     from animageo.native.convert.mapping import dsl_map, map_problems
     assert native.has('tangency')
-    assert dsl_map().version == 9 and map_problems() == []
+    assert dsl_map().version >= 9 and map_problems() == []
     assert 'strict' in dsl_map().ops_without_classic['line.tangent_conic_at']
 
 

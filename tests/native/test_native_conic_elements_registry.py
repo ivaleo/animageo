@@ -11,11 +11,11 @@ NAMES = {'conic.from_circle', 'conic.directrices', 'conic.asymptotes',
          'line.polar_conic', 'line.conjugate_diameter'}
 
 
-def test_catalog_is_complete_without_announcing_import_capability():
+def test_catalog_and_import_capability_are_complete():
     reg = registry()
     assert reg.version == native.__registry_version__ == '1.13'
     assert len(reg.ops) == 132
-    assert not native.has('conic_elements')
+    assert native.has('conic_elements')
     assert set(reg.groups['conic_elements']) == NAMES
     assert {k for k, v in _MODULE_GROUPS.items() if v == 'conic_elements'} == NAMES
     assert set(IMPLEMENTATIONS) == set(reg.ops)

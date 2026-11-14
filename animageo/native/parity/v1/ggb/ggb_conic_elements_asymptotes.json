@@ -1,0 +1,533 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_asymptotes",
+  "registry": "1.13",
+  "generatedBy": "animageo 1.18.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_asymptotes",
+    "operationRegistryVersion": "1.13",
+    "operations": {
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 1
+      },
+      "03c64d68-6804-5156-91d5-284cbc41480a": {
+        "id": "03c64d68-6804-5156-91d5-284cbc41480a",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 9.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "ref": 0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 36.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        ],
+        "seq": 2
+      },
+      "80a2c862-e465-51f8-ae72-fd439625606c": {
+        "id": "80a2c862-e465-51f8-ae72-fd439625606c",
+        "op": "conic.asymptotes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "asymptote.1",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          },
+          {
+            "slot": "asymptote.2",
+            "elementId": "58c35f0a-5076-5742-a395-3c25ac6a87f0"
+          }
+        ],
+        "seq": 3
+      }
+    },
+    "elements": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "id": "7dd23c39-d910-5294-89eb-c434449ddced",
+        "type": "conic",
+        "producer": {
+          "operationId": "03c64d68-6804-5156-91d5-284cbc41480a",
+          "slot": "conic"
+        },
+        "displayName": "K"
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "id": "06a17f48-500f-58b8-8cda-395c93ed8b20",
+        "type": "line",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "asymptote.1"
+        },
+        "displayName": "s"
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "id": "58c35f0a-5076-5742-a395-3c25ac6a87f0",
+        "type": "line",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "asymptote.2"
+        },
+        "displayName": "t"
+      }
+    },
+    "inputs": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": -4.0
+      }
+    },
+    "appearance": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "7dd23c39-d910-5294-89eb-c434449ddced": "K",
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": "s",
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": "t"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.554700196225229,
+              0.8320502943378437
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              -0.554700196225229,
+              0.8320502943378437
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "hyperbola",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              0.0
+            ],
+            "a": 2.0,
+            "b": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -4.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "80a2c862-e465-51f8-ae72-fd439625606c:through_center": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:asymptotic_direction": "passed"
+      }
+    },
+    {
+      "name": "ellipse",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": 4
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_asymptote"
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_asymptote"
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              -0.0,
+              1.0
+            ],
+            "a": 3.0,
+            "b": 2.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "circle",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": 9
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_asymptote"
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_asymptote"
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              0.0
+            ],
+            "a": 2.0,
+            "b": 2.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 9.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "degenerate",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": 0
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "upstream",
+          "cause": "7dd23c39-d910-5294-89eb-c434449ddced"
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "upstream",
+          "cause": "7dd23c39-d910-5294-89eb-c434449ddced"
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "undefined",
+          "type": "conic",
+          "reason": "degenerate_conic"
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": -4
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              0.554700196225229,
+              0.8320502943378437
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              -0.554700196225229,
+              0.8320502943378437
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "hyperbola",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              0.0
+            ],
+            "a": 2.0,
+            "b": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -4.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "80a2c862-e465-51f8-ae72-fd439625606c:through_center": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:asymptotic_direction": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"numeric\" label=\"a\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"-4\"/></element><expression label=\"K\" exp=\"9*x^2+a*y^2=36\" type=\"conic\"/><element type=\"conic\" label=\"K\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"9\" A1=\"-4\" A2=\"-36\" A3=\"0\" A4=\"0\" A5=\"0\"/></element><command name=\"Asymptote\"><input a0=\"K\"/><output a0=\"s\" a1=\"t\"/></command><element type=\"line\" label=\"s\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"-3\" y=\"2\" z=\"0\"/></element><element type=\"line\" label=\"t\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"-3\" y=\"-2\" z=\"0\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "a",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+        ]
+      },
+      {
+        "ggb_name": "K",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7dd23c39-d910-5294-89eb-c434449ddced"
+        ]
+      },
+      {
+        "ggb_name": "s",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "06a17f48-500f-58b8-8cda-395c93ed8b20"
+        ]
+      },
+      {
+        "ggb_name": "t",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "58c35f0a-5076-5742-a395-3c25ac6a87f0"
+        ]
+      }
+    ]
+  }
+}

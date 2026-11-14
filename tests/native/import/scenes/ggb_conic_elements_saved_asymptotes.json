@@ -1,0 +1,587 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_saved_asymptotes",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_saved_asymptotes",
+    "operationRegistryVersion": "1.13",
+    "operations": {
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 1
+      },
+      "892a383a-9525-5600-92ba-43d89ec22702": {
+        "id": "892a383a-9525-5600-92ba-43d89ec22702",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "5eaf3746-e480-594b-812a-e368863cff3e"
+          }
+        ],
+        "seq": 2
+      },
+      "8156c90c-b525-5b44-8072-ef2312757a6f": {
+        "id": "8156c90c-b525-5b44-8072-ef2312757a6f",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "2ce23b03-33a3-54fa-a3ce-bfe1e2c3284d"
+          }
+        ],
+        "seq": 3
+      },
+      "76532e33-aaf7-5a74-9122-c112b7ed1caf": {
+        "id": "76532e33-aaf7-5a74-9122-c112b7ed1caf",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+          }
+        ],
+        "seq": 4
+      },
+      "2353dfa9-daff-575e-9a94-620283604290": {
+        "id": "2353dfa9-daff-575e-9a94-620283604290",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca"
+          }
+        ],
+        "seq": 5
+      },
+      "bfab0df5-7604-592e-b833-81e61647caec": {
+        "id": "bfab0df5-7604-592e-b833-81e61647caec",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "aca36d6d-bcb5-5c03-860a-4983b6431ddf"
+          }
+        ],
+        "seq": 6
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "ref": 0
+                    },
+                    {
+                      "op": "-",
+                      "args": [
+                        {
+                          "op": "-",
+                          "args": [
+                            {
+                              "op": "/",
+                              "args": [
+                                {
+                                  "op": "^",
+                                  "args": [
+                                    {
+                                      "op": "+",
+                                      "args": [
+                                        {
+                                          "op": "*",
+                                          "args": [
+                                            {
+                                              "fn": "cos",
+                                              "args": [
+                                                {
+                                                  "ref": 1
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "op": "-",
+                                              "args": [
+                                                {
+                                                  "var": "x"
+                                                },
+                                                {
+                                                  "ref": 2
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "op": "*",
+                                          "args": [
+                                            {
+                                              "fn": "sin",
+                                              "args": [
+                                                {
+                                                  "ref": 1
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "op": "-",
+                                              "args": [
+                                                {
+                                                  "var": "y"
+                                                },
+                                                {
+                                                  "ref": 3
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "num": 2.0
+                                    }
+                                  ]
+                                },
+                                {
+                                  "op": "^",
+                                  "args": [
+                                    {
+                                      "ref": 4
+                                    },
+                                    {
+                                      "num": 2.0
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "/",
+                              "args": [
+                                {
+                                  "op": "^",
+                                  "args": [
+                                    {
+                                      "op": "+",
+                                      "args": [
+                                        {
+                                          "op": "*",
+                                          "args": [
+                                            {
+                                              "op": "neg",
+                                              "args": [
+                                                {
+                                                  "fn": "sin",
+                                                  "args": [
+                                                    {
+                                                      "ref": 1
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "op": "-",
+                                              "args": [
+                                                {
+                                                  "var": "x"
+                                                },
+                                                {
+                                                  "ref": 2
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "op": "*",
+                                          "args": [
+                                            {
+                                              "fn": "cos",
+                                              "args": [
+                                                {
+                                                  "ref": 1
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "op": "-",
+                                              "args": [
+                                                {
+                                                  "var": "y"
+                                                },
+                                                {
+                                                  "ref": 3
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "num": 2.0
+                                    }
+                                  ]
+                                },
+                                {
+                                  "op": "^",
+                                  "args": [
+                                    {
+                                      "ref": 5
+                                    },
+                                    {
+                                      "num": 2.0
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "num": 1.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 0.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "aca36d6d-bcb5-5c03-860a-4983b6431ddf"
+              },
+              {
+                "kind": "ref",
+                "elementId": "2ce23b03-33a3-54fa-a3ce-bfe1e2c3284d"
+              },
+              {
+                "kind": "ref",
+                "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+              },
+              {
+                "kind": "ref",
+                "elementId": "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca"
+              },
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              },
+              {
+                "kind": "ref",
+                "elementId": "5eaf3746-e480-594b-812a-e368863cff3e"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 7
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "var": "x"
+                },
+                {
+                  "op": "/",
+                  "args": [
+                    {
+                      "num": 1.0
+                    },
+                    {
+                      "var": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          }
+        ],
+        "seq": 8
+      },
+      "f71f5410-8856-5a69-bc57-14db027b3995": {
+        "id": "f71f5410-8856-5a69-bc57-14db027b3995",
+        "op": "conic.asymptotes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "asymptote.1",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          },
+          {
+            "slot": "asymptote.2",
+            "elementId": "8d8c2e28-9ac9-5a72-8768-01f424ba254a"
+          }
+        ],
+        "seq": 9
+      }
+    },
+    "elements": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "5eaf3746-e480-594b-812a-e368863cff3e": {
+        "id": "5eaf3746-e480-594b-812a-e368863cff3e",
+        "type": "number",
+        "producer": {
+          "operationId": "892a383a-9525-5600-92ba-43d89ec22702",
+          "slot": "number"
+        },
+        "displayName": "b"
+      },
+      "2ce23b03-33a3-54fa-a3ce-bfe1e2c3284d": {
+        "id": "2ce23b03-33a3-54fa-a3ce-bfe1e2c3284d",
+        "type": "number",
+        "producer": {
+          "operationId": "8156c90c-b525-5b44-8072-ef2312757a6f",
+          "slot": "number"
+        },
+        "displayName": "phi"
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "id": "ad0753b8-c583-5530-a763-0f6847f45a4c",
+        "type": "number",
+        "producer": {
+          "operationId": "76532e33-aaf7-5a74-9122-c112b7ed1caf",
+          "slot": "number"
+        },
+        "displayName": "h"
+      },
+      "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+        "id": "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca",
+        "type": "number",
+        "producer": {
+          "operationId": "2353dfa9-daff-575e-9a94-620283604290",
+          "slot": "number"
+        },
+        "displayName": "v"
+      },
+      "aca36d6d-bcb5-5c03-860a-4983b6431ddf": {
+        "id": "aca36d6d-bcb5-5c03-860a-4983b6431ddf",
+        "type": "number",
+        "producer": {
+          "operationId": "bfab0df5-7604-592e-b833-81e61647caec",
+          "slot": "number"
+        },
+        "displayName": "scale"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "conic",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "conic"
+        },
+        "displayName": "k"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "function",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "function"
+        },
+        "displayName": "f"
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "id": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+        "type": "line",
+        "producer": {
+          "operationId": "f71f5410-8856-5a69-bc57-14db027b3995",
+          "slot": "asymptote.1"
+        },
+        "displayName": "g"
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "id": "8d8c2e28-9ac9-5a72-8768-01f424ba254a",
+        "type": "line",
+        "producer": {
+          "operationId": "f71f5410-8856-5a69-bc57-14db027b3995",
+          "slot": "asymptote.2"
+        },
+        "displayName": "i"
+      }
+    },
+    "inputs": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 2.0
+      },
+      "5eaf3746-e480-594b-812a-e368863cff3e": {
+        "kind": "number",
+        "value": 3.0
+      },
+      "2ce23b03-33a3-54fa-a3ce-bfe1e2c3284d": {
+        "kind": "number",
+        "value": 0.7853981633974483
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "kind": "number",
+        "value": 0.0
+      },
+      "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+        "kind": "number",
+        "value": 0.0
+      },
+      "aca36d6d-bcb5-5c03-860a-4983b6431ddf": {
+        "kind": "number",
+        "value": 1.0
+      }
+    },
+    "appearance": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "5eaf3746-e480-594b-812a-e368863cff3e": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "2ce23b03-33a3-54fa-a3ce-bfe1e2c3284d": {
+        "visible": false,
+        "label": {
+          "mode": "name_value"
+        }
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "aca36d6d-bcb5-5c03-860a-4983b6431ddf": {
+        "visible": false,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "5eaf3746-e480-594b-812a-e368863cff3e": "b",
+        "2ce23b03-33a3-54fa-a3ce-bfe1e2c3284d": "phi",
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": "h",
+        "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": "v",
+        "aca36d6d-bcb5-5c03-860a-4983b6431ddf": "scale",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": "g",
+        "8d8c2e28-9ac9-5a72-8768-01f424ba254a": "i"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    }
+  ]
+}

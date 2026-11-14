@@ -1,0 +1,1365 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_saved_hyperbola",
+  "registry": "1.13",
+  "generatedBy": "animageo 1.18.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_saved_hyperbola",
+    "operationRegistryVersion": "1.13",
+    "operations": {
+      "b41d8bbf-2e74-5aee-b06a-9102b955b74d": {
+        "id": "b41d8bbf-2e74-5aee-b06a-9102b955b74d",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "8a6d0a11-dac6-53c7-be9b-bba47b4f8081"
+          }
+        ],
+        "seq": 1
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "op": "+",
+                      "args": [
+                        {
+                          "op": "*",
+                          "args": [
+                            {
+                              "op": "-",
+                              "args": [
+                                {
+                                  "num": 1.0
+                                },
+                                {
+                                  "op": "^",
+                                  "args": [
+                                    {
+                                      "ref": 0
+                                    },
+                                    {
+                                      "num": 2.0
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "^",
+                              "args": [
+                                {
+                                  "var": "x"
+                                },
+                                {
+                                  "num": 2.0
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 4.0
+                        },
+                        {
+                          "var": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 0.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "8a6d0a11-dac6-53c7-be9b-bba47b4f8081"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 2
+      },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "conic.foci",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          },
+          {
+            "slot": "second",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        ],
+        "seq": 3
+      },
+      "88b6d87a-f65a-5e89-a7f3-2e37e1d35483": {
+        "id": "88b6d87a-f65a-5e89-a7f3-2e37e1d35483",
+        "op": "conic.foci",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "e31f0ae2-b081-540c-a667-403a65240b56"
+          },
+          {
+            "slot": "second",
+            "elementId": "5b16176b-9da1-5cc0-a5ac-50b7f11932b4"
+          }
+        ],
+        "seq": 4
+      },
+      "3e32c16f-c8fc-5a97-9c0e-199d37afc97e": {
+        "id": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+        "op": "conic.vertices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882"
+          },
+          {
+            "slot": "second",
+            "elementId": "44da8d70-d764-5e62-88a2-9bb031882ec8"
+          },
+          {
+            "slot": "third",
+            "elementId": "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd"
+          },
+          {
+            "slot": "fourth",
+            "elementId": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d"
+          }
+        ],
+        "seq": 5
+      },
+      "4c9d8244-de5b-519d-aa48-2279f65fc576": {
+        "id": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+        "op": "conic.vertices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "5cf73ddc-2007-589a-8198-102b119d63d8"
+          },
+          {
+            "slot": "second",
+            "elementId": "1dca4b0c-fe6d-5df2-b168-c21a785db9cb"
+          },
+          {
+            "slot": "third",
+            "elementId": "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1"
+          },
+          {
+            "slot": "fourth",
+            "elementId": "229156c0-b42e-57eb-9f3b-42d827cb35ad"
+          }
+        ],
+        "seq": 6
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "conic.axes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "focal",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          {
+            "slot": "conjugate",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          }
+        ],
+        "seq": 7
+      },
+      "6c7dee8d-e73b-5f1f-9606-428aa2a795ad": {
+        "id": "6c7dee8d-e73b-5f1f-9606-428aa2a795ad",
+        "op": "conic.axes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "focal",
+            "elementId": "652a15a2-374f-5d8f-8a37-0abb5333f1f9"
+          },
+          {
+            "slot": "conjugate",
+            "elementId": "af8932ef-9907-52a4-b3d9-e94d9a23f002"
+          }
+        ],
+        "seq": 8
+      },
+      "07dd8058-8be4-5e18-ac45-dc12bdbbad90": {
+        "id": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+        "op": "conic.directrices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "directrix.1",
+            "elementId": "8d8c2e28-9ac9-5a72-8768-01f424ba254a"
+          },
+          {
+            "slot": "directrix.2",
+            "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+          }
+        ],
+        "seq": 9
+      },
+      "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b": {
+        "id": "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b",
+        "op": "conic.directrices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "directrix.1",
+            "elementId": "ee45b066-8308-5ef3-85a3-74dd88af15fd"
+          },
+          {
+            "slot": "directrix.2",
+            "elementId": "8cecdbd0-1361-5b1e-8291-3983b553d5b4"
+          }
+        ],
+        "seq": 10
+      },
+      "f978ab70-3eb3-5a12-953e-b157b4c6dd5f": {
+        "id": "f978ab70-3eb3-5a12-953e-b157b4c6dd5f",
+        "op": "conic.asymptotes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "asymptote.1",
+            "elementId": "f50022d7-1b43-50db-b73b-2192ef952b7a"
+          },
+          {
+            "slot": "asymptote.2",
+            "elementId": "565e5a1d-b3f1-5636-9703-3a258daaf018"
+          }
+        ],
+        "seq": 11
+      },
+      "728ae7b4-bdb3-5f17-bb27-8e12c6052c87": {
+        "id": "728ae7b4-bdb3-5f17-bb27-8e12c6052c87",
+        "op": "conic.asymptotes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "asymptote.1",
+            "elementId": "6a460220-ad52-5e71-b00f-b785248a7274"
+          },
+          {
+            "slot": "asymptote.2",
+            "elementId": "0a0e7c97-1e3b-517e-ac4b-3e98f2dd836d"
+          }
+        ],
+        "seq": 12
+      }
+    },
+    "elements": {
+      "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": {
+        "id": "8a6d0a11-dac6-53c7-be9b-bba47b4f8081",
+        "type": "number",
+        "producer": {
+          "operationId": "b41d8bbf-2e74-5aee-b06a-9102b955b74d",
+          "slot": "number"
+        },
+        "displayName": "ecc"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "conic",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "conic"
+        },
+        "displayName": "k"
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "first"
+        },
+        "displayName": "A"
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "id": "0d178f00-10cc-5e64-b3a7-004058ad2948",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "second"
+        },
+        "displayName": "B"
+      },
+      "e31f0ae2-b081-540c-a667-403a65240b56": {
+        "id": "e31f0ae2-b081-540c-a667-403a65240b56",
+        "type": "point",
+        "producer": {
+          "operationId": "88b6d87a-f65a-5e89-a7f3-2e37e1d35483",
+          "slot": "first"
+        },
+        "displayName": "onlyFocus_{1}"
+      },
+      "5b16176b-9da1-5cc0-a5ac-50b7f11932b4": {
+        "id": "5b16176b-9da1-5cc0-a5ac-50b7f11932b4",
+        "type": "point",
+        "producer": {
+          "operationId": "88b6d87a-f65a-5e89-a7f3-2e37e1d35483",
+          "slot": "second"
+        },
+        "displayName": "onlyFocus_{2}"
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "id": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "first"
+        },
+        "displayName": "C"
+      },
+      "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+        "id": "44da8d70-d764-5e62-88a2-9bb031882ec8",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "second"
+        },
+        "displayName": "D"
+      },
+      "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+        "id": "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "third"
+        },
+        "displayName": "E"
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "id": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "fourth"
+        },
+        "displayName": "F"
+      },
+      "5cf73ddc-2007-589a-8198-102b119d63d8": {
+        "id": "5cf73ddc-2007-589a-8198-102b119d63d8",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "first"
+        },
+        "displayName": "onlyVertex_{1}"
+      },
+      "1dca4b0c-fe6d-5df2-b168-c21a785db9cb": {
+        "id": "1dca4b0c-fe6d-5df2-b168-c21a785db9cb",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "second"
+        },
+        "displayName": "onlyVertex_{2}"
+      },
+      "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1": {
+        "id": "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "third"
+        },
+        "displayName": "onlyVertex_{3}"
+      },
+      "229156c0-b42e-57eb-9f3b-42d827cb35ad": {
+        "id": "229156c0-b42e-57eb-9f3b-42d827cb35ad",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "fourth"
+        },
+        "displayName": "onlyVertex_{4}"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "focal"
+        },
+        "displayName": "f"
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "id": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "conjugate"
+        },
+        "displayName": "g"
+      },
+      "652a15a2-374f-5d8f-8a37-0abb5333f1f9": {
+        "id": "652a15a2-374f-5d8f-8a37-0abb5333f1f9",
+        "type": "line",
+        "producer": {
+          "operationId": "6c7dee8d-e73b-5f1f-9606-428aa2a795ad",
+          "slot": "focal"
+        },
+        "displayName": "onlyAxes_{1}"
+      },
+      "af8932ef-9907-52a4-b3d9-e94d9a23f002": {
+        "id": "af8932ef-9907-52a4-b3d9-e94d9a23f002",
+        "type": "line",
+        "producer": {
+          "operationId": "6c7dee8d-e73b-5f1f-9606-428aa2a795ad",
+          "slot": "conjugate"
+        },
+        "displayName": "onlyAxes_{2}"
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "id": "8d8c2e28-9ac9-5a72-8768-01f424ba254a",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "directrix.1"
+        },
+        "displayName": "i"
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "id": "ad0753b8-c583-5530-a763-0f6847f45a4c",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "directrix.2"
+        },
+        "displayName": "h"
+      },
+      "ee45b066-8308-5ef3-85a3-74dd88af15fd": {
+        "id": "ee45b066-8308-5ef3-85a3-74dd88af15fd",
+        "type": "line",
+        "producer": {
+          "operationId": "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b",
+          "slot": "directrix.1"
+        },
+        "displayName": "onlyDirectrix"
+      },
+      "8cecdbd0-1361-5b1e-8291-3983b553d5b4": {
+        "id": "8cecdbd0-1361-5b1e-8291-3983b553d5b4",
+        "type": "line",
+        "producer": {
+          "operationId": "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b",
+          "slot": "directrix.2"
+        },
+        "displayName": "onlyDirectrix_{1}"
+      },
+      "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+        "id": "f50022d7-1b43-50db-b73b-2192ef952b7a",
+        "type": "line",
+        "producer": {
+          "operationId": "f978ab70-3eb3-5a12-953e-b157b4c6dd5f",
+          "slot": "asymptote.1"
+        },
+        "displayName": "j"
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "id": "565e5a1d-b3f1-5636-9703-3a258daaf018",
+        "type": "line",
+        "producer": {
+          "operationId": "f978ab70-3eb3-5a12-953e-b157b4c6dd5f",
+          "slot": "asymptote.2"
+        },
+        "displayName": "l"
+      },
+      "6a460220-ad52-5e71-b00f-b785248a7274": {
+        "id": "6a460220-ad52-5e71-b00f-b785248a7274",
+        "type": "line",
+        "producer": {
+          "operationId": "728ae7b4-bdb3-5f17-bb27-8e12c6052c87",
+          "slot": "asymptote.1"
+        },
+        "displayName": "onlyAsymptote_{1}"
+      },
+      "0a0e7c97-1e3b-517e-ac4b-3e98f2dd836d": {
+        "id": "0a0e7c97-1e3b-517e-ac4b-3e98f2dd836d",
+        "type": "line",
+        "producer": {
+          "operationId": "728ae7b4-bdb3-5f17-bb27-8e12c6052c87",
+          "slot": "asymptote.2"
+        },
+        "displayName": "onlyAsymptote"
+      }
+    },
+    "inputs": {
+      "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": {
+        "kind": "number",
+        "value": 1.5
+      }
+    },
+    "appearance": {
+      "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": {
+        "visible": false,
+        "label": {
+          "mode": "name_value"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "e31f0ae2-b081-540c-a667-403a65240b56": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "5b16176b-9da1-5cc0-a5ac-50b7f11932b4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "5cf73ddc-2007-589a-8198-102b119d63d8": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "1dca4b0c-fe6d-5df2-b168-c21a785db9cb": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "229156c0-b42e-57eb-9f3b-42d827cb35ad": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "652a15a2-374f-5d8f-8a37-0abb5333f1f9": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "af8932ef-9907-52a4-b3d9-e94d9a23f002": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ee45b066-8308-5ef3-85a3-74dd88af15fd": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8cecdbd0-1361-5b1e-8291-3983b553d5b4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "6a460220-ad52-5e71-b00f-b785248a7274": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0a0e7c97-1e3b-517e-ac4b-3e98f2dd836d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": "ecc",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": "B",
+        "e31f0ae2-b081-540c-a667-403a65240b56": "onlyFocus_{1}",
+        "5b16176b-9da1-5cc0-a5ac-50b7f11932b4": "onlyFocus_{2}",
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": "C",
+        "44da8d70-d764-5e62-88a2-9bb031882ec8": "D",
+        "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": "E",
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": "F",
+        "5cf73ddc-2007-589a-8198-102b119d63d8": "onlyVertex_{1}",
+        "1dca4b0c-fe6d-5df2-b168-c21a785db9cb": "onlyVertex_{2}",
+        "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1": "onlyVertex_{3}",
+        "229156c0-b42e-57eb-9f3b-42d827cb35ad": "onlyVertex_{4}",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": "g",
+        "652a15a2-374f-5d8f-8a37-0abb5333f1f9": "onlyAxes_{1}",
+        "af8932ef-9907-52a4-b3d9-e94d9a23f002": "onlyAxes_{2}",
+        "8d8c2e28-9ac9-5a72-8768-01f424ba254a": "i",
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": "h",
+        "ee45b066-8308-5ef3-85a3-74dd88af15fd": "onlyDirectrix",
+        "8cecdbd0-1361-5b1e-8291-3983b553d5b4": "onlyDirectrix_{1}",
+        "f50022d7-1b43-50db-b73b-2192ef952b7a": "j",
+        "565e5a1d-b3f1-5636-9703-3a258daaf018": "l",
+        "6a460220-ad52-5e71-b00f-b785248a7274": "onlyAsymptote_{1}",
+        "0a0e7c97-1e3b-517e-ac4b-3e98f2dd836d": "onlyAsymptote"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 20.0,
+      "expect": {
+        "0a0e7c97-1e3b-517e-ac4b-3e98f2dd836d": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.888888888888889,
+              -0.7950463919999253
+            ],
+            "dir": [
+              -0.6666666666666667,
+              0.7453559924999299
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.7999999999999998,
+            "y": 0.0
+          }
+        },
+        "1dca4b0c-fe6d-5df2-b168-c21a785db9cb": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "229156c0-b42e-57eb-9f3b-42d827cb35ad": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -1.6,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 0.0
+          }
+        },
+        "565e5a1d-b3f1-5636-9703-3a258daaf018": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.888888888888889,
+              -0.7950463919999253
+            ],
+            "dir": [
+              -0.6666666666666667,
+              0.7453559924999299
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.2,
+            "y": 0.0
+          }
+        },
+        "5b16176b-9da1-5cc0-a5ac-50b7f11932b4": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.7999999999999998,
+            "y": 0.0
+          }
+        },
+        "5cf73ddc-2007-589a-8198-102b119d63d8": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.2,
+            "y": 0.0
+          }
+        },
+        "652a15a2-374f-5d8f-8a37-0abb5333f1f9": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              -0.0
+            ]
+          }
+        },
+        "6a460220-ad52-5e71-b00f-b785248a7274": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.888888888888889,
+              0.7950463919999253
+            ],
+            "dir": [
+              0.6666666666666667,
+              0.7453559924999299
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              -0.0
+            ]
+          }
+        },
+        "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.5,
+            "unit": "scalar"
+          }
+        },
+        "8cecdbd0-1361-5b1e-8291-3983b553d5b4": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -2.666666666666667,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.5333333333333332,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "951608cb-59a9-55d1-902a-0c49772efb03": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "hyperbola",
+            "c": [
+              -1.6,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 1.6,
+            "b": 1.7888543819998317
+          }
+        },
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -2.666666666666667,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "af8932ef-9907-52a4-b3d9-e94d9a23f002": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -1.6,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "e31f0ae2-b081-540c-a667-403a65240b56": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 0.0
+          }
+        },
+        "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "ee45b066-8308-5ef3-85a3-74dd88af15fd": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.5333333333333332,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "f50022d7-1b43-50db-b73b-2192ef952b7a": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.888888888888889,
+              0.7950463919999253
+            ],
+            "dir": [
+              0.6666666666666667,
+              0.7453559924999299
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        }
+      },
+      "checks": {
+        "07dd8058-8be4-5e18-ac45-dc12bdbbad90:focus_directrix": "passed",
+        "3e32c16f-c8fc-5a97-9c0e-199d37afc97e:on_curve": "passed",
+        "4c9d8244-de5b-519d-aa48-2279f65fc576:on_curve": "passed",
+        "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf:focal": "passed",
+        "728ae7b4-bdb3-5f17-bb27-8e12c6052c87:through_center": "passed",
+        "728ae7b4-bdb3-5f17-bb27-8e12c6052c87:asymptotic_direction": "passed",
+        "88b6d87a-f65a-5e89-a7f3-2e37e1d35483:focal": "passed",
+        "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b:focus_directrix": "passed",
+        "f978ab70-3eb3-5a12-953e-b157b4c6dd5f:through_center": "passed",
+        "f978ab70-3eb3-5a12-953e-b157b4c6dd5f:asymptotic_direction": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<geogebra format=\"5.0\" version=\"5.4.936.0\" app=\"classic\" platform=\"w2d\" id=\"e45319fd-19cd-48eb-9c6c-025cf2d5969b\" xsi:noNamespaceSchemaLocation=\"https://www.geogebra.org/apps/xsd/ggb.xsd\" xmlns=\"\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n<gui>\n\t<window width=\"900\" height=\"700\"/>\n\t<perspectives>\n<perspective id=\"tmp\">\n\t<panes>\n\t<pane location=\"\" divider=\"0.4\" orientation=\"1\"/>\n</panes>\n\t<views>\n\t<view id=\"4097\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1,1,1,1\" size=\"400\" window=\"100,100,700,550\"/>\n\t<view id=\"4\" toolbar=\"0 || 2020 , 2021 , 2022 || 2001 , 2003 , 2002 , 2004 , 2005 || 2040 , 2041 , 2042 , 2044 , 2043\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1,1\" size=\"300\" window=\"100,100,600,400\"/>\n\t<view id=\"8\" toolbar=\"1001 | 1002 | 1003  || 1005 | 1004 || 1006 | 1007 | 1010 || 1008 | 1009 || 6\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1,3\" size=\"300\" window=\"100,100,600,400\"/>\n\t<view id=\"1\" visible=\"true\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"530\" window=\"100,100,600,400\"/>\n\t<view id=\"2\" visible=\"true\" inframe=\"false\" stylebar=\"false\" location=\"3\" size=\"360\" tab=\"ALGEBRA\" window=\"100,100,600,400\"/>\n\t<view id=\"16\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"300\" window=\"50,50,500,500\"/>\n\t<view id=\"32\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1\" size=\"300\" window=\"50,50,500,500\"/>\n\t<view id=\"64\" toolbar=\"0\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"480\" window=\"50,50,500,500\"/>\n\t<view id=\"128\" visible=\"false\" inframe=\"false\" stylebar=\"false\" location=\"1\" size=\"480\" window=\"50,50,500,500\"/>\n\t<view id=\"70\" toolbar=\"0 || 2020 || 2021 || 2022\" visible=\"false\" inframe=\"false\" stylebar=\"true\" location=\"1\" size=\"900\" window=\"50,50,500,500\"/>\n</views>\n\t<toolbar show=\"false\" items=\"0 73 62 | 1 501 67 , 5 19 , 72 75 76 | 2 15 45 , 18 65 , 7 37 | 4 3 8 9 , 13 44 , 58 , 47 | 16 51 64 , 70 | 10 34 53 11 , 24  20 22 , 21 23 | 55 56 57 , 12 | 36 46 , 38 49  50 , 71  14  68 | 30 29 54 32 31 33 | 25 17 26 60 52 61 | 40 41 42 , 27 28 35 , 6\" position=\"1\" help=\"false\"/>\n\t<input show=\"false\" cmd=\"true\" top=\"algebra\"/>\n\t<dockBar show=\"false\" east=\"false\"/>\n</perspective>\n</perspectives>\n\t<labelingStyle val=\"0\"/>\n\t<font size=\"16\"/>\n</gui>\n<euclidianView>\n\t<size width=\"530\" height=\"698\"/>\n\t<coordSystem xZero=\"265\" yZero=\"349\" scale=\"26.5\" yscale=\"43.625\"/>\n\t<evSettings axes=\"true\" grid=\"true\" gridIsBold=\"false\" pointCapturing=\"3\" rightAngleStyle=\"1\" checkboxSize=\"26\" gridType=\"3\"/>\n\t<bgColor r=\"255\" g=\"255\" b=\"255\"/>\n\t<axesColor r=\"28\" g=\"28\" b=\"31\"/>\n\t<gridColor r=\"180\" g=\"179\" b=\"186\"/>\n\t<lineStyle axes=\"1\" grid=\"0\"/>\n\t<axis id=\"0\" show=\"true\" label=\"\" unitLabel=\"\" tickStyle=\"1\" showNumbers=\"true\"/>\n\t<axis id=\"1\" show=\"true\" label=\"\" unitLabel=\"\" tickStyle=\"1\" showNumbers=\"true\"/>\n</euclidianView>\n<algebraView>\n\t<mode val=\"3\"/>\n</algebraView>\n<kernel>\n\t<continuous val=\"false\"/>\n\t<usePathAndRegionParameters val=\"true\"/>\n\t<decimals val=\"2\"/>\n\t<angleUnit val=\"degree\"/>\n\t<algebraStyle val=\"3\" spreadsheet=\"0\"/>\n\t<coordStyle val=\"0\"/>\n</kernel>\n<tableview min=\"0\" max=\"0\" step=\"0\"/>\n<scripting blocked=\"false\" disabled=\"false\"/>\n<construction title=\"\" author=\"\" date=\"\">\n<element type=\"numeric\" label=\"ecc\">\n\t<value val=\"1.5\"/>\n\t<show object=\"false\" label=\"true\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"1\"/>\n\t<animation type=\"0\" playing=\"false\"/>\n</element>\n<expression label=\"k\" exp=\"((1 - ecc^(2)) * x^(2)) + y^(2) - (4 * x) = 0\" type=\"conic\"/>\n<element type=\"conic\" label=\"k\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<fixed val=\"true\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"user\"/>\n\t<eigenvectors x0=\"1\" y0=\"0\" z0=\"1\" x1=\"0\" y1=\"1\" z1=\"1\"/>\n\t<matrix A0=\"-1.25\" A1=\"1\" A2=\"0\" A3=\"0\" A4=\"-2\" A5=\"0\"/>\n</element>\n<command name=\"Focus\">\n\t<input a0=\"k\"/>\n\t<output a0=\"A\" a1=\"B\"/>\n</command>\n<element type=\"point\" label=\"A\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"-4\" y=\"0\" z=\"1\"/>\n</element>\n<element type=\"point\" label=\"B\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"0.7999999999999998\" y=\"0\" z=\"1\"/>\n</element>\n<command name=\"Focus\">\n\t<input a0=\"k\"/>\n\t<output a0=\"onlyFocus_{1}\" a1=\"onlyFocus_{2}\"/>\n</command>\n<element type=\"point\" label=\"onlyFocus_{1}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"-4\" y=\"0\" z=\"1\"/>\n</element>\n<element type=\"point\" label=\"onlyFocus_{2}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"0.7999999999999998\" y=\"0\" z=\"1\"/>\n</element>\n<command name=\"Vertex\">\n\t<input a0=\"k\"/>\n\t<output a0=\"C\" a1=\"D\" a2=\"E\" a3=\"F\"/>\n</command>\n<element type=\"point\" label=\"C\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"-3.2\" y=\"0\" z=\"1\"/>\n</element>\n<element type=\"point\" label=\"D\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"0\" y=\"0\" z=\"1\"/>\n</element>\n<element type=\"point\" label=\"E\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n<element type=\"point\" label=\"F\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n<command name=\"Vertex\">\n\t<input a0=\"k\"/>\n\t<output a0=\"onlyVertex_{1}\" a1=\"onlyVertex_{2}\" a2=\"onlyVertex_{3}\" a3=\"onlyVertex_{4}\"/>\n</command>\n<element type=\"point\" label=\"onlyVertex_{1}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"-3.2\" y=\"0\" z=\"1\"/>\n</element>\n<element type=\"point\" label=\"onlyVertex_{2}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"0\" y=\"0\" z=\"1\"/>\n</element>\n<element type=\"point\" label=\"onlyVertex_{3}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n<element type=\"point\" label=\"onlyVertex_{4}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"110\" g=\"109\" b=\"115\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<pointSize val=\"4\"/>\n\t<pointStyle val=\"0\"/>\n\t<coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/>\n</element>\n<command name=\"Axes\">\n\t<input a0=\"k\"/>\n\t<output a0=\"f\" a1=\"g\"/>\n</command>\n<element type=\"line\" label=\"f\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"0\"/>\n</element>\n<element type=\"line\" label=\"g\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1\" y=\"0\" z=\"-1.6\"/>\n</element>\n<command name=\"Axes\">\n\t<input a0=\"k\"/>\n\t<output a0=\"onlyAxes_{1}\" a1=\"onlyAxes_{2}\"/>\n</command>\n<element type=\"line\" label=\"onlyAxes_{1}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"0\" y=\"1\" z=\"0\"/>\n</element>\n<element type=\"line\" label=\"onlyAxes_{2}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1\" y=\"0\" z=\"-1.6\"/>\n</element>\n<command name=\"Directrix\">\n\t<input a0=\"k\"/>\n\t<output a0=\"i\" a1=\"h\"/>\n</command>\n<element type=\"line\" label=\"i\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1\" y=\"0\" z=\"-0.5333333333333332\"/>\n</element>\n<element type=\"line\" label=\"h\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1\" y=\"0\" z=\"-2.666666666666667\"/>\n</element>\n<command name=\"Directrix\">\n\t<input a0=\"k\"/>\n\t<output a0=\"onlyDirectrix\" a1=\"onlyDirectrix_{1}\"/>\n</command>\n<element type=\"line\" label=\"onlyDirectrix\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1\" y=\"0\" z=\"-0.5333333333333332\"/>\n</element>\n<element type=\"line\" label=\"onlyDirectrix_{1}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1\" y=\"0\" z=\"-2.666666666666667\"/>\n</element>\n<command name=\"Asymptote\">\n\t<input a0=\"k\"/>\n\t<output a0=\"j\" a1=\"l\"/>\n</command>\n<element type=\"line\" label=\"j\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1.7888543819998317\" y=\"1.6\" z=\"-2.862167011199731\"/>\n</element>\n<element type=\"line\" label=\"l\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1.7888543819998317\" y=\"-1.6\" z=\"-2.862167011199731\"/>\n</element>\n<command name=\"Asymptote\">\n\t<input a0=\"k\"/>\n\t<output a0=\"onlyAsymptote_{1}\" a1=\"onlyAsymptote\"/>\n</command>\n<element type=\"line\" label=\"onlyAsymptote_{1}\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1.7888543819998317\" y=\"1.6\" z=\"-2.862167011199731\"/>\n</element>\n<element type=\"line\" label=\"onlyAsymptote\">\n\t<show object=\"true\" label=\"true\"/>\n\t<objColor r=\"28\" g=\"28\" b=\"31\" alpha=\"0\"/>\n\t<layer val=\"0\"/>\n\t<labelMode val=\"0\"/>\n\t<lineStyle thickness=\"5\" type=\"0\" typeHidden=\"1\" opacity=\"178\"/>\n\t<eqnStyle style=\"implicit\"/>\n\t<coords x=\"-1.7888543819998317\" y=\"-1.6\" z=\"-2.862167011199731\"/>\n</element>\n</construction>\n</geogebra>\n",
+    "elements": [
+      {
+        "ggb_name": "ecc",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "8a6d0a11-dac6-53c7-be9b-bba47b4f8081"
+        ]
+      },
+      {
+        "ggb_name": "k",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "951608cb-59a9-55d1-902a-0c49772efb03"
+        ]
+      },
+      {
+        "ggb_name": "A",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+        ]
+      },
+      {
+        "ggb_name": "B",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "0d178f00-10cc-5e64-b3a7-004058ad2948"
+        ]
+      },
+      {
+        "ggb_name": "onlyFocus_{1}",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "e31f0ae2-b081-540c-a667-403a65240b56"
+        ]
+      },
+      {
+        "ggb_name": "onlyFocus_{2}",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "5b16176b-9da1-5cc0-a5ac-50b7f11932b4"
+        ]
+      },
+      {
+        "ggb_name": "C",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882"
+        ]
+      },
+      {
+        "ggb_name": "D",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "44da8d70-d764-5e62-88a2-9bb031882ec8"
+        ]
+      },
+      {
+        "ggb_name": "E",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd"
+        ]
+      },
+      {
+        "ggb_name": "F",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d"
+        ]
+      },
+      {
+        "ggb_name": "onlyVertex_{1}",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "5cf73ddc-2007-589a-8198-102b119d63d8"
+        ]
+      },
+      {
+        "ggb_name": "onlyVertex_{2}",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "1dca4b0c-fe6d-5df2-b168-c21a785db9cb"
+        ]
+      },
+      {
+        "ggb_name": "onlyVertex_{3}",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1"
+        ]
+      },
+      {
+        "ggb_name": "onlyVertex_{4}",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "229156c0-b42e-57eb-9f3b-42d827cb35ad"
+        ]
+      },
+      {
+        "ggb_name": "f",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7381003a-c131-598f-a9bb-43c860a099c4"
+        ]
+      },
+      {
+        "ggb_name": "g",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+        ]
+      },
+      {
+        "ggb_name": "onlyAxes_{1}",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "652a15a2-374f-5d8f-8a37-0abb5333f1f9"
+        ]
+      },
+      {
+        "ggb_name": "onlyAxes_{2}",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "af8932ef-9907-52a4-b3d9-e94d9a23f002"
+        ]
+      },
+      {
+        "ggb_name": "i",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "8d8c2e28-9ac9-5a72-8768-01f424ba254a"
+        ]
+      },
+      {
+        "ggb_name": "h",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "ad0753b8-c583-5530-a763-0f6847f45a4c"
+        ]
+      },
+      {
+        "ggb_name": "onlyDirectrix",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "ee45b066-8308-5ef3-85a3-74dd88af15fd"
+        ]
+      },
+      {
+        "ggb_name": "onlyDirectrix_{1}",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "8cecdbd0-1361-5b1e-8291-3983b553d5b4"
+        ]
+      },
+      {
+        "ggb_name": "j",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "f50022d7-1b43-50db-b73b-2192ef952b7a"
+        ]
+      },
+      {
+        "ggb_name": "l",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "565e5a1d-b3f1-5636-9703-3a258daaf018"
+        ]
+      },
+      {
+        "ggb_name": "onlyAsymptote_{1}",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "6a460220-ad52-5e71-b00f-b785248a7274"
+        ]
+      },
+      {
+        "ggb_name": "onlyAsymptote",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "0a0e7c97-1e3b-517e-ac4b-3e98f2dd836d"
+        ]
+      }
+    ]
+  }
+}

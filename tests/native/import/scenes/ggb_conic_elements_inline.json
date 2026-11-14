@@ -1,0 +1,661 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_inline",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_inline",
+    "operationRegistryVersion": "1.13",
+    "operations": {
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 1
+      },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          }
+        ],
+        "seq": 2
+      },
+      "87f45976-d6d1-506a-a361-a50ec08ff4c5": {
+        "id": "87f45976-d6d1-506a-a361-a50ec08ff4c5",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "ref": 0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 9.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 36.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "814aa1d6-5385-5f16-8f44-26ff7697b3b3"
+          }
+        ]
+      },
+      "1f8938bd-cf37-503d-aa78-c30d6c1fa92f": {
+        "id": "1f8938bd-cf37-503d-aa78-c30d6c1fa92f",
+        "op": "point.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "+",
+              "args": [
+                {
+                  "ref": 0
+                },
+                {
+                  "pair": [
+                    {
+                      "num": 1.0
+                    },
+                    {
+                      "num": 0.0
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "a6f3c500-0fd3-58b5-90da-f2112248a9f2"
+          }
+        ]
+      },
+      "4e819440-ca16-563d-a5d1-82bca00d0d83": {
+        "id": "4e819440-ca16-563d-a5d1-82bca00d0d83",
+        "op": "line.polar_conic",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "814aa1d6-5385-5f16-8f44-26ff7697b3b3"
+          },
+          "point": {
+            "kind": "ref",
+            "elementId": "a6f3c500-0fd3-58b5-90da-f2112248a9f2"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "eab8d370-5bdc-5240-859d-addbb3a65f7b"
+          }
+        ],
+        "seq": 3
+      },
+      "a6c4804d-19b1-5de0-94fa-eea424d166dd": {
+        "id": "a6c4804d-19b1-5de0-94fa-eea424d166dd",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "ref": 0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 9.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 36.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "cbddab0f-bc24-531a-9830-27739081c11e"
+          }
+        ]
+      },
+      "2f029b95-05b1-54c8-bfc5-9ee4330ab158": {
+        "id": "2f029b95-05b1-54c8-bfc5-9ee4330ab158",
+        "op": "vector.expression",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "pair": [
+                {
+                  "num": 1.0
+                },
+                {
+                  "num": 1.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "vector",
+            "elementId": "f6a51ea6-0b56-53d3-b173-2150e88d7a36"
+          }
+        ]
+      },
+      "7fc5d567-6884-5e4d-8dac-d0a18696164e": {
+        "id": "7fc5d567-6884-5e4d-8dac-d0a18696164e",
+        "op": "line.conjugate_diameter",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "cbddab0f-bc24-531a-9830-27739081c11e"
+          },
+          "direction": {
+            "kind": "ref",
+            "elementId": "f6a51ea6-0b56-53d3-b173-2150e88d7a36"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "line",
+            "elementId": "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408"
+          }
+        ],
+        "seq": 4
+      },
+      "ed2580a7-c8fa-51be-be42-8293ff4b26ee": {
+        "id": "ed2580a7-c8fa-51be-be42-8293ff4b26ee",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 9.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 4.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 36.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "b6afc25a-b994-56d0-af3a-aac635224c77"
+          }
+        ]
+      },
+      "80a2c862-e465-51f8-ae72-fd439625606c": {
+        "id": "80a2c862-e465-51f8-ae72-fd439625606c",
+        "op": "conic.asymptotes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "b6afc25a-b994-56d0-af3a-aac635224c77"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "asymptote.1",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          },
+          {
+            "slot": "asymptote.2",
+            "elementId": "58c35f0a-5076-5742-a395-3c25ac6a87f0"
+          }
+        ],
+        "seq": 5
+      }
+    },
+    "elements": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "point"
+        },
+        "displayName": "A"
+      },
+      "814aa1d6-5385-5f16-8f44-26ff7697b3b3": {
+        "id": "814aa1d6-5385-5f16-8f44-26ff7697b3b3",
+        "type": "conic",
+        "displayName": "",
+        "producer": {
+          "operationId": "87f45976-d6d1-506a-a361-a50ec08ff4c5",
+          "slot": "conic"
+        },
+        "origin": {
+          "kind": "auto",
+          "source": "4e819440-ca16-563d-a5d1-82bca00d0d83"
+        }
+      },
+      "a6f3c500-0fd3-58b5-90da-f2112248a9f2": {
+        "id": "a6f3c500-0fd3-58b5-90da-f2112248a9f2",
+        "type": "point",
+        "displayName": "",
+        "producer": {
+          "operationId": "1f8938bd-cf37-503d-aa78-c30d6c1fa92f",
+          "slot": "point"
+        },
+        "origin": {
+          "kind": "auto",
+          "source": "4e819440-ca16-563d-a5d1-82bca00d0d83"
+        }
+      },
+      "eab8d370-5bdc-5240-859d-addbb3a65f7b": {
+        "id": "eab8d370-5bdc-5240-859d-addbb3a65f7b",
+        "type": "line",
+        "producer": {
+          "operationId": "4e819440-ca16-563d-a5d1-82bca00d0d83",
+          "slot": "line"
+        },
+        "displayName": "p"
+      },
+      "cbddab0f-bc24-531a-9830-27739081c11e": {
+        "id": "cbddab0f-bc24-531a-9830-27739081c11e",
+        "type": "conic",
+        "displayName": "",
+        "producer": {
+          "operationId": "a6c4804d-19b1-5de0-94fa-eea424d166dd",
+          "slot": "conic"
+        },
+        "origin": {
+          "kind": "auto",
+          "source": "7fc5d567-6884-5e4d-8dac-d0a18696164e"
+        }
+      },
+      "f6a51ea6-0b56-53d3-b173-2150e88d7a36": {
+        "id": "f6a51ea6-0b56-53d3-b173-2150e88d7a36",
+        "type": "vector",
+        "displayName": "",
+        "producer": {
+          "operationId": "2f029b95-05b1-54c8-bfc5-9ee4330ab158",
+          "slot": "vector"
+        },
+        "origin": {
+          "kind": "auto",
+          "source": "7fc5d567-6884-5e4d-8dac-d0a18696164e"
+        }
+      },
+      "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+        "id": "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408",
+        "type": "line",
+        "producer": {
+          "operationId": "7fc5d567-6884-5e4d-8dac-d0a18696164e",
+          "slot": "line"
+        },
+        "displayName": "d"
+      },
+      "b6afc25a-b994-56d0-af3a-aac635224c77": {
+        "id": "b6afc25a-b994-56d0-af3a-aac635224c77",
+        "type": "conic",
+        "displayName": "",
+        "producer": {
+          "operationId": "ed2580a7-c8fa-51be-be42-8293ff4b26ee",
+          "slot": "conic"
+        },
+        "origin": {
+          "kind": "auto",
+          "source": "80a2c862-e465-51f8-ae72-fd439625606c"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "id": "06a17f48-500f-58b8-8cda-395c93ed8b20",
+        "type": "line",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "asymptote.1"
+        },
+        "displayName": "s"
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "id": "58c35f0a-5076-5742-a395-3c25ac6a87f0",
+        "type": "line",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "asymptote.2"
+        },
+        "displayName": "t"
+      }
+    },
+    "inputs": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 4.0
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "kind": "point",
+        "value": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    "appearance": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "814aa1d6-5385-5f16-8f44-26ff7697b3b3": {
+        "visible": false,
+        "locked": true,
+        "role": "aux",
+        "label": {
+          "mode": "none"
+        }
+      },
+      "a6f3c500-0fd3-58b5-90da-f2112248a9f2": {
+        "visible": false,
+        "locked": true,
+        "role": "aux",
+        "label": {
+          "mode": "none"
+        }
+      },
+      "eab8d370-5bdc-5240-859d-addbb3a65f7b": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "cbddab0f-bc24-531a-9830-27739081c11e": {
+        "visible": false,
+        "locked": true,
+        "role": "aux",
+        "label": {
+          "mode": "none"
+        }
+      },
+      "f6a51ea6-0b56-53d3-b173-2150e88d7a36": {
+        "visible": false,
+        "locked": true,
+        "role": "aux",
+        "label": {
+          "mode": "none"
+        }
+      },
+      "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "b6afc25a-b994-56d0-af3a-aac635224c77": {
+        "visible": false,
+        "locked": true,
+        "role": "aux",
+        "label": {
+          "mode": "none"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "58c35f0a-5076-5742-a395-3c25ac6a87f0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "eab8d370-5bdc-5240-859d-addbb3a65f7b": "p",
+        "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": "d",
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": "s",
+        "58c35f0a-5076-5742-a395-3c25ac6a87f0": "t"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    },
+    {
+      "name": "coefficient",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": 1
+        }
+      }
+    },
+    {
+      "name": "abscissa",
+      "inputs": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "kind": "point",
+          "value": [
+            3,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "ordinate",
+      "inputs": {
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+          "kind": "point",
+          "value": [
+            1,
+            7
+          ]
+        }
+      }
+    }
+  ]
+}

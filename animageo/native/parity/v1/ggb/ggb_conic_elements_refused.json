@@ -1,0 +1,503 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_refused",
+  "registry": "1.12",
+  "generatedBy": "animageo 1.18.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_refused",
+    "operationRegistryVersion": "1.6",
+    "operations": {
+      "ec6aeb85-6d6f-563b-946c-334913eddbfd": {
+        "id": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          }
+        ],
+        "seq": 1
+      },
+      "29d8b6cd-1bb8-5a1b-abf3-8f70cc5a39f3": {
+        "id": "29d8b6cd-1bb8-5a1b-abf3-8f70cc5a39f3",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "0bcae345-19f8-57fc-b2fd-7457a2bb7de5"
+          }
+        ],
+        "seq": 2
+      },
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 4
+      },
+      "16776152-92ab-51a2-9143-dc6d2a939449": {
+        "id": "16776152-92ab-51a2-9143-dc6d2a939449",
+        "op": "circle.center_radius",
+        "args": {
+          "center": {
+            "kind": "ref",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          },
+          "radius": {
+            "kind": "ref",
+            "elementId": "0bcae345-19f8-57fc-b2fd-7457a2bb7de5"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "ad958bda-23b7-5bca-a975-a12535038a18"
+          }
+        ],
+        "seq": 3
+      },
+      "03c64d68-6804-5156-91d5-284cbc41480a": {
+        "id": "03c64d68-6804-5156-91d5-284cbc41480a",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "ref": 0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 9.0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 36.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        ],
+        "seq": 5
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "function.expr",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "^",
+              "args": [
+                {
+                  "var": "x"
+                },
+                {
+                  "num": 2.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": []
+          }
+        },
+        "outputs": [
+          {
+            "slot": "function",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          }
+        ],
+        "seq": 6
+      }
+    },
+    "elements": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "id": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1",
+        "type": "point",
+        "producer": {
+          "operationId": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+        "id": "0bcae345-19f8-57fc-b2fd-7457a2bb7de5",
+        "type": "number",
+        "producer": {
+          "operationId": "29d8b6cd-1bb8-5a1b-abf3-8f70cc5a39f3",
+          "slot": "number"
+        },
+        "displayName": "r"
+      },
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "ad958bda-23b7-5bca-a975-a12535038a18": {
+        "id": "ad958bda-23b7-5bca-a975-a12535038a18",
+        "type": "circle",
+        "producer": {
+          "operationId": "16776152-92ab-51a2-9143-dc6d2a939449",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "id": "7dd23c39-d910-5294-89eb-c434449ddced",
+        "type": "conic",
+        "producer": {
+          "operationId": "03c64d68-6804-5156-91d5-284cbc41480a",
+          "slot": "conic"
+        },
+        "displayName": "K"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "function",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "function"
+        },
+        "displayName": "f"
+      }
+    },
+    "inputs": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "kind": "point",
+        "value": [
+          1.0,
+          -2.0
+        ]
+      },
+      "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+        "kind": "number",
+        "value": 3.0
+      },
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 4.0
+      }
+    },
+    "appearance": {
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad958bda-23b7-5bca-a975-a12535038a18": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": "O",
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": "r",
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "ad958bda-23b7-5bca-a975-a12535038a18": "c",
+        "7dd23c39-d910-5294-89eb-c434449ddced": "K",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "0bcae345-19f8-57fc-b2fd-7457a2bb7de5": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 3.0,
+            "unit": "scalar"
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "7381003a-c131-598f-a9bb-43c860a099c4": {
+          "state": "defined",
+          "type": "function",
+          "value": {
+            "expr": {
+              "op": "^",
+              "args": [
+                {
+                  "var": "x"
+                },
+                {
+                  "num": 2.0
+                }
+              ]
+            },
+            "refs": [],
+            "domain": [
+              null,
+              null
+            ]
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 3.0,
+            "b": 2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.0,
+              -2.0
+            ],
+            "r": 3.0
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 4.0,
+            "unit": "scalar"
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:matches": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"point\" label=\"O\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1.0\" y=\"-2.0\" z=\"1\"/></element><element type=\"numeric\" label=\"r\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"3\"/></element><command name=\"Circle\"><input a0=\"O\" a1=\"r\"/><output a0=\"c\"/></command><element type=\"conic\" label=\"c\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"1\" A1=\"1\" A2=\"-4\" A3=\"0\" A4=\"-1\" A5=\"2\"/></element><element type=\"numeric\" label=\"a\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"4\"/></element><expression label=\"K\" exp=\"a*x^2+9*y^2=36\" type=\"conic\"/><element type=\"conic\" label=\"K\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"4\" A1=\"9\" A2=\"-36\" A3=\"0\" A4=\"0\" A5=\"0\"/></element><expression label=\"f\" exp=\"x^2\" type=\"function\"/><element type=\"function\" label=\"f\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/></element><command name=\"Axes\"><input a0=\"c\"/><output a0=\"h\" a1=\"v\"/></command><element type=\"line\" label=\"h\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"0\" y=\"1\" z=\"2\"/></element><element type=\"line\" label=\"v\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"0\" y=\"2\" z=\"4\"/></element><command name=\"OrthogonalLine\"><input a0=\"O\" a1=\"h\"/><output a0=\"n\"/></command><element type=\"line\" label=\"n\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"1\" y=\"0\" z=\"-1\"/></element><command name=\"Asymptote\"><input a0=\"f\"/><output a0=\"bad\"/></command><element type=\"line\" label=\"bad\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"1\" y=\"0\" z=\"0\"/></element><command name=\"Polar\"><input a0=\"h\" a1=\"K\"/><output a0=\"pole\"/></command><element type=\"point\" label=\"pole\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0\" y=\"0\" z=\"1\"/></element><command name=\"Eccentricity\"><input a0=\"K\"/><output a0=\"e\"/></command><element type=\"numeric\" label=\"e\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"0.7453559924999299\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "O",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+        ]
+      },
+      {
+        "ggb_name": "r",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "0bcae345-19f8-57fc-b2fd-7457a2bb7de5"
+        ]
+      },
+      {
+        "ggb_name": "c",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "ad958bda-23b7-5bca-a975-a12535038a18"
+        ]
+      },
+      {
+        "ggb_name": "a",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+        ]
+      },
+      {
+        "ggb_name": "K",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7dd23c39-d910-5294-89eb-c434449ddced"
+        ]
+      },
+      {
+        "ggb_name": "f",
+        "ggb_type": "function",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7381003a-c131-598f-a9bb-43c860a099c4"
+        ]
+      },
+      {
+        "ggb_name": "h",
+        "ggb_type": "line",
+        "category": "unsupported",
+        "reason": "unsupported_signature",
+        "detail": "saved line multiplicity exceeds distinct conic slots",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "v",
+        "ggb_type": "line",
+        "category": "unsupported",
+        "reason": "unsupported_signature",
+        "detail": "saved line multiplicity exceeds distinct conic slots",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "n",
+        "ggb_type": "line",
+        "category": "closure",
+        "reason": "depends_on_unsupported",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "bad",
+        "ggb_type": "line",
+        "category": "unsupported",
+        "reason": "unsupported_signature",
+        "detail": "conic input is required",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "pole",
+        "ggb_type": "point",
+        "category": "closure",
+        "reason": "depends_on_unsupported",
+        "detail": "point input is required",
+        "value_check": "not_checked",
+        "native_ids": []
+      },
+      {
+        "ggb_name": "e",
+        "ggb_type": "numeric",
+        "category": "unsupported",
+        "reason": "unsupported_signature",
+        "detail": "scalar conic characteristics are not supported",
+        "value_check": "not_checked",
+        "native_ids": []
+      }
+    ]
+  }
+}

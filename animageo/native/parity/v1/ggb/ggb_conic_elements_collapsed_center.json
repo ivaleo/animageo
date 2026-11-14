@@ -1,0 +1,451 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_collapsed_center",
+  "registry": "1.12",
+  "generatedBy": "animageo 1.18.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_collapsed_center",
+    "operationRegistryVersion": "1.4",
+    "operations": {
+      "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b": {
+        "id": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+          }
+        ],
+        "seq": 1
+      },
+      "562f383a-33dd-5137-882a-74fdee1bb3f2": {
+        "id": "562f383a-33dd-5137-882a-74fdee1bb3f2",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "8c4c4e6d-5157-55fd-a2c7-26cd320e855f"
+          }
+        ],
+        "seq": 2
+      },
+      "ec6aeb85-6d6f-563b-946c-334913eddbfd": {
+        "id": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          }
+        ],
+        "seq": 3
+      },
+      "16776152-92ab-51a2-9143-dc6d2a939449": {
+        "id": "16776152-92ab-51a2-9143-dc6d2a939449",
+        "op": "circle.three_points",
+        "args": {
+          "a": {
+            "kind": "ref",
+            "elementId": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+          },
+          "b": {
+            "kind": "ref",
+            "elementId": "8c4c4e6d-5157-55fd-a2c7-26cd320e855f"
+          },
+          "c": {
+            "kind": "ref",
+            "elementId": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "circle",
+            "elementId": "ad958bda-23b7-5bca-a975-a12535038a18"
+          }
+        ],
+        "seq": 4
+      },
+      "ca3d91d1-1713-56ca-9846-368fe2c825be": {
+        "id": "ca3d91d1-1713-56ca-9846-368fe2c825be",
+        "op": "point.center",
+        "args": {
+          "of": {
+            "kind": "ref",
+            "elementId": "ad958bda-23b7-5bca-a975-a12535038a18"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "center",
+            "elementId": "1cc2e827-1641-5f53-b275-592edc8a15fa"
+          }
+        ],
+        "seq": 5
+      }
+    },
+    "elements": {
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "id": "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d",
+        "type": "point",
+        "producer": {
+          "operationId": "56a8479b-dc0d-58b9-bfd7-5fec5aab8e3b",
+          "slot": "point"
+        },
+        "displayName": "M"
+      },
+      "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+        "id": "8c4c4e6d-5157-55fd-a2c7-26cd320e855f",
+        "type": "point",
+        "producer": {
+          "operationId": "562f383a-33dd-5137-882a-74fdee1bb3f2",
+          "slot": "point"
+        },
+        "displayName": "N"
+      },
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "id": "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1",
+        "type": "point",
+        "producer": {
+          "operationId": "ec6aeb85-6d6f-563b-946c-334913eddbfd",
+          "slot": "point"
+        },
+        "displayName": "O"
+      },
+      "ad958bda-23b7-5bca-a975-a12535038a18": {
+        "id": "ad958bda-23b7-5bca-a975-a12535038a18",
+        "type": "circle",
+        "producer": {
+          "operationId": "16776152-92ab-51a2-9143-dc6d2a939449",
+          "slot": "circle"
+        },
+        "displayName": "c"
+      },
+      "1cc2e827-1641-5f53-b275-592edc8a15fa": {
+        "id": "1cc2e827-1641-5f53-b275-592edc8a15fa",
+        "type": "point",
+        "producer": {
+          "operationId": "ca3d91d1-1713-56ca-9846-368fe2c825be",
+          "slot": "center"
+        },
+        "displayName": "Q"
+      }
+    },
+    "inputs": {
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "kind": "point",
+        "value": [
+          1.0,
+          -2.0
+        ]
+      },
+      "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+        "kind": "point",
+        "value": [
+          1.0,
+          -2.0
+        ]
+      },
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "kind": "point",
+        "value": [
+          1.0,
+          -2.0
+        ]
+      }
+    },
+    "appearance": {
+      "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad958bda-23b7-5bca-a975-a12535038a18": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "1cc2e827-1641-5f53-b275-592edc8a15fa": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": "M",
+        "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": "N",
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": "O",
+        "ad958bda-23b7-5bca-a975-a12535038a18": "c",
+        "1cc2e827-1641-5f53-b275-592edc8a15fa": "Q"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "1cc2e827-1641-5f53-b275-592edc8a15fa": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "upstream",
+          "cause": "ad958bda-23b7-5bca-a975-a12535038a18"
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "undefined",
+          "type": "circle",
+          "reason": "collinear_points"
+        },
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "separated",
+      "inputs": {
+        "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+          "kind": "point",
+          "value": [
+            2,
+            -2
+          ]
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "kind": "point",
+          "value": [
+            1,
+            -1
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "1cc2e827-1641-5f53-b275-592edc8a15fa": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.5,
+            "y": -1.5
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -1.0
+          }
+        },
+        "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -2.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              1.5,
+              -1.5
+            ],
+            "r": 0.7071067811865476
+          }
+        },
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": -2.0
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:through_all": "passed",
+        "ca3d91d1-1713-56ca-9846-368fe2c825be:matches": "passed"
+      }
+    },
+    {
+      "name": "translated",
+      "inputs": {
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+          "kind": "point",
+          "value": [
+            2,
+            0
+          ]
+        },
+        "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+          "kind": "point",
+          "value": [
+            3,
+            0
+          ]
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "kind": "point",
+          "value": [
+            2,
+            1
+          ]
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "1cc2e827-1641-5f53-b275-592edc8a15fa": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.5,
+            "y": 0.5
+          }
+        },
+        "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 1.0
+          }
+        },
+        "8c4c4e6d-5157-55fd-a2c7-26cd320e855f": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 3.0,
+            "y": 0.0
+          }
+        },
+        "ad958bda-23b7-5bca-a975-a12535038a18": {
+          "state": "defined",
+          "type": "circle",
+          "value": {
+            "c": [
+              2.5,
+              0.5
+            ],
+            "r": 0.7071067811865476
+          }
+        },
+        "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "16776152-92ab-51a2-9143-dc6d2a939449:through_all": "passed",
+        "ca3d91d1-1713-56ca-9846-368fe2c825be:matches": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"point\" label=\"M\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1.0\" y=\"-2.0\" z=\"1\"/></element><element type=\"point\" label=\"N\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1.0\" y=\"-2.0\" z=\"1\"/></element><element type=\"point\" label=\"O\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1.0\" y=\"-2.0\" z=\"1\"/></element><command name=\"Circle\"><input a0=\"M\" a1=\"N\" a2=\"O\"/><output a0=\"c\"/></command><element type=\"conic\" label=\"c\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"1\" A1=\"1\" A2=\"5\" A3=\"0\" A4=\"-1\" A5=\"2\"/></element><command name=\"Center\"><input a0=\"c\"/><output a0=\"Q\"/></command><element type=\"point\" label=\"Q\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1\" y=\"-2\" z=\"1\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "M",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "e20eed7d-9c12-51dc-a7c0-9d9d09206c1d"
+        ]
+      },
+      {
+        "ggb_name": "N",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "8c4c4e6d-5157-55fd-a2c7-26cd320e855f"
+        ]
+      },
+      {
+        "ggb_name": "O",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "6a59dffd-a74d-5ce8-b9ad-a91a091af3d1"
+        ]
+      },
+      {
+        "ggb_name": "c",
+        "ggb_type": "conic",
+        "category": "differs",
+        "reason": "value_mismatch",
+        "value_check": "failed",
+        "native_ids": [
+          "ad958bda-23b7-5bca-a975-a12535038a18"
+        ]
+      },
+      {
+        "ggb_name": "Q",
+        "ggb_type": "point",
+        "category": "differs",
+        "reason": "value_mismatch",
+        "value_check": "failed",
+        "native_ids": [
+          "1cc2e827-1641-5f53-b275-592edc8a15fa"
+        ]
+      }
+    ]
+  }
+}

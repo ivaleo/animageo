@@ -467,6 +467,16 @@ DEGENERATE.update({
     'hyperbola_ppp': 'X = Hyperbola(Point(-2, 0), Point(2, 0), Point(0, 3))',
     'conic_ppppp': 'X = Conic(Point(0, 0), Point(1, 0), Point(2, 0), Point(3, 0), Point(4, 0))',
 })
+NO_DEGENERACY.update({
+    'directrix_K': 'ellipse and hyperbola have finite directrices; absent circle/parabola slots have source import tests',
+    'major_axis_K': 'a defined nondegenerate conic always has its focal axis',
+    'minor_axis_K': 'parabola has an absent conjugate slot, covered by source import tests',
+})
+DEGENERATE.update({
+    'polar_pK': 'X = Polar(Point(0, 0), Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)))',
+    'polar_Kp': 'X = Polar(Ellipse(Point(-2, 0), Point(2, 0), Point(0, 3)), Point(0, 0))',
+    'polar_pc': 'X = Polar(Point(0, 0), Circle(Point(0, 0), 2))',
+})
 for _kind, _factory in (('l', 'Line'), ('r', 'Ray'), ('s', 'Segment')):
     DEGENERATE['parabola_p' + _kind] = f'X = Parabola(Point(1, 0), {_factory}(Point(0, 0), Point(4, 0)))'
     for _order in (_kind + 'K', 'K' + _kind):

@@ -1,0 +1,694 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_saved_circle",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_saved_circle",
+    "operationRegistryVersion": "1.13",
+    "operations": {
+      "b41d8bbf-2e74-5aee-b06a-9102b955b74d": {
+        "id": "b41d8bbf-2e74-5aee-b06a-9102b955b74d",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "8a6d0a11-dac6-53c7-be9b-bba47b4f8081"
+          }
+        ],
+        "seq": 1
+      },
+      "796b9b47-93fa-56bc-a2be-23b5b3aea50c": {
+        "id": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "-",
+                  "args": [
+                    {
+                      "op": "+",
+                      "args": [
+                        {
+                          "op": "*",
+                          "args": [
+                            {
+                              "op": "-",
+                              "args": [
+                                {
+                                  "num": 1.0
+                                },
+                                {
+                                  "op": "^",
+                                  "args": [
+                                    {
+                                      "ref": 0
+                                    },
+                                    {
+                                      "num": 2.0
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "^",
+                              "args": [
+                                {
+                                  "var": "x"
+                                },
+                                {
+                                  "num": 2.0
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "y"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "num": 4.0
+                        },
+                        {
+                          "var": "x"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "num": 0.0
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "8a6d0a11-dac6-53c7-be9b-bba47b4f8081"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        ],
+        "seq": 2
+      },
+      "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf": {
+        "id": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+        "op": "conic.foci",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "4c92d719-9afb-5248-9ad1-f5008e4e5184"
+          },
+          {
+            "slot": "second",
+            "elementId": "0d178f00-10cc-5e64-b3a7-004058ad2948"
+          }
+        ],
+        "seq": 3
+      },
+      "88b6d87a-f65a-5e89-a7f3-2e37e1d35483": {
+        "id": "88b6d87a-f65a-5e89-a7f3-2e37e1d35483",
+        "op": "conic.foci",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "e31f0ae2-b081-540c-a667-403a65240b56"
+          },
+          {
+            "slot": "second",
+            "elementId": "5b16176b-9da1-5cc0-a5ac-50b7f11932b4"
+          }
+        ],
+        "seq": 4
+      },
+      "3e32c16f-c8fc-5a97-9c0e-199d37afc97e": {
+        "id": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+        "op": "conic.vertices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882"
+          },
+          {
+            "slot": "second",
+            "elementId": "44da8d70-d764-5e62-88a2-9bb031882ec8"
+          },
+          {
+            "slot": "third",
+            "elementId": "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd"
+          },
+          {
+            "slot": "fourth",
+            "elementId": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d"
+          }
+        ],
+        "seq": 5
+      },
+      "4c9d8244-de5b-519d-aa48-2279f65fc576": {
+        "id": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+        "op": "conic.vertices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "5cf73ddc-2007-589a-8198-102b119d63d8"
+          },
+          {
+            "slot": "second",
+            "elementId": "1dca4b0c-fe6d-5df2-b168-c21a785db9cb"
+          },
+          {
+            "slot": "third",
+            "elementId": "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1"
+          },
+          {
+            "slot": "fourth",
+            "elementId": "229156c0-b42e-57eb-9f3b-42d827cb35ad"
+          }
+        ],
+        "seq": 6
+      },
+      "127523fc-d655-585b-8b1a-d397fbc7352b": {
+        "id": "127523fc-d655-585b-8b1a-d397fbc7352b",
+        "op": "conic.axes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "focal",
+            "elementId": "7381003a-c131-598f-a9bb-43c860a099c4"
+          },
+          {
+            "slot": "conjugate",
+            "elementId": "4178d272-1a5c-503e-b99e-2e3e8769d34a"
+          }
+        ],
+        "seq": 7
+      },
+      "6c7dee8d-e73b-5f1f-9606-428aa2a795ad": {
+        "id": "6c7dee8d-e73b-5f1f-9606-428aa2a795ad",
+        "op": "conic.axes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "focal",
+            "elementId": "652a15a2-374f-5d8f-8a37-0abb5333f1f9"
+          },
+          {
+            "slot": "conjugate",
+            "elementId": "af8932ef-9907-52a4-b3d9-e94d9a23f002"
+          }
+        ],
+        "seq": 8
+      },
+      "07dd8058-8be4-5e18-ac45-dc12bdbbad90": {
+        "id": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+        "op": "conic.directrices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "directrix.1",
+            "elementId": "8d8c2e28-9ac9-5a72-8768-01f424ba254a"
+          },
+          {
+            "slot": "directrix.2",
+            "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+          }
+        ],
+        "seq": 9
+      },
+      "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b": {
+        "id": "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b",
+        "op": "conic.directrices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "951608cb-59a9-55d1-902a-0c49772efb03"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "directrix.1",
+            "elementId": "ee45b066-8308-5ef3-85a3-74dd88af15fd"
+          },
+          {
+            "slot": "directrix.2",
+            "elementId": "8cecdbd0-1361-5b1e-8291-3983b553d5b4"
+          }
+        ],
+        "seq": 10
+      }
+    },
+    "elements": {
+      "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": {
+        "id": "8a6d0a11-dac6-53c7-be9b-bba47b4f8081",
+        "type": "number",
+        "producer": {
+          "operationId": "b41d8bbf-2e74-5aee-b06a-9102b955b74d",
+          "slot": "number"
+        },
+        "displayName": "ecc"
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "id": "951608cb-59a9-55d1-902a-0c49772efb03",
+        "type": "conic",
+        "producer": {
+          "operationId": "796b9b47-93fa-56bc-a2be-23b5b3aea50c",
+          "slot": "conic"
+        },
+        "displayName": "k"
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "id": "4c92d719-9afb-5248-9ad1-f5008e4e5184",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "first"
+        },
+        "displayName": "A"
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "id": "0d178f00-10cc-5e64-b3a7-004058ad2948",
+        "type": "point",
+        "producer": {
+          "operationId": "6a0dded1-ff9f-5bdf-bf0d-c2c1a67d22bf",
+          "slot": "second"
+        },
+        "displayName": "B"
+      },
+      "e31f0ae2-b081-540c-a667-403a65240b56": {
+        "id": "e31f0ae2-b081-540c-a667-403a65240b56",
+        "type": "point",
+        "producer": {
+          "operationId": "88b6d87a-f65a-5e89-a7f3-2e37e1d35483",
+          "slot": "first"
+        },
+        "displayName": "onlyFocus_{1}"
+      },
+      "5b16176b-9da1-5cc0-a5ac-50b7f11932b4": {
+        "id": "5b16176b-9da1-5cc0-a5ac-50b7f11932b4",
+        "type": "point",
+        "producer": {
+          "operationId": "88b6d87a-f65a-5e89-a7f3-2e37e1d35483",
+          "slot": "second"
+        },
+        "displayName": "onlyFocus_{2}"
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "id": "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "first"
+        },
+        "displayName": "C"
+      },
+      "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+        "id": "44da8d70-d764-5e62-88a2-9bb031882ec8",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "second"
+        },
+        "displayName": "D"
+      },
+      "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+        "id": "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "third"
+        },
+        "displayName": "E"
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "id": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d",
+        "type": "point",
+        "producer": {
+          "operationId": "3e32c16f-c8fc-5a97-9c0e-199d37afc97e",
+          "slot": "fourth"
+        },
+        "displayName": "F"
+      },
+      "5cf73ddc-2007-589a-8198-102b119d63d8": {
+        "id": "5cf73ddc-2007-589a-8198-102b119d63d8",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "first"
+        },
+        "displayName": "onlyVertex_{1}"
+      },
+      "1dca4b0c-fe6d-5df2-b168-c21a785db9cb": {
+        "id": "1dca4b0c-fe6d-5df2-b168-c21a785db9cb",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "second"
+        },
+        "displayName": "onlyVertex_{2}"
+      },
+      "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1": {
+        "id": "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "third"
+        },
+        "displayName": "onlyVertex_{3}"
+      },
+      "229156c0-b42e-57eb-9f3b-42d827cb35ad": {
+        "id": "229156c0-b42e-57eb-9f3b-42d827cb35ad",
+        "type": "point",
+        "producer": {
+          "operationId": "4c9d8244-de5b-519d-aa48-2279f65fc576",
+          "slot": "fourth"
+        },
+        "displayName": "onlyVertex_{4}"
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "id": "7381003a-c131-598f-a9bb-43c860a099c4",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "focal"
+        },
+        "displayName": "f"
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "id": "4178d272-1a5c-503e-b99e-2e3e8769d34a",
+        "type": "line",
+        "producer": {
+          "operationId": "127523fc-d655-585b-8b1a-d397fbc7352b",
+          "slot": "conjugate"
+        },
+        "displayName": "g"
+      },
+      "652a15a2-374f-5d8f-8a37-0abb5333f1f9": {
+        "id": "652a15a2-374f-5d8f-8a37-0abb5333f1f9",
+        "type": "line",
+        "producer": {
+          "operationId": "6c7dee8d-e73b-5f1f-9606-428aa2a795ad",
+          "slot": "focal"
+        },
+        "displayName": "onlyAxes_{1}"
+      },
+      "af8932ef-9907-52a4-b3d9-e94d9a23f002": {
+        "id": "af8932ef-9907-52a4-b3d9-e94d9a23f002",
+        "type": "line",
+        "producer": {
+          "operationId": "6c7dee8d-e73b-5f1f-9606-428aa2a795ad",
+          "slot": "conjugate"
+        },
+        "displayName": "onlyAxes_{2}"
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "id": "8d8c2e28-9ac9-5a72-8768-01f424ba254a",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "directrix.1"
+        },
+        "displayName": "i"
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "id": "ad0753b8-c583-5530-a763-0f6847f45a4c",
+        "type": "line",
+        "producer": {
+          "operationId": "07dd8058-8be4-5e18-ac45-dc12bdbbad90",
+          "slot": "directrix.2"
+        },
+        "displayName": "h"
+      },
+      "ee45b066-8308-5ef3-85a3-74dd88af15fd": {
+        "id": "ee45b066-8308-5ef3-85a3-74dd88af15fd",
+        "type": "line",
+        "producer": {
+          "operationId": "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b",
+          "slot": "directrix.1"
+        },
+        "displayName": "onlyDirectrix"
+      },
+      "8cecdbd0-1361-5b1e-8291-3983b553d5b4": {
+        "id": "8cecdbd0-1361-5b1e-8291-3983b553d5b4",
+        "type": "line",
+        "producer": {
+          "operationId": "a4aa36f5-d7e7-5ea0-b97b-9f8bfecc580b",
+          "slot": "directrix.2"
+        },
+        "displayName": "onlyDirectrix_{1}"
+      }
+    },
+    "inputs": {
+      "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": {
+        "kind": "number",
+        "value": 0.0
+      }
+    },
+    "appearance": {
+      "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": {
+        "visible": false,
+        "label": {
+          "mode": "name_value"
+        }
+      },
+      "951608cb-59a9-55d1-902a-0c49772efb03": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4c92d719-9afb-5248-9ad1-f5008e4e5184": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "0d178f00-10cc-5e64-b3a7-004058ad2948": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "e31f0ae2-b081-540c-a667-403a65240b56": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "5b16176b-9da1-5cc0-a5ac-50b7f11932b4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "44da8d70-d764-5e62-88a2-9bb031882ec8": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "5cf73ddc-2007-589a-8198-102b119d63d8": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "1dca4b0c-fe6d-5df2-b168-c21a785db9cb": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "229156c0-b42e-57eb-9f3b-42d827cb35ad": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7381003a-c131-598f-a9bb-43c860a099c4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "4178d272-1a5c-503e-b99e-2e3e8769d34a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "652a15a2-374f-5d8f-8a37-0abb5333f1f9": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "af8932ef-9907-52a4-b3d9-e94d9a23f002": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8d8c2e28-9ac9-5a72-8768-01f424ba254a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ee45b066-8308-5ef3-85a3-74dd88af15fd": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "8cecdbd0-1361-5b1e-8291-3983b553d5b4": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10.0,
+        -8.0,
+        10.0,
+        8.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "8a6d0a11-dac6-53c7-be9b-bba47b4f8081": "ecc",
+        "951608cb-59a9-55d1-902a-0c49772efb03": "k",
+        "4c92d719-9afb-5248-9ad1-f5008e4e5184": "A",
+        "0d178f00-10cc-5e64-b3a7-004058ad2948": "B",
+        "e31f0ae2-b081-540c-a667-403a65240b56": "onlyFocus_{1}",
+        "5b16176b-9da1-5cc0-a5ac-50b7f11932b4": "onlyFocus_{2}",
+        "59a7766c-e0bb-5d47-a2bf-e8ca08fa9882": "C",
+        "44da8d70-d764-5e62-88a2-9bb031882ec8": "D",
+        "c7b18bfa-fb79-522a-ac3f-f8dea023bfdd": "E",
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": "F",
+        "5cf73ddc-2007-589a-8198-102b119d63d8": "onlyVertex_{1}",
+        "1dca4b0c-fe6d-5df2-b168-c21a785db9cb": "onlyVertex_{2}",
+        "e6cf800d-d4fd-5b15-a3d7-18514f6c8ed1": "onlyVertex_{3}",
+        "229156c0-b42e-57eb-9f3b-42d827cb35ad": "onlyVertex_{4}",
+        "7381003a-c131-598f-a9bb-43c860a099c4": "f",
+        "4178d272-1a5c-503e-b99e-2e3e8769d34a": "g",
+        "652a15a2-374f-5d8f-8a37-0abb5333f1f9": "onlyAxes_{1}",
+        "af8932ef-9907-52a4-b3d9-e94d9a23f002": "onlyAxes_{2}",
+        "8d8c2e28-9ac9-5a72-8768-01f424ba254a": "i",
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": "h",
+        "ee45b066-8308-5ef3-85a3-74dd88af15fd": "onlyDirectrix",
+        "8cecdbd0-1361-5b1e-8291-3983b553d5b4": "onlyDirectrix_{1}"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved"
+    }
+  ]
+}

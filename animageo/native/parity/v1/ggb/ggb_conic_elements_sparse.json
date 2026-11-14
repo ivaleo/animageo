@@ -1,0 +1,1011 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "ggb_conic_elements_sparse",
+  "registry": "1.13",
+  "generatedBy": "animageo 1.18.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "ggb_conic_elements_sparse",
+    "operationRegistryVersion": "1.13",
+    "operations": {
+      "a768ac95-7422-591e-871e-7ed780013ba1": {
+        "id": "a768ac95-7422-591e-871e-7ed780013ba1",
+        "op": "number.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "number",
+            "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+          }
+        ],
+        "seq": 1
+      },
+      "03c64d68-6804-5156-91d5-284cbc41480a": {
+        "id": "03c64d68-6804-5156-91d5-284cbc41480a",
+        "op": "conic.equation",
+        "args": {
+          "expr": {
+            "kind": "expr",
+            "ast": {
+              "op": "-",
+              "args": [
+                {
+                  "op": "+",
+                  "args": [
+                    {
+                      "op": "*",
+                      "args": [
+                        {
+                          "ref": 0
+                        },
+                        {
+                          "op": "^",
+                          "args": [
+                            {
+                              "var": "x"
+                            },
+                            {
+                              "num": 2.0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "^",
+                      "args": [
+                        {
+                          "var": "y"
+                        },
+                        {
+                          "num": 2.0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "*",
+                  "args": [
+                    {
+                      "num": 4.0
+                    },
+                    {
+                      "var": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "refs": {
+            "kind": "list",
+            "items": [
+              {
+                "kind": "ref",
+                "elementId": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+              }
+            ]
+          }
+        },
+        "outputs": [
+          {
+            "slot": "conic",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        ],
+        "seq": 2
+      },
+      "5262743b-8b75-5332-9939-957c8d302be5": {
+        "id": "5262743b-8b75-5332-9939-957c8d302be5",
+        "op": "conic.foci",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d"
+          }
+        ],
+        "seq": 3
+      },
+      "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7": {
+        "id": "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7",
+        "op": "conic.foci",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "second",
+            "elementId": "128acdc8-77e4-558b-8201-83b731db0f35"
+          }
+        ],
+        "seq": 4
+      },
+      "e9fba105-df77-53b8-97f5-40d89980b343": {
+        "id": "e9fba105-df77-53b8-97f5-40d89980b343",
+        "op": "conic.vertices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "first",
+            "elementId": "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+          },
+          {
+            "slot": "third",
+            "elementId": "1f56871c-7fbf-51ce-826a-f704ca7420a1"
+          },
+          {
+            "slot": "fourth",
+            "elementId": "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c"
+          }
+        ],
+        "seq": 5
+      },
+      "76532e33-aaf7-5a74-9122-c112b7ed1caf": {
+        "id": "76532e33-aaf7-5a74-9122-c112b7ed1caf",
+        "op": "conic.axes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "focal",
+            "elementId": "ad0753b8-c583-5530-a763-0f6847f45a4c"
+          },
+          {
+            "slot": "conjugate",
+            "elementId": "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca"
+          }
+        ],
+        "seq": 6
+      },
+      "7fc5d567-6884-5e4d-8dac-d0a18696164e": {
+        "id": "7fc5d567-6884-5e4d-8dac-d0a18696164e",
+        "op": "conic.directrices",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "directrix.1",
+            "elementId": "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408"
+          }
+        ],
+        "seq": 7
+      },
+      "80a2c862-e465-51f8-ae72-fd439625606c": {
+        "id": "80a2c862-e465-51f8-ae72-fd439625606c",
+        "op": "conic.asymptotes",
+        "args": {
+          "conic": {
+            "kind": "ref",
+            "elementId": "7dd23c39-d910-5294-89eb-c434449ddced"
+          },
+          "count": {
+            "kind": "number",
+            "value": 2
+          }
+        },
+        "outputs": [
+          {
+            "slot": "asymptote.2",
+            "elementId": "06a17f48-500f-58b8-8cda-395c93ed8b20"
+          }
+        ],
+        "seq": 8
+      }
+    },
+    "elements": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "id": "d3854594-e95f-59c3-8ff7-1ff02a55eaa0",
+        "type": "number",
+        "producer": {
+          "operationId": "a768ac95-7422-591e-871e-7ed780013ba1",
+          "slot": "number"
+        },
+        "displayName": "a"
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "id": "7dd23c39-d910-5294-89eb-c434449ddced",
+        "type": "conic",
+        "producer": {
+          "operationId": "03c64d68-6804-5156-91d5-284cbc41480a",
+          "slot": "conic"
+        },
+        "displayName": "K"
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "id": "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d",
+        "type": "point",
+        "producer": {
+          "operationId": "5262743b-8b75-5332-9939-957c8d302be5",
+          "slot": "first"
+        },
+        "displayName": "F"
+      },
+      "128acdc8-77e4-558b-8201-83b731db0f35": {
+        "id": "128acdc8-77e4-558b-8201-83b731db0f35",
+        "type": "point",
+        "producer": {
+          "operationId": "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7",
+          "slot": "second"
+        },
+        "displayName": "G"
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "id": "dd71a4a4-9e17-57b9-a97f-df26e330e72a",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "first"
+        },
+        "displayName": "P"
+      },
+      "1f56871c-7fbf-51ce-826a-f704ca7420a1": {
+        "id": "1f56871c-7fbf-51ce-826a-f704ca7420a1",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "third"
+        },
+        "displayName": "R"
+      },
+      "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c": {
+        "id": "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c",
+        "type": "point",
+        "producer": {
+          "operationId": "e9fba105-df77-53b8-97f5-40d89980b343",
+          "slot": "fourth"
+        },
+        "displayName": "S"
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "id": "ad0753b8-c583-5530-a763-0f6847f45a4c",
+        "type": "line",
+        "producer": {
+          "operationId": "76532e33-aaf7-5a74-9122-c112b7ed1caf",
+          "slot": "focal"
+        },
+        "displayName": "h"
+      },
+      "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+        "id": "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca",
+        "type": "line",
+        "producer": {
+          "operationId": "76532e33-aaf7-5a74-9122-c112b7ed1caf",
+          "slot": "conjugate"
+        },
+        "displayName": "v"
+      },
+      "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+        "id": "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408",
+        "type": "line",
+        "producer": {
+          "operationId": "7fc5d567-6884-5e4d-8dac-d0a18696164e",
+          "slot": "directrix.1"
+        },
+        "displayName": "d"
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "id": "06a17f48-500f-58b8-8cda-395c93ed8b20",
+        "type": "line",
+        "producer": {
+          "operationId": "80a2c862-e465-51f8-ae72-fd439625606c",
+          "slot": "asymptote.2"
+        },
+        "displayName": "s"
+      }
+    },
+    "inputs": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "kind": "number",
+        "value": 0.0
+      }
+    },
+    "appearance": {
+      "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "7dd23c39-d910-5294-89eb-c434449ddced": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "128acdc8-77e4-558b-8201-83b731db0f35": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "1f56871c-7fbf-51ce-826a-f704ca7420a1": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      },
+      "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+        "visible": true,
+        "label": {
+          "mode": "name"
+        }
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -8.0,
+        -6.0,
+        8.0,
+        6.0
+      ]
+    },
+    "bindings": {
+      "legacyNames": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": "a",
+        "7dd23c39-d910-5294-89eb-c434449ddced": "K",
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": "F",
+        "128acdc8-77e4-558b-8201-83b731db0f35": "G",
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": "P",
+        "1f56871c-7fbf-51ce-826a-f704ca7420a1": "R",
+        "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c": "S",
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": "h",
+        "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": "v",
+        "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": "d",
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": "s"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "saved",
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_asymptote"
+        },
+        "128acdc8-77e4-558b-8201-83b731db0f35": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "1f56871c-7fbf-51ce-826a-f704ca7420a1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -1.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 1
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "parabola",
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "p": 2.0
+          }
+        },
+        "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              -0.0
+            ]
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7:focal": "passed",
+        "5262743b-8b75-5332-9939-957c8d302be5:focal": "passed",
+        "7fc5d567-6884-5e4d-8dac-d0a18696164e:focus_directrix": "passed",
+        "e9fba105-df77-53b8-97f5-40d89980b343:on_curve": "passed"
+      }
+    },
+    {
+      "name": "circle",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": 1
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_asymptote"
+        },
+        "128acdc8-77e4-558b-8201-83b731db0f35": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        },
+        "1f56871c-7fbf-51ce-826a-f704ca7420a1": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": -2.0
+          }
+        },
+        "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_directrix"
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "ellipse",
+            "c": [
+              2.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              0.0
+            ],
+            "a": 2.0,
+            "b": 2.0
+          }
+        },
+        "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              2.0,
+              0.0
+            ],
+            "dir": [
+              -0.0,
+              1.0
+            ]
+          }
+        },
+        "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 2.0
+          }
+        },
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 1.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 2.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7:focal": "passed",
+        "5262743b-8b75-5332-9939-957c8d302be5:focal": "passed",
+        "e9fba105-df77-53b8-97f5-40d89980b343:on_curve": "passed"
+      }
+    },
+    {
+      "name": "hyperbola",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": -1
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.9999999999999998,
+              -0.9999999999999998
+            ],
+            "dir": [
+              -0.7071067811865475,
+              0.7071067811865475
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "128acdc8-77e4-558b-8201-83b731db0f35": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.8284271247461903,
+            "y": 0.0
+          }
+        },
+        "1f56871c-7fbf-51ce-826a-f704ca7420a1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -0.5857864376269051,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 2
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "hyperbola",
+            "c": [
+              -2.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "a": 2.0,
+            "b": 2.0
+          }
+        },
+        "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -2.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              -0.0
+            ]
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": -1.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": 0.0
+          }
+        },
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.82842712474619,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7:focal": "passed",
+        "5262743b-8b75-5332-9939-957c8d302be5:focal": "passed",
+        "7fc5d567-6884-5e4d-8dac-d0a18696164e:focus_directrix": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:through_center": "passed",
+        "80a2c862-e465-51f8-ae72-fd439625606c:asymptotic_direction": "passed",
+        "e9fba105-df77-53b8-97f5-40d89980b343:on_curve": "passed"
+      }
+    },
+    {
+      "name": "recovery",
+      "inputs": {
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "kind": "number",
+          "value": 0
+        }
+      },
+      "scale": 16.0,
+      "expect": {
+        "06a17f48-500f-58b8-8cda-395c93ed8b20": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "no_asymptote"
+        },
+        "128acdc8-77e4-558b-8201-83b731db0f35": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "1f56871c-7fbf-51ce-826a-f704ca7420a1": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              -1.0,
+              0.0
+            ],
+            "dir": [
+              0.0,
+              1.0
+            ]
+          },
+          "detail": {
+            "found": 1
+          }
+        },
+        "7dd23c39-d910-5294-89eb-c434449ddced": {
+          "state": "defined",
+          "type": "conic",
+          "value": {
+            "kind": "parabola",
+            "vertex": [
+              0.0,
+              0.0
+            ],
+            "axis": [
+              1.0,
+              -0.0
+            ],
+            "p": 2.0
+          }
+        },
+        "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca": {
+          "state": "undefined",
+          "type": "line",
+          "reason": "branch_absent"
+        },
+        "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c": {
+          "state": "undefined",
+          "type": "point",
+          "reason": "branch_absent"
+        },
+        "ad0753b8-c583-5530-a763-0f6847f45a4c": {
+          "state": "defined",
+          "type": "line",
+          "value": {
+            "p": [
+              0.0,
+              0.0
+            ],
+            "dir": [
+              1.0,
+              -0.0
+            ]
+          }
+        },
+        "d3854594-e95f-59c3-8ff7-1ff02a55eaa0": {
+          "state": "defined",
+          "type": "number",
+          "value": {
+            "value": 0.0,
+            "unit": "scalar"
+          }
+        },
+        "dd71a4a4-9e17-57b9-a97f-df26e330e72a": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 0.0
+          }
+        }
+      },
+      "checks": {
+        "02b92ad5-89a8-51ee-bf85-ad70ca5f86c7:focal": "passed",
+        "5262743b-8b75-5332-9939-957c8d302be5:focal": "passed",
+        "7fc5d567-6884-5e4d-8dac-d0a18696164e:focus_directrix": "passed",
+        "e9fba105-df77-53b8-97f5-40d89980b343:on_curve": "passed"
+      }
+    }
+  ],
+  "import": {
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?><geogebra format=\"5.0\" version=\"5.4.927.1\" app=\"classic\" platform=\"w\"><euclidianView><size width=\"800\" height=\"600\"/><coordSystem xZero=\"400\" yZero=\"300\" scale=\"50\" yscale=\"50\"/></euclidianView><kernel><decimals val=\"2\"/></kernel><construction title=\"\" author=\"\" date=\"\"><element type=\"numeric\" label=\"a\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><value val=\"0\"/></element><expression label=\"K\" exp=\"a*x^2+y^2=4*x\" type=\"conic\"/><element type=\"conic\" label=\"K\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><matrix A0=\"0\" A1=\"1\" A2=\"0\" A3=\"0\" A4=\"-2\" A5=\"0\"/></element><command name=\"Focus\"><input a0=\"K\"/><output a0=\"F\" a1=\"\"/></command><element type=\"point\" label=\"F\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"1\" y=\"0\" z=\"1\"/></element><command name=\"Focus\"><input a0=\"K\"/><output a0=\"\" a1=\"G\"/></command><element type=\"point\" label=\"G\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/></element><command name=\"Vertex\"><input a0=\"K\"/><output a0=\"P\" a1=\"\" a2=\"R\" a3=\"S\"/></command><element type=\"point\" label=\"P\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><pointSize val=\"5\"/><pointStyle val=\"0\"/><coords x=\"0\" y=\"0\" z=\"1\"/></element><element type=\"point\" label=\"R\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/></element><element type=\"point\" label=\"S\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/></element><command name=\"Axes\"><input a0=\"K\"/><output a0=\"h\" a1=\"v\"/></command><element type=\"line\" label=\"h\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"0\" y=\"1\" z=\"0\"/></element><element type=\"line\" label=\"v\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"1\" y=\"0\" z=\"0\"/></element><command name=\"Directrix\"><input a0=\"K\"/><output a0=\"d\" a1=\"\"/></command><element type=\"line\" label=\"d\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"1\" y=\"0\" z=\"1\"/></element><command name=\"Asymptote\"><input a0=\"K\"/><output a0=\"\" a1=\"s\"/></command><element type=\"line\" label=\"s\"><show object=\"true\" label=\"true\"/><objColor r=\"21\" g=\"101\" b=\"192\" alpha=\"0.0\"/><layer val=\"0\"/><labelMode val=\"0\"/><coords x=\"NaN\" y=\"NaN\" z=\"NaN\"/></element></construction></geogebra>",
+    "elements": [
+      {
+        "ggb_name": "a",
+        "ggb_type": "numeric",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "d3854594-e95f-59c3-8ff7-1ff02a55eaa0"
+        ]
+      },
+      {
+        "ggb_name": "K",
+        "ggb_type": "conic",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "7dd23c39-d910-5294-89eb-c434449ddced"
+        ]
+      },
+      {
+        "ggb_name": "F",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "eae68dce-7830-5bf3-b85f-7c2b1bb1d30d"
+        ]
+      },
+      {
+        "ggb_name": "G",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "128acdc8-77e4-558b-8201-83b731db0f35"
+        ]
+      },
+      {
+        "ggb_name": "P",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "dd71a4a4-9e17-57b9-a97f-df26e330e72a"
+        ]
+      },
+      {
+        "ggb_name": "R",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "1f56871c-7fbf-51ce-826a-f704ca7420a1"
+        ]
+      },
+      {
+        "ggb_name": "S",
+        "ggb_type": "point",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "a8b5b1a8-43a0-5c17-9956-413ae6f4da3c"
+        ]
+      },
+      {
+        "ggb_name": "h",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "ad0753b8-c583-5530-a763-0f6847f45a4c"
+        ]
+      },
+      {
+        "ggb_name": "v",
+        "ggb_type": "line",
+        "category": "differs",
+        "reason": "value_mismatch",
+        "value_check": "failed",
+        "native_ids": [
+          "85a4ea55-a3b8-55a1-bdd9-8b6e4097abca"
+        ]
+      },
+      {
+        "ggb_name": "d",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "346f8b7c-0f59-52aa-8c61-b6f8a6fb6408"
+        ]
+      },
+      {
+        "ggb_name": "s",
+        "ggb_type": "line",
+        "category": "editable",
+        "value_check": "passed",
+        "native_ids": [
+          "06a17f48-500f-58b8-8cda-395c93ed8b20"
+        ]
+      }
+    ]
+  }
+}
