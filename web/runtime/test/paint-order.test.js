@@ -26,9 +26,9 @@ test('Python board order consumes the portable paint fixture without sorting it'
   const { readFile } = await import('node:fs/promises');
   const spec = JSON.parse(await readFile(new URL('./fixtures/fill_order.board.json', import.meta.url)));
   const paint = JSON.parse(await readFile(new URL('../../../animageo/native/parity/v1/paint/paint_fill_order.json', import.meta.url)));
-  const oracle = paint.cases.find((c) => c.name === 'nested_circle_and_polygon').expect;
-  assert.deepEqual(spec.paintOrder.fillOrder, oracle.fillOrder);
-  assert.deepEqual(spec.paintOrder.partOrder.map(({ id, part }) => ({ id, part })), oracle.partOrder);
+  const expected_paint = paint.cases.find((c) => c.name === 'nested_circle_and_polygon').expect;
+  assert.deepEqual(spec.paintOrder.fillOrder, expected_paint.fillOrder);
+  assert.deepEqual(spec.paintOrder.partOrder.map(({ id, part }) => ({ id, part })), expected_paint.partOrder);
   const h = createBoard(spec, {}, { engine: domEngine() });
   const expected = spec.paintOrder.partOrder.flatMap((ref) => ref.targets.flatMap((t) => {
     const obj = h.S[t.name];

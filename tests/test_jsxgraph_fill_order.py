@@ -68,15 +68,15 @@ def fill_order_board():
     return scene
 
 
-def test_committed_board_matches_export_and_paint_oracle():
+def test_committed_board_matches_export_and_paint_expected_paint():
     from pathlib import Path
     root = Path(__file__).parents[1]
     fixture = json.loads((root / 'web/runtime/test/fixtures/fill_order.board.json').read_text())
     assert fixture == json.loads(fill_order_board().exportJSXGraph(output='spec'))
     paint = json.loads((root / 'animageo/native/parity/v1/paint/paint_fill_order.json').read_text())
-    oracle = next(c['expect'] for c in paint['cases'] if c['name'] == 'nested_circle_and_polygon')
-    assert fixture['paintOrder']['fillOrder'] == oracle['fillOrder']
-    assert [{k: r[k] for k in ('id', 'part')} for r in fixture['paintOrder']['partOrder']] == oracle['partOrder']
+    expected_paint = next(c['expect'] for c in paint['cases'] if c['name'] == 'nested_circle_and_polygon')
+    assert fixture['paintOrder']['fillOrder'] == expected_paint['fillOrder']
+    assert [{k: r[k] for k in ('id', 'part')} for r in fixture['paintOrder']['partOrder']] == expected_paint['partOrder']
 
 
 def test_static_angle_label_is_a_real_render_target():
