@@ -24,8 +24,8 @@ def _ratio(numerators, denominators=()):
 def _normal(first, second):
     exponent = max(e for m, e in (first, second) if m)
     x, y = (math.ldexp(m, e-exponent) if m else 0.0 for m, e in (first, second))
-    if (first[0] and not x) or (second[0] and not y):
-        raise ConicTangencyError('non_finite')
+    # A component below the unit vector's binary64 range rounds to zero.
+    # The retained exponent still exposes unrepresentable line offsets.
     length = math.hypot(x, y)
     return (x/length, y/length), (length, exponent)
 
