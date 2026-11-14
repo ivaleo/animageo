@@ -100,8 +100,9 @@ def _number(value, precision: int) -> str:
 
 
 class _Namer:
-    def __init__(self, doc, precision):
+    def __init__(self, doc, precision, evaluated=None):
         self.doc = doc
+        self.evaluated = evaluated
         self.precision = precision
         appearance = doc.data.get('appearance')
         self.appearance = appearance if isinstance(appearance, dict) else {}
@@ -292,6 +293,14 @@ def _op_phrase(doc, op_id, table, namer) -> str:
     record = registry().get(op['op'])
     if record is None:
         return op['op']
+    if op['op'] in ('conic.directrices', 'conic.asymptotes') and namer.evaluated is not None:
+        outputs = [o for o in op['outputs']
+                   if namer.evaluated.elements.get(o['elementId'], {}).get('state') == 'defined']
+        if not outputs:
+            template = ('У коники {conic} нет определённых конечных директрис' if op['op'] == 'conic.directrices'
+                        else 'У коники {conic} нет определённых прямолинейных асимптот')
+            return _fill(template, op, namer, {})
+        op = dict(op, outputs=outputs)
     entry = table['steps'].get(record.get('stepKind'))
     extra: dict = {}
     if not entry:
@@ -441,11 +450,12 @@ def _with_values(text, items) -> str:
 def describe(doc, *, values: bool = False, phrases=None, ev=None, precision: int = 2) -> list:
     """The lines of the construction (see the module docstring)."""
     doc = as_document(doc)
-    if values and ev is None:
+    if ev is None and (values or any(op['op'] in ('conic.directrices', 'conic.asymptotes')
+                                     for op in doc.operations.values())):
         from .kernel.evaluate import evaluate
         ev = evaluate(doc)
     table = _merged(phrases)
-    namer = _Namer(doc, precision)
+    namer = _Namer(doc, precision, ev)
     order = steps(doc)
     lines = []
     n = 0
