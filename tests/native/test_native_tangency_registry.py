@@ -19,7 +19,7 @@ def catalog():
 
 
 def test_catalog_and_active_registry_are_honest():
-    assert native.__registry_version__ == '1.13'
+    assert native.__registry_version__ == '1.14'
     assert native.has('tangency')
     assert set(catalog()) == NAMES
     assert {k for k, v in _MODULE_GROUPS.items() if v == 'tangency'} == NAMES

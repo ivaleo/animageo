@@ -48,7 +48,7 @@ def _prefixed(value, prefix):
 
 def _scenes():
     out = []
-    for path in sorted(SCENES.glob('*.json')) + sorted(CURVES.glob('*.json')):
+    for path in sorted(SCENES.glob('*.json')) + sorted(CURVES.glob('*.json')) + sorted((PARITY / 'text_blocks').glob('*.json')):
         doc = json.loads(path.read_text(encoding='utf-8'))['document']
         if native.validate(doc):
             continue                                  # scenes of broken documents

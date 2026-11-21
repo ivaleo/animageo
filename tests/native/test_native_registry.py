@@ -201,14 +201,14 @@ RECORD_FIELDS = {
 
 
 def test_version():
-    assert native.__registry_version__ == '1.13'
-    assert registry().version == '1.13'
-    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.13'
+    assert native.__registry_version__ == '1.14'
+    assert registry().version == '1.14'
+    assert json.loads((OPS_DIR / 'INDEX.json').read_text())['registryVersion'] == '1.14'
 
 
 def test_ops_and_files():
     reg = registry()
-    assert set(reg.ops) == ALL_OPS
+    assert set(reg.ops) == ALL_OPS | {'text.block'}
     assert set(reg.groups) == {'point', 'line', 'circle', 'intersect', 'polygon', 'number', 'angle', 'mark',
                                'arc', 'measure', 'transform', 'text', 'triangle', 'locus', 'function', 'conic',
                                'region', 'function_analysis', 'tangency', 'conic_elements'}
@@ -558,13 +558,13 @@ def test_registry_problems_catch_bad_catalogs(tmp_path):
     del types['paths']['ray']
     (copy_dir / '_types.json').write_text(json.dumps(types))
     line = json.loads((copy_dir / 'line.json').read_text())
-    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.14'
+    next(r for r in line if r['op'] == 'ray.by_points')['since'] = '1.15'
     (copy_dir / 'line.json').write_text(json.dumps(line))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
     assert "family 'path': unknown type 'spiral'" in problems
     assert "path type 'ray' has no entry in _types.json paths" in problems
-    assert any(p.startswith("ray.by_points: since '1.14'") for p in problems)
+    assert any(p.startswith("ray.by_points: since '1.15'") for p in problems)
 
 
 def test_implementations_both_ways():
@@ -664,11 +664,11 @@ def test_registry_problems_catch_bad_number_literal_families(tmp_path):
     copy_dir = tmp_path / 'v1'
     shutil.copytree(OPS_DIR, copy_dir)
     types = json.loads((copy_dir / '_types.json').read_text())
-    types['numberLiteralSince'] = {'limit': '1.14', 'curve': '1.9', 'spiral': '1.9'}
+    types['numberLiteralSince'] = {'limit': '1.15', 'curve': '1.9', 'spiral': '1.9'}
     (copy_dir / '_types.json').write_text(json.dumps(types))
     from animageo.native.registry import _load
     problems = registry_problems(_load(copy_dir))
-    assert "numberLiteralSince 'limit': since '1.14' is not a registry version" in problems
+    assert "numberLiteralSince 'limit': since '1.15' is not a registry version" in problems
     assert "numberLiteralSince 'curve': the family has no member 'number'" in problems
     assert "numberLiteralSince 'spiral': the family has no member 'number'" in problems
 

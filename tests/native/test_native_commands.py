@@ -140,7 +140,7 @@ SCENES = sorted(p for p in SCENES_DIR.glob('*.json') if p.stem != 'graph_errors'
 # The default lexicon covers every op but the two that «Команды» cannot type
 # (an expression and a text template; the printer prints them by hand) and the
 # functions and conics of registry 1.6 (no commands yet, ``deferred_op``).
-LEXICON_OPS = {op for op in registry().ops if op not in ('number.expression', 'text.free') and not deferred_op(op)}
+LEXICON_OPS = {op for op in registry().ops if op not in ('number.expression', 'text.free', 'text.block') and not deferred_op(op)}
 
 
 # ── lexicon ──────────────────────────────────────────────────────────────

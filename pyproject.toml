@@ -34,7 +34,8 @@ dependencies = [
     "manim>=0.20.1,<0.22",
     "pycairo>=1.0.0",
     "sympy>=1.12",
-    "scipy>=1.11"
+    "scipy>=1.11",
+    "regex>=2024.11.6"
 ]
 
 [tool.pytest.ini_options]
@@ -87,6 +88,7 @@ animageo = [
     "native/parity/v1/*.json",
     "native/parity/v1/scenes/*.json",
     "native/parity/v1/expected/*.json",
+    "native/parity/v1/text_blocks/*.json",
     "native/parity/v1/commands/*.json",
     "native/parity/v1/steps/*.json",
     "native/parity/v1/timeline/*.json",

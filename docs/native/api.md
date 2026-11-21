@@ -52,20 +52,29 @@ Read, check and write `animageo-construction/v1` (kernel.md §1–§2).
 
 The operation registry `ops/v1` (kernel.md §4) and what this library can do.
 
-- `REGISTRY_VERSION = '1.13'`
-- `__registry_version__ = '1.13'`
+- `REGISTRY_VERSION = '1.14'`
+- `__registry_version__ = '1.14'`
 - `class Registry(version, ops, groups, types, families, policies, reasons, numeric, index=<factory>, paths=<factory>, number_units=<factory>, mark_kinds=<factory>, family_since=<factory>, number_literal_since=<factory>)` — The loaded registry: records by op, service catalogs and the index.
 - `registry()` — The registry shipped with this library (cached).
 - `signature_hash(record)` — `"sha256:<hex>"` of the canonical JSON of `signature()`.
 - `FEATURES` — The names `has()` knows, a tuple of strings. A feature is added with the release that brings it and is never removed.
 - `has(feature)` — Whether this library has `feature` (one of `FEATURES`). A consumer checks a feature before it uses it, so it can run on an older library; the release that brought each feature is in the CHANGELOG (for example `regions` — the type `region` of registry 1.9 drawn in every format, its operations `function.area_between` and `region.by_boundary` and the stroke of a region as a label obstacle, `kernel.md` §16.2). It also answers the experimental features, kept outside `FEATURES` and this snapshot (`native.EXPERIMENTAL_FEATURES`): `space` — `animageo.native.space` (`space.md`).
 
+## Text blocks
+
+Literal `text.block` content and layout (registry 1.14, capability `text.block`).
+See [text.block](ops/text.block.md) for the content, style and resource limits.
+
+- `normalize_text_block(text)` — Convert plain Unicode text to canonical `text-block/v1` paragraphs and runs.
+- `text_block_plain_text(content)` — Reconstruct plain text from canonical content, preserving line breaks and spaces.
+- `layout_text_block(content, widthEm=30, size=1, align='left', *, text_style=None)` — Lay out literal text in em and return the positioned lines, font metrics version and content hash without starting a renderer.
+
 ## Evaluation and checks
 
 Values, states and reasons (kernel.md §5–§7); checks and the general case (checks.md).
 
 - `EVALUATED_FORMAT = 'animageo-evaluated/v1'`
-- `class Evaluated(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.13', computed=<factory>, t=None, visible=None)` — The result of `evaluate()`; `to_dict()` is `animageo-evaluated/v1`.
+- `class Evaluated(document_id, scale, elements, diagnostics, tolerances, library='', registry='1.14', computed=<factory>, t=None, visible=None)` — The result of `evaluate()`; `to_dict()` is `animageo-evaluated/v1`.
 - `evaluate(doc, *, inputs=None, t=None, timeline=None)` — Values, states and reasons of every element of `doc`.
 - `project(doc, element_id, xy, *, inputs=None)` — The path parameter of the point of a path nearest to `xy`.
 - `project_input(doc, element_id, xy, *, inputs=None)` — The input of a `point.on_path` point at the point of a path nearest to `xy`: `{"kind": "pathParameter", "value"}`, on a conic with `pathKind` and on a hyperbola with the nearest `branch` (1.14.0, kernel.md §16).

@@ -1,0 +1,9 @@
+[
+  {"input":"", "normalized":"", "paragraphs":[{"runs":[]}]},
+  {"input":"Условие {0} %v $x$ \\ <b>текст</b>", "normalized":"Условие {0} %v $x$ \\ <b>текст</b>", "paragraphs":[{"runs":[{"kind":"text","text":"Условие {0} %v $x$ \\ <b>текст</b>"}]}]},
+  {"input":"A\r\nB\rC\tD", "normalized":"A\nB\nC    D", "paragraphs":[{"runs":[{"kind":"text","text":"A"},{"kind":"break"},{"kind":"text","text":"B"},{"kind":"break"},{"kind":"text","text":"C    D"}]}]},
+  {"input":"a\n\nb", "normalized":"a\n\nb", "paragraphs":[{"runs":[{"kind":"text","text":"a"}]},{"runs":[{"kind":"text","text":"b"}]}]},
+  {"input":"\na\n\n\nb\n", "normalized":"\na\n\n\nb\n", "paragraphs":[{"runs":[{"kind":"break"},{"kind":"text","text":"a"}]},{"runs":[{"kind":"break"},{"kind":"text","text":"b"},{"kind":"break"}]}]},
+  {"input":"\n\n\n\n", "normalized":"\n\n\n\n", "paragraphs":[{"runs":[]},{"runs":[]},{"runs":[]}]},
+  {"input":"  ё е́ 👨‍👩‍👧‍👦 𐐀 中文  ", "normalized":"  ё е́ 👨‍👩‍👧‍👦 𐐀 中文  ", "paragraphs":[{"runs":[{"kind":"text","text":"  ё е́ 👨‍👩‍👧‍👦 𐐀 中文  "}]}]}
+]

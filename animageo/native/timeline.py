@@ -331,6 +331,11 @@ def sample_timeline(doc, timeline, t) -> dict:
 
 # ── effects ──────────────────────────────────────────────────────────────
 
+def _text_block_ids(doc):
+    ops = {id_ for id_, op in doc.operations.items() if op['op'] == 'text.block'}
+    return {id_ for id_ in doc.elements if bound_producer(doc, id_) in ops} if ops else set()
+
+
 def _effect_spec(spec, default):
     """``(effect, duration, at)`` of an ``enter``/``exit`` spec (a name or an
     object; ``keyframes._normalize_effect``), else of ``default``."""
@@ -358,6 +363,7 @@ def timeline_effects(doc, timeline, t) -> dict:
     duration: ``1`` from ``at`` on); ``present`` — whether the element is in
     the frame: ``progress > 0`` for an entrance, ``< 1`` for an exit (an
     element without an effect is present as ``sample_timeline`` says).
+    A text block uses a zero-duration ``none`` effect at its ``at`` offset.
     Elements that are not drawn (numbers) have no effects."""
     doc = as_document(doc)
     norm = normalize_timeline(doc, timeline)
@@ -370,6 +376,7 @@ def timeline_effects(doc, timeline, t) -> dict:
     defaults = timeline.get('defaults') or {}
     drawn = {el_id for el_id, el in doc.elements.items() if el['type'] not in UNDRAWN}
     running = dict(keyframes[0]['visible'])
+    blocks = _text_block_ids(doc)
     out = {}
     for i in range(k + 1):
         kf, nxt = keyframes[i], keyframes[i + 1]
@@ -387,6 +394,8 @@ def timeline_effects(doc, timeline, t) -> dict:
             phase = 'enter' if flag else 'exit'
             spec = (nxt['raw'].get(phase) or {}).get(el_id)
             effect, length, at = _effect_spec(spec, defaults.get(phase))
+            if el_id in blocks:
+                effect, length = 'none', 0.0
             at = min(max(at, 0.0), duration)
             length = max(min(length, duration - at), 0.0)
             if length <= 0:
@@ -421,6 +430,8 @@ def timeline_to_bridge(doc, timeline) -> dict:
     names = build_names(doc.elements).by_id
     drawn = {el_id for el_id, el in doc.elements.items() if el['type'] not in UNDRAWN}
     tracks = _tracks(doc, norm)
+    blocks = _text_block_ids(doc)
+    defaults = timeline.get('defaults') or {}
     out_keyframes = []
     for k, kf in enumerate(norm['keyframes']):
         raw = kf['raw']
@@ -448,6 +459,11 @@ def timeline_to_bridge(doc, timeline) -> dict:
             spec = raw.get(key) or {}
             mapped = {names[el_id]: copy.deepcopy(v) for el_id, v in sorted(spec.items())
                       if el_id in doc.elements and el_id in drawn}
+            if key != 'styles' and k > 0:
+                for el_id, flag in kf['visible'].items():
+                    if el_id in blocks and flag == (key == 'enter'):
+                        _, _, at = _effect_spec(spec.get(el_id), defaults.get(key))
+                        mapped[names[el_id]] = {'effect': 'none', 'duration': 0.0, 'at': at}
             if mapped:
                 item[key] = mapped
         events = []
@@ -525,10 +541,12 @@ def steps_timeline(doc, *, lag=0.3, duration=0.5, pause=0.6, effects=None, start
     keyframes = [{'t': start, 'visible': hidden}]
     out_steps = []
     s_i = start
+    blocks = _text_block_ids(doc)
     for i, (step, ids) in enumerate(rows):
         d_i = (len(ids) - 1) * lag + duration
         offset = 0.0 if i == 0 else pause
-        enter = {e: {'effect': table.get(doc.elements[e]['type'], 'fade'), 'duration': duration,
+        enter = {e: {'effect': 'none' if e in blocks else table.get(doc.elements[e]['type'], 'fade'),
+                     'duration': 0.0 if e in blocks else duration,
                      'at': offset + j * lag} for j, e in enumerate(ids)}
         keyframes.append({'t': s_i + d_i, 'visible': {e: True for e in ids}, 'enter': enter})
         out_steps.append({'stepId': step.id, 'start': s_i, 'end': s_i + d_i, 'elementIds': list(ids),

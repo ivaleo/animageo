@@ -275,6 +275,9 @@ class AnimaGeoScene(MovingCameraScene):
         # loadDocument: the TikZ picture is the export canvas, not the camera
         # frame (exporters.tikz.TikZOptions.frame)
         self.export_frame_exact = False
+        self._native_blocks_tikz = False
+        self._native_block_layouts = {}
+        self._native_block_vectors = {}
 
         self.cuts = 0
         self._label_tracker = None  # Set by autoPlaceLabels(dynamic=True)
@@ -630,6 +633,8 @@ class AnimaGeoScene(MovingCameraScene):
             self.addOrdered(mobj_new)
         if not needRemove and not needAdd:
             mobj.become(mobj_new)
+            if hasattr(mobj_new, '_animageo_text_block'):
+                mobj._animageo_text_block = mobj_new._animageo_text_block
             # become() copies points/draw style but not z_index, the cap
             # or the dash pattern — carry them so style changes (incl.
             # keyframe tracks, solid <-> dashed) take effect.
@@ -1232,6 +1237,8 @@ class AnimaGeoScene(MovingCameraScene):
         self.native_view = None
         self.label_point_clearance = False
         self.export_frame_exact = False
+        self._native_block_layouts.clear()
+        self._native_block_vectors.clear()
         self._reset_mark_decorations()
         try:
             self.clear()  # manim Scene.clear() — drop accumulated mobjects
@@ -1321,6 +1328,11 @@ class AnimaGeoScene(MovingCameraScene):
         from .native.rendering import _appearance_plan, apply_appearance, source_view
 
         doc = as_document(doc)
+        from .native.text_block import check_render_budget
+        blocks = {id_ for id_, op in doc.operations.items() if op['op'] == 'text.block'
+                  and (op['args'].get('content') or {}).get('kind') == 'text-block'}
+        if blocks:
+            check_render_budget(doc, blocks)
         self.resetScene()
         view = source_view(doc)
         # Replaces what an earlier .ggb left (background, fontSize); the source
@@ -2548,7 +2560,9 @@ class AnimaGeoScene(MovingCameraScene):
             if self.CreateMObject(elem) is None:
                 continue
             names.append(elem.name)
-            if effect is None:
+            if hasattr(elem.data, '_native_text_block'):
+                type_effects[elem.name] = 'none'
+            elif effect is None:
                 type_effects[elem.name] = per_type.get(type(elem.data), 'create')
             else:
                 type_effects[elem.name] = effect
@@ -3009,11 +3023,10 @@ class AnimaGeoScene(MovingCameraScene):
             self.updateGeoElements(touched)
 
     def _export_cairo(self, filepath, *, surface, dpi, label, transparent=False):
-        """Write the current frame to a cairo vector ``surface``.
+        """Write the current frame to a Cairo surface.
 
-        Shared by ``exportSVG`` / ``exportPDF`` / ``exportEPS``: identical
-        mobject walk, differing only in the cairo surface kind and (for
-        PDF/EPS) the px→pt scale governed by ``dpi``.
+        SVG, PDF, EPS and native block previews share the same mobject walk.
+        The surface kind and, for PDF/EPS, the px→pt conversion differ.
         """
         if filepath is None:
             fd, filepath = tempfile.mkstemp(suffix="." + surface)
@@ -3612,6 +3625,9 @@ class AnimaGeoScene(MovingCameraScene):
         lw = stroke_width_to_manim(lw, ptUnit_style)
 
         fs_px = _resolve_style(self, elem, 'font_size_px', default=14.0)
+        if hasattr(elem.data, '_native_text_block'):
+            from .native.text_block import block_font_size
+            fs_px = block_font_size(fs_px)
         font_size = fs_px * GGB_FONT_SCALE / ptUnit_style
         label_anchor = _resolve_style(
             self, elem, 'label_anchor',
@@ -4911,6 +4927,15 @@ class AnimaGeoScene(MovingCameraScene):
         vm.set_z_index(ctx.zz)
         return VGroup(vm, name=elem.name)
 
+    def _native_block_report(self, elem):
+        """Compute the report for a TikZ block that has no scene mobject."""
+        from .text_block_render import block_box, block_projection
+
+        export = self.style.export
+        projection = block_projection(self, elem, ptUnit_style=export['ptUnit_style'],
+                                      ptUnit_ggb=export['ptUnit_ggb'])
+        return projection, block_box(projection)
+
     def _render_text(self, elem, ctx):
         """Render a GeoGebra free-text object.
 
@@ -4921,6 +4946,9 @@ class AnimaGeoScene(MovingCameraScene):
         make the position track their point live.
         """
         text = elem.data
+        if hasattr(text, '_native_text_block'):
+            from .text_block_render import render_block
+            return render_block(self, elem, ctx)
         decimals = getattr(self.geo, 'ggb_decimals', 2)
         tex_str = geo.text_to_display_latex(self.geo, text, decimals)
         if not tex_str:
@@ -4968,7 +4996,8 @@ class AnimaGeoScene(MovingCameraScene):
         element must not abort the rest of the scene.
         """
         try:
-            if not self._element_visible(elem):
+            if (self._native_blocks_tikz and hasattr(getattr(elem, 'data', None), '_native_text_block')
+                    or not self._element_visible(elem)):
                 return None
             ctx = self._build_render_ctx(elem, z_auto)
             renderer = self._renderer_for(elem)
@@ -4983,6 +5012,8 @@ class AnimaGeoScene(MovingCameraScene):
                 self._tag_display_parts(mobject, elem, ctx)
             return mobject
         except Exception as e:
+            if hasattr(getattr(elem, 'data', None), '_native_text_block'):
+                raise
             hint = ''
             if isinstance(e, RecursionError):
                 hint = (

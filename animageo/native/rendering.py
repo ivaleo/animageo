@@ -559,6 +559,19 @@ def _check_video(video) -> dict:
     return out
 
 
+def _check_block_bitmap(width, height):
+    if not (1 <= width <= 8192 and 1 <= height <= 8192 and width * height <= 16_777_216):
+        raise ValueError('text.block: scene raster limit is 16777216 pixels and 8192 pixels per side')
+
+
+def _check_block_states(doc, inputs, block_ops):
+    from .kernel.evaluate import evaluate
+    for element_id, state in evaluate(doc, inputs=inputs).elements.items():
+        producer = doc.elements[element_id].get('producer') or {}
+        if producer.get('operationId') in block_ops and state['state'] in ('error', 'unsupported'):
+            raise ValueError(f"text.block {element_id}: {state['state']}/{state['reason']}")
+
+
 def _import_scene():
     try:
         from ..animageo import AnimaGeoScene
@@ -579,7 +592,7 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     file path, a packaged preset name or ``None`` (built-in);
     ``styleBinding`` of the document is not read. ``export_layout``: the
     placement keyword arguments of ``loadGGB`` — ``{reference?, content?,
-    export?}``. ``fmt``: ``svg``, ``png`` (SVG rasterised by cairosvg),
+    export?}``. ``fmt``: ``svg``, ``png``,
     ``pdf`` (96 dpi), ``eps`` (``exportEPS``), ``tikz`` (a ``tikzpicture``
     to include, ``exportTikZ(standalone=False)``) or ``tex`` (a compilable
     standalone document).
@@ -607,13 +620,14 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
 
     1.9.0a5: ``fmt="png"`` with ``video`` — the frame as the video draws it:
     the manim camera of the video (its pixel size, ``quality``; ``fps`` is
-    checked and not used) instead of cairosvg of the SVG; with ``t`` and
+    checked and not used) instead of the static export. With ``t`` and
     ``timeline`` it is the frame of the video at ``t``, its value labels
     drawn with the cached digits of the video too (the frame the video
     writes, before the codec, matches it at ≥ 60 dB, mostly to the pixel;
     docs/native/timeline.md §3). The report gains ``video``
     ``{quality, width, height}``; its boxes stay in pixels of the canvas.
-    Without ``video`` a PNG is cairosvg of the SVG, as before.
+    A static PNG uses cairosvg on the SVG. Scenes with ``text.block``
+    draw directly onto a Cairo image surface.
     """
     if fmt not in RENDER_FORMATS:
         raise NotImplementedError(f'format {fmt!r}: native.render writes {", ".join(RENDER_FORMATS)}')
@@ -624,9 +638,29 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     doc = as_document(doc)
     from .kernel.evaluate import check_inputs
     check_inputs(doc, inputs)
+    block_ops = {op_id for op_id, operation in doc.operations.items() if operation['op'] == 'text.block'}
+    if block_ops:
+        from .document import validate
+        for issue in validate(doc):
+            if issue.severity == 'error' and issue.operationId in block_ops:
+                raise ValueError(f'text.block: {issue.message}')
+        from .text_block import check_render_budget
+        check_render_budget(doc, block_ops)
+    if block_ops and (fmt == 'png' or fmt in VIDEO_FORMATS):
+        dimensions = _video_size(doc, layout, _check_video(video)) if video is not None else None
+        if dimensions is None:
+            view = source_view(doc)
+            frame = layout.get('export') or {}
+            dimensions = (frame.get('ptWidth', view['ptWidth']), frame.get('ptHeight', view['ptHeight']))
+        _check_block_bitmap(*dimensions[:2])
     if fmt in VIDEO_FORMATS:
         if timeline is None:
             raise ValueError('timeline_required')
+        if block_ops:
+            from .timeline import normalize_timeline, sample_timeline
+            normalized = normalize_timeline(doc, timeline)
+            sampled = sample_timeline(doc, timeline, normalized['keyframes'][0]['t'])
+            _check_block_states(doc, dict(sampled['inputs'], **(inputs or {})), block_ops)
         return _render_video(doc, style_config, layout, fmt, out, inputs, timeline, report, _check_video(video))
     frame_size = None
     if video is not None:
@@ -639,6 +673,9 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
             raise ValueError('native.render: t and timeline go together')
         from .timeline import sample_timeline
         sample = sample_timeline(doc, timeline, t)
+    if block_ops:
+        resolved_inputs = dict(sample['inputs'], **(inputs or {})) if sample is not None else inputs
+        _check_block_states(doc, resolved_inputs, block_ops)
     AnimaGeoScene = _import_scene()
 
     if out is None:
@@ -646,13 +683,15 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         os.close(fd)
     out = os.path.abspath(os.fspath(out))
 
+    blocks_tikz = bool(block_ops) and fmt in ('tikz', 'tex')
     if frame_size is not None:
         scene = _camera_png(AnimaGeoScene, doc, style_config, inputs, layout, frame_size, out,
                             timeline if sample is not None else None, t)
     elif sample is not None:
-        scene = _still_scene(doc, style_config, inputs, layout, timeline, t, scene_class=AnimaGeoScene)
+        scene = _still_scene(doc, style_config, inputs, layout, timeline, t, scene_class=AnimaGeoScene,
+                             blocks_tikz=blocks_tikz)
     else:
-        scene = _load(AnimaGeoScene, doc, style_config, inputs, layout)
+        scene = _load(AnimaGeoScene, doc, style_config, inputs, layout, blocks_tikz=blocks_tikz)
     if frame_size is not None:
         pass  # written by _camera_png
     elif fmt == 'svg':
@@ -663,6 +702,11 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         scene.exportEPS(out)
     elif fmt in ('tikz', 'tex'):
         scene.exportTikZ(out, standalone=(fmt == 'tex'))
+    elif block_ops:
+        # Draw the same Cairo paths straight onto an image. Large blocks would
+        # otherwise retain and reparse a many-megabyte intermediate SVG.
+        _check_block_bitmap(scene.style.export['ptWidth'], scene.style.export['ptHeight'])
+        scene._export_cairo(out, surface='png', dpi=96.0, label='PNG')
     else:
         try:
             import cairosvg
@@ -794,15 +838,16 @@ def _bridged_timeline(doc, timeline, inputs=None, *, hold=HOLD_DURATION) -> dict
     return bridge
 
 
-def _load(scene_class, doc, style_config, inputs, layout):
+def _load(scene_class, doc, style_config, inputs, layout, *, blocks_tikz=False):
     scene = scene_class()
+    scene._native_blocks_tikz = blocks_tikz
     scene.loadDocument(doc, style=style_config, inputs=inputs,
                        reference=layout.get('reference'), content=layout.get('content'),
                        export=layout.get('export'))
     return scene
 
 
-def _still_scene(doc, style_config, inputs, layout, timeline, t, *, scene_class=None, video_labels=False):
+def _still_scene(doc, style_config, inputs, layout, timeline, t, *, scene_class=None, video_labels=False, blocks_tikz=False):
     """The scene of the frame of the video at ``t`` (``render(t=…)``,
     1.11.0): the document loaded as the video loads it, then
     ``seek_keyframes`` of its bridged timeline — the frame function of the
@@ -811,6 +856,7 @@ def _still_scene(doc, style_config, inputs, layout, timeline, t, *, scene_class=
     builds are built with those of the frame, once (``_deferring_builds``)."""
     doc = as_document(doc)
     scene = (scene_class or _import_scene())()
+    scene._native_blocks_tikz = blocks_tikz
     with scene._deferring_builds():
         scene.loadDocument(doc, style=style_config, inputs=inputs,
                            reference=layout.get('reference'), content=layout.get('content'),
@@ -1033,7 +1079,14 @@ def build_report(scene, doc, *, fmt: str, inputs=None) -> dict:
         role = roles_of.get(el_id)
         if role is not None:
             record['role'] = role
+        if (scene._native_blocks_tikz and hasattr(getattr(elem, 'data', None), '_native_text_block')
+                and scene._element_visible(elem)):
+            projection, box = scene._native_block_report(elem)
+            record.update(visible=True, textBlock=projection, box=_px_box(box, export))
         if mobj is not None:
+            projection = getattr(mobj, '_animageo_text_block', None)
+            if projection is not None:
+                record['textBlock'] = projection
             decoration = _scene_decoration(scene, elem, style_type_of(doc, el_id))
             if decoration is not None:
                 record['decoration'] = decoration

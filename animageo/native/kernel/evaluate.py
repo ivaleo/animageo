@@ -278,6 +278,7 @@ def build_args(record, resolved, elements, ops, states, scale=1.0) -> dict:
         args[slot] = Input('expr', ast)
     for slot, text in resolved.templates.items():
         args[slot] = Input('template', text)
+    args.update({slot: Input('text-block', content) for slot, content in resolved.blocks.items()})
     path_slots = {item['slot'] for item in record['inputs'] if item['type'] == 'path'}
     end_slots = {item['slot'] for item in record['inputs'] if item.get('ends')}
     for slot, is_list, ids in resolved.refs:
@@ -407,6 +408,7 @@ class Arguments:
     params: dict
     exprs: dict = field(default_factory=dict)
     templates: dict = field(default_factory=dict)
+    blocks: dict = field(default_factory=dict)
 
     def __iter__(self):           # ``for slot, is_list, ids in arguments`` reads the refs
         return iter(self.refs)
@@ -432,6 +434,8 @@ def _argument_status(op, record, doc, reg):
     registry 1.10: in a typed slot (``result``) the rules include the types
     of the elements of ``refs`` (docs/native/expr.md §6).
     """
+    if op['op'] == 'text.block' and tuple(map(int, doc.registry_version.split('.'))) < (1, 14):
+        return ('error', 'newer_registry')
     args = op['args']
     declared = {item['slot'] for item in record['inputs']} | {item['slot'] for item in record['params']}
     for slot in args:
@@ -441,6 +445,7 @@ def _argument_status(op, record, doc, reg):
     literals = {}
     exprs = {}
     templates = {}
+    blocks = {}
     if not input_set_matches(record, args):
         return ('error', 'schema')
     for item in record['inputs']:
@@ -452,6 +457,15 @@ def _argument_status(op, record, doc, reg):
         if not item.get('list') and reg.takes_number_literal(item['type'], doc.registry_version) \
                 and arg.get('kind') == 'number':
             literals[item['slot']] = float(arg['value'])
+            continue
+        if item['type'] == 'text-block':
+            if arg.get('kind') != 'text-block':
+                return ('error', 'type_mismatch')
+            from ..text_block import validate_text_block
+            try:
+                blocks[item['slot']] = validate_text_block(arg.get('value'))
+            except ValueError:
+                return ('error', 'schema')
             continue
         if item['type'] in ('expr', 'template'):
             if arg.get('kind') != item['type']:
@@ -495,7 +509,7 @@ def _argument_status(op, record, doc, reg):
             continue
         if arg.get('kind') != item['type']:
             return ('error', 'type_mismatch')
-        params[item['slot']] = arg['value'] if item['type'] == 'string' else float(arg['value'])
+        params[item['slot']] = arg['value'] if item['type'] == 'string' or op['op'] == 'text.block' else float(arg['value'])
     if exprs or templates:
         count = next((len(ids) for slot, _is_list, ids in resolved if slot == 'refs'), None)
         refs_ids = next((ids for slot, _is_list, ids in resolved if slot == 'refs'), ())
@@ -506,7 +520,7 @@ def _argument_status(op, record, doc, reg):
                for slot, ast in exprs.items()) \
                 or any(template_problems(s, count) for s in templates.values()):
             return ('error', 'formula')
-    return Arguments(resolved, literals, params, exprs, templates)
+    return Arguments(resolved, literals, params, exprs, templates, blocks)
 
 
 def number_literal(value: float) -> Input:

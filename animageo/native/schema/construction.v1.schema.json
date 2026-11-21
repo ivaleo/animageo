@@ -201,7 +201,12 @@
         },
         "tick_count": {
           "type": "integer",
-          "enum": [0, 1, 2, 3]
+          "enum": [
+            0,
+            1,
+            2,
+            3
+          ]
         }
       }
     },
@@ -215,23 +220,42 @@
         },
         "parallel_count": {
           "type": "integer",
-          "enum": [0, 1, 2, 3]
+          "enum": [
+            0,
+            1,
+            2,
+            3
+          ]
         },
         "parallel_direction": {
-          "enum": ["forward", "backward"]
+          "enum": [
+            "forward",
+            "backward"
+          ]
         }
       }
     },
     "dragHint": {
       "description": "Drag hint (1.12.0): the point is dragged through the free inputs via (point.free, point.on_path, point.on_function) it is built from; native.drag, docs/native/kernel.md section 8.1. Evaluation does not read it; validate checks the graph rules.",
       "type": "object",
-      "required": ["via"],
+      "required": [
+        "via"
+      ],
       "additionalProperties": false,
       "properties": {
         "via": {
           "oneOf": [
-            {"$ref": "#/$defs/id"},
-            {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/id"
+              }
+            }
           ]
         }
       }
@@ -273,7 +297,8 @@
             "number",
             "expr",
             "template",
-            "string"
+            "string",
+            "text-block"
           ]
         }
       },
@@ -295,6 +320,9 @@
         },
         {
           "$ref": "#/$defs/stringArgument"
+        },
+        {
+          "$ref": "#/$defs/textBlockArgument"
         }
       ]
     },
@@ -772,6 +800,91 @@
         }
       },
       "additionalProperties": false
+    },
+    "textBlockArgument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "const": "text-block"
+        },
+        "value": {
+          "$ref": "#/$defs/textBlockContent"
+        }
+      }
+    },
+    "textBlockContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "paragraphs"
+      ],
+      "description": "Canonical literal content; library additionally checks Unicode, canonical paragraphs/runs and 20000 reconstructed code points including LF.",
+      "properties": {
+        "version": {
+          "const": "text-block/v1"
+        },
+        "paragraphs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "required": [
+              "runs"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "runs": {
+                "type": "array",
+                "maxItems": 20000,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "text"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "kind": {
+                          "const": "text"
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 20000,
+                          "not": {
+                            "pattern": "[\\u0000\\r\\n\\t\\uD800-\\uDFFF]"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "kind": {
+                          "const": "break"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

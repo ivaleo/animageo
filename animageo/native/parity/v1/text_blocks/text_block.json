@@ -1,0 +1,279 @@
+{
+  "format": "animageo-parity/v1",
+  "id": "text_block",
+  "registry": "1.14",
+  "generatedBy": "animageo 1.19.0",
+  "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "text_block",
+    "operationRegistryVersion": "1.14",
+    "operations": {
+      "op_A": {
+        "id": "op_A",
+        "op": "point.free",
+        "args": {},
+        "outputs": [
+          {
+            "slot": "point",
+            "elementId": "A"
+          }
+        ]
+      },
+      "op_t": {
+        "id": "op_t",
+        "op": "text.block",
+        "args": {
+          "anchor": {
+            "kind": "ref",
+            "elementId": "A"
+          },
+          "content": {
+            "kind": "text-block",
+            "value": {
+              "version": "text-block/v1",
+              "paragraphs": [
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Условие"
+                    }
+                  ]
+                },
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Решение $x$ {0}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "widthEm": {
+            "kind": "number",
+            "value": 8
+          },
+          "align": {
+            "kind": "string",
+            "value": "center"
+          }
+        },
+        "outputs": [
+          {
+            "slot": "text",
+            "elementId": "t"
+          }
+        ]
+      }
+    },
+    "elements": {
+      "A": {
+        "id": "A",
+        "type": "point",
+        "displayName": "A",
+        "producer": {
+          "operationId": "op_A",
+          "slot": "point"
+        }
+      },
+      "t": {
+        "id": "t",
+        "type": "text",
+        "displayName": "t",
+        "producer": {
+          "operationId": "op_t",
+          "slot": "text"
+        }
+      }
+    },
+    "inputs": {
+      "A": {
+        "kind": "point",
+        "value": [
+          -3,
+          3
+        ]
+      }
+    },
+    "viewDefaults": {
+      "bounds": [
+        -10,
+        -10,
+        10,
+        10
+      ]
+    }
+  },
+  "cases": [
+    {
+      "name": "default",
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -3.0,
+            "y": 3.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              -3.0,
+              3.0
+            ],
+            "content": {
+              "version": "text-block/v1",
+              "paragraphs": [
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Условие"
+                    }
+                  ]
+                },
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Решение $x$ {0}"
+                    }
+                  ]
+                }
+              ]
+            },
+            "widthEm": 8.0,
+            "size": 1.0,
+            "align": "center",
+            "text": "Условие\n\nРешение $x$ {0}"
+          }
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "moved",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            1,
+            2
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": 1.0,
+            "y": 2.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              1.0,
+              2.0
+            ],
+            "content": {
+              "version": "text-block/v1",
+              "paragraphs": [
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Условие"
+                    }
+                  ]
+                },
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Решение $x$ {0}"
+                    }
+                  ]
+                }
+              ]
+            },
+            "widthEm": 8.0,
+            "size": 1.0,
+            "align": "center",
+            "text": "Условие\n\nРешение $x$ {0}"
+          }
+        }
+      },
+      "checks": {}
+    },
+    {
+      "name": "negative",
+      "inputs": {
+        "A": {
+          "kind": "point",
+          "value": [
+            -4,
+            -3
+          ]
+        }
+      },
+      "scale": 20.0,
+      "expect": {
+        "A": {
+          "state": "defined",
+          "type": "point",
+          "value": {
+            "x": -4.0,
+            "y": -3.0
+          }
+        },
+        "t": {
+          "state": "defined",
+          "type": "text",
+          "value": {
+            "anchor": [
+              -4.0,
+              -3.0
+            ],
+            "content": {
+              "version": "text-block/v1",
+              "paragraphs": [
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Условие"
+                    }
+                  ]
+                },
+                {
+                  "runs": [
+                    {
+                      "kind": "text",
+                      "text": "Решение $x$ {0}"
+                    }
+                  ]
+                }
+              ]
+            },
+            "widthEm": 8.0,
+            "size": 1.0,
+            "align": "center",
+            "text": "Условие\n\nРешение $x$ {0}"
+          }
+        }
+      },
+      "checks": {}
+    }
+  ]
+}

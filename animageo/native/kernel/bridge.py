@@ -302,7 +302,10 @@ def to_classic(type_: str, value, *, sides=None, scale=None):
             obj = Measure(float(value['value']), _MEASURE_DIMENSION.get(unit, 0))
     elif type_ == 'text':               # filled template, top-left at the anchor
         obj = Text([('str', value['text'])], position=value['anchor'])
-        obj._native_inline_math = True
+        if 'content' in value:
+            obj._native_text_block = {key: value[key] for key in ('content', 'widthEm', 'size', 'align')}
+        else:
+            obj._native_inline_math = True
     elif type_ == 'function':
         obj = native_function(value)
     elif type_ == 'conic':
@@ -398,6 +401,11 @@ def from_classic(type_: str, obj):
             raise ValueError(f'no kernel {type_} for a classic {type(obj).__name__}')
         return native
     if type_ == 'text':
+        if hasattr(obj, '_native_text_block'):
+            from ..text_block import text_block_plain_text
+            block = obj._native_text_block
+            return dict(block, anchor=[float(v) for v in obj.position[:2]],
+                        text=text_block_plain_text(block['content']))
         text = ''.join(s for kind, s in obj.segments if kind == 'str')
         return {'anchor': [float(v) for v in obj.position[:2]], 'text': text, 'parts': [{'text': text}] if text else []}
     raise ValueError(f'no kernel type for {type_!r}')
@@ -678,6 +686,7 @@ def build_construction(doc, *, inputs=None, seed=None):
         constants.update({slot: number_literal(v) for slot, v in resolved.literals.items()})
         constants.update({slot: Input('expr', ast) for slot, ast in resolved.exprs.items()})
         constants.update({slot: Input('template', s) for slot, s in resolved.templates.items()})
+        constants.update({slot: Input('text-block', content) for slot, content in resolved.blocks.items()})
         path_frame = None
         tparam_of = None
         free_value = None

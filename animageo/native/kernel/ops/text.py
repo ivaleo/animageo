@@ -34,3 +34,17 @@ def free(args, ctx):
             parts.append({'ref': piece, 'text': insert_text(refs[piece], decimals)})
     a = args['anchor'].value
     return {'text': {'anchor': [a['x'], a['y']], 'text': ''.join(p['text'] for p in parts), 'parts': parts}}
+
+
+@op('text.block')
+def block(args, ctx):
+    from ...text_block import block_parameters, text_block_plain_text
+    try:
+        width, size, align = block_parameters(args['widthEm'], args['size'], args['align'])
+    except ValueError:
+        return {'text': Undefined('invalid_parameter')}
+    content = args['content'].value
+    a = args['anchor'].value
+    return {'text': {'anchor': [a['x'], a['y']], 'content': content,
+                     'widthEm': width, 'size': size, 'align': align,
+                     'text': text_block_plain_text(content)}}

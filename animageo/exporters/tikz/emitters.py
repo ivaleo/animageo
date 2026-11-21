@@ -840,6 +840,10 @@ def emit_text(ctx: TikzContext, elem, labels: List[str]) -> None:
     """Emit a GeoGebra free-text object as a ``\\node`` anchored top-left at its
     (offset) start point — mirrors ``AnimaGeoScene._render_text``."""
     text = elem.data
+    if hasattr(text, '_native_text_block'):
+        from ...text_block_render import emit_block
+        emit_block(ctx, elem, labels)
+        return
     decimals = getattr(ctx.scene.geo, "ggb_decimals", 2)
     content = textify_cyrillic(text_to_display_latex(ctx.scene.geo, text, decimals))
     if not content:

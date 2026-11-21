@@ -167,18 +167,32 @@ def _diff(expected: dict, actual: dict) -> list:
 
 class TestNative:
     def test_names(self, snapshot):
-        assert native_api()['all'] == snapshot['native']['all']
+        assert native_api()['all'] == sorted(snapshot['native']['all'] +
+            ['layout_text_block', 'normalize_text_block', 'text_block_plain_text'])
 
     def test_signatures(self, snapshot):
         current = native_api()['names']
         # A capability is additive; retain the previous API snapshot as the
         # compatibility baseline and pin this extension explicitly.
-        assert current['FEATURES']['value'] == snapshot['native']['names']['FEATURES']['value'] + ['fill_order', 'tangency', 'conic_elements']
+        assert current['FEATURES']['value'] == snapshot['native']['names']['FEATURES']['value'] + ['fill_order', 'tangency', 'conic_elements', 'text.block']
+        for name, expected in {
+            'layout_text_block': "(content, widthEm=30, size=1, align='left', *, text_style=None)",
+            'normalize_text_block': '(text)',
+            'text_block_plain_text': '(content)',
+        }.items():
+            assert current.pop(name) == {'kind': 'function', 'signature': expected}
+        assert current['__registry_version__']['value'] == '1.14'
+        current['__registry_version__'] = snapshot['native']['names']['__registry_version__']
+        assert current['Evaluated']['signature'] == snapshot['native']['names']['Evaluated']['signature'].replace("registry='1.13'", "registry='1.14'")
+        current['Evaluated']['signature'] = snapshot['native']['names']['Evaluated']['signature']
         current['FEATURES'] = snapshot['native']['names']['FEATURES']
         assert _diff(snapshot['native']['names'], current) == []
 
     def test_names_the_web_imports_outside_all(self, snapshot):
-        assert _diff(snapshot['native']['outside_all'], native_api()['outside_all']) == []
+        current = native_api()['outside_all']
+        assert current['REGISTRY_VERSION']['value'] == '1.14'
+        current['REGISTRY_VERSION'] = snapshot['native']['outside_all']['REGISTRY_VERSION']
+        assert _diff(snapshot['native']['outside_all'], current) == []
 
     def test_all_is_importable(self):
         from animageo import native
@@ -240,10 +254,12 @@ def documented_api(text: str) -> dict:
 class TestApiDoc:
     """``docs/native/api.md`` lists the snapshot: names and signatures (L6 item 8)."""
 
-    def test_the_doc_lists_every_name_with_its_signature(self, snapshot):
+    def test_the_doc_lists_every_name_with_its_signature(self):
         documented = documented_api(API_DOC.read_text(encoding='utf-8'))
+        # The API tests above pin the frozen baseline and its explicit additions.
+        current = native_api()
         expected = {}
-        for name, row in {**snapshot['native']['names'], **snapshot['native']['outside_all']}.items():
+        for name, row in {**current['names'], **current['outside_all']}.items():
             if row['kind'] == 'constant':
                 expected[name] = {'kind': 'constant'} | (
                     {'value': repr(row['value'])} if row.get('type') == 'str' else {})

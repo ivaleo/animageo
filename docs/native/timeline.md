@@ -220,9 +220,10 @@ the frame through the camera of the video — a scene loaded under the pixel
 size of the video (the canvas times `quality`, even), one `update_frame`,
 the camera image (RGBA PNG, background of the style). With `t` and
 `timeline` it is the frame of the video at `t`. The report gains `video`
-`{quality, width, height}`; its boxes stay in pixels of the canvas. Without
-`video` a PNG is cairosvg of the SVG, as before (the static export of the
-web); `video` with another static format is a `ValueError`.
+`{quality, width, height}`. Its boxes stay in pixels of the canvas. The
+static PNG uses cairosvg on the SVG, or direct Cairo for scenes with
+[`text.block`](ops/text.block.md). Supplying `video` with another static
+format raises `ValueError`.
 
 `fmt ∈ {"mp4", "gif", "webm", "mov"}` — the video of the timeline: the
 document loaded by `loadDocument`, the bridged timeline played by
@@ -293,6 +294,10 @@ evaluation).
    step's `text`, else its `title`, else `null` (the phrase of the step is
    `describe`); `duration` — `t` of the last keyframe (`start` without
    steps: one keyframe, no steps).
+
+A [`text.block`](ops/text.block.md) always enters as a unit at its scheduled
+`at` offset (`effect: "none"`, `duration: 0`). This also applies to exits
+and to explicit timelines. `text.free` keeps its regular text effects.
 
 `ValueError`: `lag < 0`, `duration ≤ 0`, `pause < 0`, a non-finite
 `start`, an unknown effect. Tested on every parity scene: each visible

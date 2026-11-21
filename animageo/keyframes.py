@@ -462,20 +462,15 @@ class KeyframeSequence:
                     continue
                 if dur <= 0:
                     continue
-                if new_vis:      # entrance
-                    spec = kf.enter.get(name, DEFAULT_ENTER)
-                    at = min(max(float(spec.get('at', 0.0)), 0.0), dur)
-                    edur = min(float(spec.get('duration', DEFAULT_EFFECT_DURATION)), dur - at)
-                    interval.enter_effects.append(EffectSpec(
-                        name=name, kind=spec['effect'], start=at,
-                        duration=max(edur, 0.0), direction='in'))
-                else:            # exit
-                    spec = kf.exit.get(name, DEFAULT_EXIT)
-                    at = min(max(float(spec.get('at', 0.0)), 0.0), dur)
-                    edur = min(float(spec.get('duration', DEFAULT_EFFECT_DURATION)), dur - at)
-                    interval.exit_effects.append(EffectSpec(
-                        name=name, kind=spec['effect'], start=at,
-                        duration=max(edur, 0.0), direction='out'))
+                spec = kf.enter.get(name, DEFAULT_ENTER) if new_vis else kf.exit.get(name, DEFAULT_EXIT)
+                at = min(max(float(spec.get('at', 0.0)), 0.0), dur)
+                elem = get_element(name) if get_element is not None else None
+                block = hasattr(getattr(elem, 'data', None), '_native_text_block')
+                edur = 0.0 if block else min(float(spec.get('duration', DEFAULT_EFFECT_DURATION)), dur - at)
+                effects = interval.enter_effects if new_vis else interval.exit_effects
+                effects.append(EffectSpec(name=name, kind='none' if block else spec['effect'],
+                                          start=at, duration=max(edur, 0.0),
+                                          direction='in' if new_vis else 'out'))
 
     def attach_label_layouts(self, layouts):
         """Populate each interval with label interpolators from per-keyframe layouts.

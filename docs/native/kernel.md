@@ -1220,14 +1220,15 @@ render(doc, *, style_config=None, export_layout=None, fmt="svg", out=None,
   `None` (built-in). The document's `styleBinding` is not read.
 - `export_layout`: `{reference?, content?, export?}` — the placement keyword
   arguments of `loadGGB`; another key or a non-mapping is a `ValueError`.
-- `fmt`: `svg`, `png` (the SVG rasterised by cairosvg) or `pdf` (96 dpi);
-  another format, `t` or `timeline` → `NotImplementedError`.
+- Static `fmt`: `svg`, `png`, `pdf` (96 dpi), `eps`, `tikz`, or `tex`.
+  PNG uses cairosvg on the SVG, or draws directly to Cairo for scenes with
+  [`text.block`](ops/text.block.md). Unsupported formats raise `NotImplementedError`.
 - `out`: the file to write (a temporary file when `None`); `path` is its
   absolute path.
 - `inputs`: case overrides as in §5.2 (`ValueError` when not usable).
 - A document that does not load → `LoadError` (a `ValueError`); no manim →
-  `RuntimeError("native.render needs manim …")`; no cairosvg for PNG →
-  `RuntimeError`.
+  `RuntimeError("native.render needs manim …")`. The cairosvg backend
+  raises `RuntimeError` when its dependency is missing.
 - `report=False` → `RenderResult.report is None`.
 - `t` with `timeline` (1.11.0, `has("render.t.effects")`): the frame of the
   video at `t` — effects, events, labels placed at keyframes and explicit
@@ -2473,3 +2474,13 @@ Each new operation has its own stepKind and Russian step phrase; Commands
 continue to use the existing deferred `unprintable_operation` behavior.
 The feature flag does not imply TypeScript parity or a new GeoGebra source
 reader; classic command rows and imported source support remain separate.
+
+## Literal text blocks (registry 1.14)
+
+[`text.block`](ops/text.block.md) adds canonical `text-block/v1` content, a point
+anchor, width in em, alignment and a size multiplier. It is supported when
+`native.has('text.block')` is true. `native.normalize_text_block`,
+`native.text_block_plain_text` and `native.layout_text_block` expose normalization,
+serialization and deterministic font-metric layout without manim. Every native
+export and video frame draws the resulting positioned lines; no TeX reflow.
+Existing `text.free` and label semantics are unchanged.

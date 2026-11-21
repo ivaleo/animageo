@@ -129,6 +129,7 @@ def _coverage_fixtures():
     conics (``parity/v1/curves``, ``fixtures curves``)."""
     out = [read_json(EXPECTED_DIR / name) for name in SCENES]
     out += [read_json(path) for path in sorted(CURVES_DIR.glob('*.json'))]
+    out += [read_json(path) for path in sorted((EXPECTED_DIR.parent / 'text_blocks').glob('*.json'))]
     return out
 
 

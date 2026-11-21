@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Registry 1.14 adds literal `text.block` content, bounded deterministic T2A
+  font-metric wrapping, alignment and size controls. `has("text.block")` exposes
+  support; native exports and video share explicit line/glyph positions.
+  New normalization, plain-text serialization and layout APIs preserve existing
+  `text.free` and label behavior.
+
 ## [1.19.0] - 2026-11-14
 
 ### Added

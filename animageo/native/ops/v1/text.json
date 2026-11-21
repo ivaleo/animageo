@@ -49,5 +49,72 @@
     },
     "math": "docs/native/ops/text.free.md",
     "signatureHash": "sha256:1ac2a20404ba190ff963202c85848dc3b23aa4890ff43279ab432e9fb7c1715c"
+  },
+  {
+    "op": "text.block",
+    "status": "stable",
+    "since": "1.14",
+    "inputs": [
+      {
+        "slot": "anchor",
+        "type": "point"
+      },
+      {
+        "slot": "content",
+        "type": "text-block"
+      }
+    ],
+    "params": [
+      {
+        "slot": "widthEm",
+        "type": "number",
+        "unit": null,
+        "optional": true,
+        "default": 30,
+        "min": 4,
+        "max": 120
+      },
+      {
+        "slot": "size",
+        "type": "number",
+        "unit": null,
+        "optional": true,
+        "default": 1,
+        "min": 0.5,
+        "max": 4
+      },
+      {
+        "slot": "align",
+        "type": "string",
+        "unit": null,
+        "optional": true,
+        "default": "left",
+        "enum": [
+          "left",
+          "center",
+          "right"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "slot": "text",
+        "type": "text"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "invalid_parameter",
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "text",
+    "phrases": {
+      "ru": "{text} — текстовый блок у точки {anchor}"
+    },
+    "math": "docs/native/ops/text.block.md",
+    "signatureHash": "sha256:54fe76039e07e111832147662e75502db1735580efcaf2b28df8fd7d1b9c6301"
   }
 ]

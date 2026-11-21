@@ -114,7 +114,9 @@ def export_tikz(
             emit = emitter_for(elem)
             try:
                 emit(ctx, elem, labels)
-            except Exception:  # one bad element must not abort the export
+            except Exception:  # legacy elements may degrade; blocks must not disappear
+                if hasattr(getattr(elem, 'data', None), '_native_text_block'):
+                    raise
                 logger.warning("TikZ export: failed to emit %r", getattr(elem, "name", "?"),
                                exc_info=True)
         if cut:
@@ -234,6 +236,8 @@ def _emit_ordered(ctx, rect):
                 if position is not None:
                     emit_label(ctx, elem, *position, labels, default_anchor='center')
         except Exception:
+            if hasattr(getattr(elem, 'data', None), '_native_text_block'):
+                raise
             logger.warning("TikZ export: failed to emit %r", elem.name, exc_info=True)
         finally:
             ctx.doc = doc

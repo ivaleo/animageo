@@ -13,8 +13,8 @@ NAMES = {'conic.from_circle', 'conic.directrices', 'conic.asymptotes',
 
 def test_catalog_and_import_capability_are_complete():
     reg = registry()
-    assert reg.version == native.__registry_version__ == '1.13'
-    assert len(reg.ops) == 132
+    assert reg.version == native.__registry_version__ == '1.14'
+    assert len(reg.ops) == 133
     assert native.has('conic_elements')
     assert set(reg.groups['conic_elements']) == NAMES
     assert {k for k, v in _MODULE_GROUPS.items() if v == 'conic_elements'} == NAMES
@@ -45,7 +45,7 @@ def _content_digest(path):
 def test_all_operations_through_1_12_and_old_conic_fixtures_stay_frozen():
     frozen = json.loads((REPO_ROOT / 'tests/native/registry_frozen_1_12.json').read_text())
     assert len(frozen['ops']) == 127
-    old = {k: v for k, v in registry().ops.items() if k not in NAMES}
+    old = {k: v for k, v in registry().ops.items() if tuple(map(int, v['since'].split('.'))) <= (1, 12)}
     assert set(old) == set(frozen['ops'])
     for name, r in old.items():
         assert {'signatureHash': signature_hash(r), 'since': r['since']} == frozen['ops'][name]

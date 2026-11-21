@@ -69,6 +69,7 @@ from .kernel.evaluate import EVALUATED_FORMAT, Evaluated, producer_values
 from .kernel.evaluate import evaluate as _evaluate
 from .registry import REGISTRY_VERSION, Registry, registry, signature_hash
 from .labels import layout_labels
+from .text_block import layout_text_block, normalize_text_block, text_block_plain_text
 from .commands import parse_commands, print_commands
 from .rendering import RenderResult, render, source_view
 from .steps import Step, StepError, assign_seq, steps, steps_merge, steps_split
@@ -93,7 +94,7 @@ FEATURES = ('triangle', 'locus', 'steps', 'describe', 'render.eps', 'render.tikz
             'import_report.text_template', 'import_report.text_literals', 'convert.command_synonyms',
             'convert.ggb_expressions', 'style_keys', 'resolve_paint', 'label.halo', 'label.parts',
             'timeline.effects', 'render.t.effects', 'view_axes_grid', 'functions', 'conics', 'drag', 'regions',
-            'typed_expressions', 'line_equation', 'function_analysis', 'fill_order', 'tangency', 'conic_elements')
+            'typed_expressions', 'line_equation', 'function_analysis', 'fill_order', 'tangency', 'conic_elements', 'text.block')
 
 # Experimental features (``has`` answers them): outside ``FEATURES`` and the
 # public API snapshot, they may change or go without deprecation.
@@ -192,6 +193,9 @@ __all__ = [
     'from_construction',
     'from_ggb',
     'layout_labels',
+    'layout_text_block',
+    'normalize_text_block',
+    'text_block_plain_text',
     'load',
     'min_registry_version',
     'parse_commands',

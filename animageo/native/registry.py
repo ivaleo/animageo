@@ -52,7 +52,7 @@ __all__ = [
     'write_index',
 ]
 
-REGISTRY_VERSION = '1.13'
+REGISTRY_VERSION = '1.14'
 REPEAT_MAX = 100
 # Registry 1.10: the types a typed ``expr`` slot may declare as its ``result``.
 RESULT_TYPES = ('num', 'vec')

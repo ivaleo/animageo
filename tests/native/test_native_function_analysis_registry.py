@@ -21,7 +21,7 @@ GROUPS.update({'function.' + name: 'function_analysis' for name in ANALYSIS_OPS}
 
 
 def test_registry_version_and_complete_feature():
-    assert native.__registry_version__ == '1.13'
+    assert native.__registry_version__ == '1.14'
     assert native.has('function_analysis')
 
 

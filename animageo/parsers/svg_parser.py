@@ -20,7 +20,7 @@ CAIRO_LINE_WIDTH_MULTIPLE: float = 0.01
 DEFAULT_DPI: float = 96.0
 
 # Vector surface kinds understood by ``_get_cairo_context`` / ``_make_cairo_surface``.
-CAIRO_SURFACES = ("svg", "pdf", "ps", "eps")
+CAIRO_SURFACES = ("svg", "pdf", "ps", "eps", "png")
 
 __all__ = ["create_svg_from_vmobject", "create_svg_from_vgroup", "_get_cairo_context", "extract_mobject_family_members", "_create_svg_from_vmobject_internal", "_draw_with_knockout"]
 
@@ -32,6 +32,8 @@ def _make_cairo_surface(kind: str, file_name: str | Path, width: float, height: 
     points (1/72"). ``width``/``height`` must already be in the surface's
     native unit. ``eps`` is a single-page Encapsulated PostScript surface.
     """
+    if kind == "png":
+        return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(width), int(height))
     if kind == "svg":
         return cairo.SVGSurface(file_name, width, height)
     if kind == "pdf":
@@ -80,11 +82,11 @@ def _get_cairo_context(
     dx = export['ptXZero']
     dy = export['ptYZero']
 
-    if surface == "svg":
+    if surface in ("svg", "png"):
         # Preserve the historical SVG output byte-for-byte: integer px canvas,
         # unit MU→px transform.
         k = 1.0
-        surf = _make_cairo_surface("svg", file_name, pw, ph)
+        surf = _make_cairo_surface(surface, file_name, pw, ph)
         bg_w, bg_h = pw, ph
     else:
         k = 72.0 / float(dpi)
@@ -96,6 +98,8 @@ def _get_cairo_context(
         _paint_background(ctx, bg_w, bg_h, style)
     ctx.set_matrix(cairo.Matrix(scale * k, 0, 0, -scale * k, dx * k, dy * k))
     yield ctx
+    if surface == "png":
+        surf.write_to_png(str(file_name))
     surf.finish()
 
 
@@ -195,6 +199,15 @@ def _create_svg_from_vmobject_internal(vmobject: VMobject, ctx: cairo.Context, s
     points = vmobject.points
     if len(points) == 0: return
 
+    if getattr(vmobject, '_animageo_block_path', False):
+        # The full layout remains in reports. Avoid tracing off-canvas batches
+        # from long blocks and include the reach of a possible halo stroke.
+        left, bottom, right, top = ctx.clip_extents()
+        pad = vmobject.get_stroke_width() * CAIRO_LINE_WIDTH_MULTIPLE / 2
+        xs, ys = points[:, 0], points[:, 1]
+        if (xs.max() < left - pad or xs.min() > right + pad
+                or ys.max() < bottom - pad or ys.min() > top + pad):
+            return
     ctx.new_path()
     _trace_path(ctx, vmobject)
 

@@ -296,6 +296,13 @@ class _Structure:
             self.keys(arg, path, 'a string argument', ('kind', 'value'), ('kind', 'value'), operationId=op_id)
             if 'value' in arg:
                 self.string(arg['value'], path + '/value', 'value')
+        elif kind == 'text-block':
+            from .text_block import validate_text_block
+            self.keys(arg, path, 'a text-block argument', ('kind', 'value'), ('kind', 'value'), operationId=op_id)
+            try:
+                validate_text_block(arg.get('value'))
+            except ValueError as exc:
+                self.add(path + '/value', str(exc), operationId=op_id)
         elif kind == 'expr':           # registry 1.4 (a5): the tree itself is checked by validate (formula)
             self.keys(arg, path, 'an expr argument', ('kind', 'ast'), ('kind', 'ast'), operationId=op_id)
             if 'ast' in arg:
@@ -1014,6 +1021,10 @@ def validate(doc) -> list:
                     issues.append(Issue('missing_slot', spath, f"{op['op']} needs argument {slot!r}",
                                         operationId=op_id))
                     continue
+                if item['type'] == 'text-block':
+                    if arg['kind'] != 'text-block':
+                        issues.append(Issue('type_mismatch', spath, 'content: text-block argument required', operationId=op_id))
+                    continue
                 if item['type'] in ('expr', 'template'):
                     if arg['kind'] != item['type']:
                         issues.append(Issue('type_mismatch', spath, f"argument {slot!r} must be "
@@ -1073,6 +1084,13 @@ def validate(doc) -> list:
                 elif arg['kind'] != item['type']:
                     issues.append(Issue('type_mismatch', spath, f"parameter {slot!r} must be a {item['type']}",
                                         operationId=op_id))
+            if op['op'] == 'text.block':
+                from .text_block import block_parameters
+                try:
+                    block_parameters(*(args.get(key, {}).get('value', default)
+                                       for key, default in [('widthEm', 30), ('size', 1), ('align', 'left')]))
+                except ValueError as exc:
+                    issues.append(Issue('invalid_parameter', path + '/args', str(exc), operationId=op_id))
             if op['op'] == 'region.by_boundary':        # registry 1.9: the chain is told by IDs
                 from .kernel.region import chain_problem
                 types = {el_id: el['type'] for el_id, el in elements.items()}
