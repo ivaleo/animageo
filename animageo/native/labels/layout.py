@@ -272,6 +272,12 @@ def layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout
     ``content.source = 'rendered_bounds'`` the crop is approximated from the
     geometry and the label boxes (the renderer measures its mobjects).
     """
+    return _layout_labels(doc, ev, inputs=inputs, style_config=style_config, export_layout=export_layout,
+                          backend=backend, place=place)
+
+
+def _layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout=None,
+                   backend='metrics', place=None, decorate=None) -> dict:
     if backend not in BACKENDS:
         raise ValueError(f'backend {backend!r}: one of {", ".join(BACKENDS)}')
     layout = _check_layout(export_layout)
@@ -333,6 +339,8 @@ def layout_labels(doc, ev=None, *, inputs=None, style_config=None, export_layout
                 rendered = rendered_view_from_bounds(view, bounds, infinite_policy=policy)
     export = static_export_dict(view, **kwargs, rendered_view=rendered)
     final = scene(export)
+    if decorate is not None:
+        decorate(final)
     placements = solve(final) if place else {}
 
     from ...geo import construction as geo

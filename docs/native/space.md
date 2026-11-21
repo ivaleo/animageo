@@ -131,10 +131,10 @@ For a clipped line, the piece interval `t` is affine on the picture.
 
 ## 5. Drawing and style
 
-`native.render(space_doc, …)` (or `space.render`) draws the flat scene as a
-plane document (`space.to_document(flat, doc)`) with the same renderer:
-SVG, PNG, PDF, EPS, TikZ. Pieces are segments `<id>--<k>`, fills polygons
-`<id>`, points keep their IDs.
+`native.render(space_doc, …)` (or `space.render`) draws the projected scene
+with the plane renderer for SVG, PNG, PDF, EPS and TikZ. Pieces are
+segments `<id>--<k>`, fills polygons `<id>`, and points keep their IDs.
+`space.to_document(flat, doc)` returns the plane geometry and its appearance.
 
 Labels, points and strokes are in pixels of the sheet (1.11.0rc7): the
 style pixels on the output, times `prominence`, whatever the frame reaches.
@@ -167,6 +167,92 @@ the piece as seen) with the look: opacity × the multiplier, width × the
 scale, dashes. `appearance.<id>.overrides.hidden_look` — the look of one
 element. `face.look: lit` is drawn as `flat` for now.
 
+### 5.1 Paint and projected labels
+
+`space.resolve_paint(doc, style_config=None, *, camera=None, inputs=None,
+export_layout=None)` returns `animageo-space-paint/v1`:
+
+- `bounds` is the flat frame in picture units, y up. `ptUnit` converts
+  these units to sheet pixels. `ptUnitStyle` converts decorations from
+  style pixels to picture units by division. A crop of the rendered
+  bounds with labels uses the same approximation as plane paint. The
+  actual export lays out and measures the scene before drawing marks.
+- `strokes` keeps the flat scene's `id`, `part`, `role` and piece order.
+  Each piece keeps `a`, `b`, `t`, `layer` and visibility information,
+  and adds its one-based `index` and `stroke`. The stroke contains
+  `color`, `opacity`, `widthPx`, `cap`, `z` and `dash` from
+  `native.resolve_paint` of the plane piece. Its dash fit is calculated
+  for that piece's length. `stroke: null` represents a piece with
+  no painted stroke, including a hidden piece with look `none`.
+- `fills` keeps the flat fill data and adds `fill`. `points` keeps the
+  flat point data and adds `point`, `stroke`, `fill` and `z`.
+  `background` is the resolved plane background.
+- Each `labels` entry is `{id, kind, at, label}`. `kind` is `point`,
+  `stroke` or `fill`, and `at` is the plane label spot in picture
+  units. Explicit `name` and `caption` labels of lines, faces,
+  planes and sections attach once, to a visible fill or the longest
+  visible stroke piece. Front faces supply fill anchors, and a section
+  needs a visible side. `none` disables the label. Points keep the
+  plane label behavior.
+- `marks` contains resolved decorations described below.
+
+### 5.2 Construction marks and split rendering
+
+A visible midpoint on a drawn segment gives ticks on the two actual
+halves, centered at the projected world quarter points. A hidden half
+contributes no tick. Equal original lengths reuse a count. New classes
+take one, two and then three ticks in dependency order, with subsequent
+classes using three. Tick length, width, spacing and color use the visible
+carrier's segment paint. A perpendicular can give a right-angle corner
+at its real foot, with sides on the perpendicular and on the support.
+The two projected arms are scaled in sheet pixels, then the corner of
+their world parallelogram is projected through the same camera. A hidden
+foot, an end-on angle or a corner that cannot fit its visible carriers
+omits the mark. The per-element `right_angle_size_px` and
+`right_angle_marker` can size or suppress it.
+
+Space `viewDefaults.autoMarks.equalities` and `rightAngles` default to
+true. `suppressedMarks` disables an individual mark with
+`{source: operationId, kind: 'equal_segments' | 'right_angle'}`.
+The operation ID is that of the midpoint or the perpendicular.
+
+```python
+ev = space.evaluate(doc, inputs=inputs)
+flat = space.flat_scene(doc, camera, evaluated=ev,
+                        plane_look=space.space_style(style_config)['plane']['look'])
+prepared = space.prepare_render(flat, doc, style_config=style_config, evaluated=ev)
+result = space.render_plane(prepared['document'], out, marks=prepared['marks'],
+                            style_config=style_config, export_layout=layout, fmt='svg')
+```
+
+`prepare_render(flat, doc, *, style_config=None, evaluated=None)` returns
+a plain JSON object `{document, marks}`. Pass the same `evaluated` as
+for the flat scene when overriding inputs. `marks` is a closed
+`animageo-space-marks/v1` sidecar `{format, camera, scale, guides}`.
+Each guide names a projected segment (`planeId`), its `layer` and
+source operation. A ticks guide gives `half`, `count`, the projected
+center `at` and tangent `direction`. A right-angle guide gives the world
+`foot` and unit `arms`, the point-to-foot `length`, projected
+`reach` along the two visible carriers and an optional style override
+`sizePx`. This is render-job data derived by the space kernel.
+
+`render_plane(plane, out=None, *, marks=None, fmt='svg', style_config=None,
+export_layout=None, report=True)` validates the sidecar and draws its
+strokes on the final sheet before placing labels.
+`layout_plane_labels(plane, *, marks=None, style_config=None,
+export_layout=None, backend='metrics', place=None)` adds the same strokes
+to the existing plane label solver's obstacles. It returns the usual
+plane label layout keyed by plane ID.
+
+With a sidecar and reporting enabled, the render report includes
+`spaceMarks` with the emitted records. The same records appear in
+`space.resolve_paint(...)["marks"]`. Each carries `kind`, `source`,
+`layer`, `z`, `color`, `opacity` and `widthPx`. Ticks also give
+`half`, `count`, `at`, `lengthPx`, `shiftPx` and
+`lines: [[x1, y1, x2, y2], ...]`. The corner gives `sizePx` and
+`corners: [foot, along, corner, across]` in picture units. Its two
+painted strokes are `along → corner → across`.
+
 ## 6. Fixtures and the flicker gate
 
 `python -m animageo.native fixtures space [--check]` writes and replays
@@ -179,6 +265,14 @@ carriers, degenerate carriers, near-plane clipping and the shadows of
 solids. The seven registry 1.0 fixtures keep their original JSON; the
 historical future-version probe is evaluated with an actually newer
 declaration during replay.
+
+`python -m animageo.native.space.paint_fixtures [--check]` writes or checks
+`parity/v1/space_paint/space_paint_pieces.json`
+(`animageo-space-paint-parity/v1`). Every case supplies the document,
+camera, style and sheet layout with resolved paint, rounded to nine
+decimals. The cases cover overlapping solids, hidden-piece looks,
+visible and hidden lengths, roles, label anchors, and marks in oblique
+and perspective cameras.
 
 `space.flicker.flicker_events(doc)` walks the orbit (1°, elevations 0, 20,
 89.5°, 32 samples per line): a `blink` is a view that changes for one step

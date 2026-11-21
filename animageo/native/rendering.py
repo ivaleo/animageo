@@ -629,6 +629,12 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
     A static PNG uses cairosvg on the SVG. Scenes with ``text.block``
     draw directly onto a Cairo image surface.
     """
+    return _render(doc, style_config=style_config, export_layout=export_layout, fmt=fmt, out=out,
+                   inputs=inputs, t=t, timeline=timeline, report=report, video=video)
+
+
+def _render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
+            inputs=None, t=None, timeline=None, report=True, video=None, decorate=None) -> RenderResult:
     if fmt not in RENDER_FORMATS:
         raise NotImplementedError(f'format {fmt!r}: native.render writes {", ".join(RENDER_FORMATS)}')
     space_doc = _space_document(doc)
@@ -691,7 +697,7 @@ def render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
         scene = _still_scene(doc, style_config, inputs, layout, timeline, t, scene_class=AnimaGeoScene,
                              blocks_tikz=blocks_tikz)
     else:
-        scene = _load(AnimaGeoScene, doc, style_config, inputs, layout, blocks_tikz=blocks_tikz)
+        scene = _load(AnimaGeoScene, doc, style_config, inputs, layout, blocks_tikz=blocks_tikz, decorate=decorate)
     if frame_size is not None:
         pass  # written by _camera_png
     elif fmt == 'svg':
@@ -838,9 +844,11 @@ def _bridged_timeline(doc, timeline, inputs=None, *, hold=HOLD_DURATION) -> dict
     return bridge
 
 
-def _load(scene_class, doc, style_config, inputs, layout, *, blocks_tikz=False):
+def _load(scene_class, doc, style_config, inputs, layout, *, blocks_tikz=False, decorate=None):
     scene = scene_class()
     scene._native_blocks_tikz = blocks_tikz
+    if decorate is not None:
+        scene._native_sheet_decoration = decorate
     scene.loadDocument(doc, style=style_config, inputs=inputs,
                        reference=layout.get('reference'), content=layout.get('content'),
                        export=layout.get('export'))

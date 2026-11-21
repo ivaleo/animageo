@@ -2,8 +2,8 @@
 
 One path (spec §3.4–3.5)::
 
-    space document ──► flat_scene (/1) ──► to_document (a plane document)
-        ──► animageo.native.render ──► SVG / PNG / PDF / EPS / TikZ
+    space document ──► flat_scene (/1) ──► prepare_render (plane + marks)
+        ──► render_plane ──► SVG / PNG / PDF / EPS / TikZ
 
 :func:`render` takes the space document; ``animageo.native.render`` hands a
 space document to it, so a caller has one entry for both kinds of work.
@@ -43,6 +43,7 @@ drawn). The multipliers of a look are ``stroke_opacity`` /
 from __future__ import annotations
 
 import copy
+import math
 
 from ..document import DOCUMENT_FORMAT
 from ..registry import REGISTRY_VERSION
@@ -135,13 +136,14 @@ class _Ids:
 
 def _element_look(appearance, el_id) -> dict:
     """The appearance of a piece taken from its element: role and overrides
-    (without ``hidden_look``), no label."""
+    (without ``hidden_look``), before selecting a label anchor."""
     entry = appearance.get(el_id) if isinstance(appearance, dict) else None
     out = {'label': {'mode': 'none'}}
     if isinstance(entry, dict):
         if 'role' in entry:
             out['role'] = entry['role']
-        overrides = {k: v for k, v in (entry.get('overrides') or {}).items() if k != 'hidden_look'}
+        consumed = {'hidden_look', 'right_angle_marker', 'right_angle_size_px'}
+        overrides = {k: v for k, v in (entry.get('overrides') or {}).items() if k not in consumed}
         if overrides:
             out['overrides'] = overrides
     return out
@@ -152,6 +154,10 @@ def to_document(flat, doc, *, style_config=None) -> dict:
     (the flat scene of the space document ``doc``) with the style
     ``style_config`` (its ``space`` section; the stroke of a hidden piece is
     resolved against the rest of it)."""
+    return _plane_document(flat, doc, style_config)[0]
+
+
+def _plane_document(flat, doc, style_config):
     doc = as_space_document(doc)
     space = space_style(style_config)
     appearance = doc.data.get('appearance') or {}
@@ -161,6 +167,15 @@ def to_document(flat, doc, *, style_config=None) -> dict:
              'viewDefaults': {'bounds': list(flat['bounds'])}}
     ids = _Ids(p['id'] for p in flat['points'])
     top = (len(flat['solids']) + 1) * Z_RANK
+    index = {'fills': [], 'strokes': [], 'points': []}
+    label_targets = {}
+    section_visible = {s['id'] for s in flat['strokes'] if s['role'] == 'section'
+                       and any(p['visibility'] == 'visible' for p in s['pieces'])}
+
+    def label_target(src, kind, target, priority, length=0):
+        old = label_targets.get(src)
+        if old is None or (priority, length) > old[:2]:
+            label_targets[src] = (priority, length, kind, target)
 
     def z_of(layer):
         return Z_LOW + layer * Z_ROOM / (top + 1)
@@ -205,6 +220,10 @@ def to_document(flat, doc, *, style_config=None) -> dict:
         fill_id = ids.take(stem)
         vertices = [helper(f'{fill_id}--v{j}', p) for j, p in enumerate(f['polygon'], 1)]
         add('polygon.by_points', {'vertices': {'kind': 'list', 'items': vertices}}, 'polygon', 'polygon', look, fill_id)
+        index['fills'].append((f, fill_id))
+        if ((role != 'face' or f['facing'] == 'front')
+                and (role != 'section' or f['id'] in section_visible)):
+            label_target(f['id'], 'fill', fill_id, 1)
 
     # strokes: first as seen, then the hidden pieces from the resolved paint
     hidden_pieces = []                 # (piece id, hidden look)
@@ -218,8 +237,11 @@ def to_document(flat, doc, *, style_config=None) -> dict:
         entry = appearance.get(s['id']) if isinstance(appearance, dict) else None
         own = (entry.get('overrides') or {}).get('hidden_look') if isinstance(entry, dict) else None
         hidden = _hidden_look(space, own or space['hidden']['look'])
+        piece_ids = []
+        index['strokes'].append((s, piece_ids))
         for k, piece in enumerate(s['pieces'], 1):
             if piece['visibility'] == 'hidden' and hidden is None:
+                piece_ids.append(None)
                 continue
             look = copy.deepcopy(base)
             overrides = dict(role_over)
@@ -229,8 +251,11 @@ def to_document(flat, doc, *, style_config=None) -> dict:
             pid = ids.take(piece_id(s['id'], s['part'], k))
             a, b = helper(pid + '--a', piece['a']), helper(pid + '--b', piece['b'])
             add('segment.by_points', {'a': a, 'b': b}, 'segment', 'segment', look, pid)
+            piece_ids.append(pid)
             if piece['visibility'] == 'hidden':
                 hidden_pieces.append((pid, hidden))
+            else:
+                label_target(s['id'], 'stroke', pid, 0, math.dist(piece['a'], piece['b']))
 
     # points
     for p in flat['points']:
@@ -239,6 +264,17 @@ def to_document(flat, doc, *, style_config=None) -> dict:
         look.pop('visibility', None)
         add('point.free', {}, 'point', 'point', look, p['id'], display=elements[p['id']].get('displayName', ''))
         plane['inputs'][p['id']] = {'kind': 'point', 'value': [float(p['at'][0]), float(p['at'][1])]}
+        index['points'].append(p)
+
+    labels = [(p['id'], 'point', p['id']) for p in index['points']]
+    for src, (_, _, kind, target) in label_targets.items():
+        label = (appearance.get(src) or {}).get('label') or {}
+        if label.get('mode') not in ('name', 'caption'):
+            continue
+        plane['appearance'][target]['label'] = dict(label)
+        plane['elements'][target]['displayName'] = elements[src].get('displayName', '')
+        labels.append((src, kind, target))
+    index['labels'] = labels
 
     if hidden_pieces:
         from ..paint import resolve_paint
@@ -253,7 +289,7 @@ def to_document(flat, doc, *, style_config=None) -> dict:
             if hidden['dash']:
                 overrides['stroke_dash_ratio'] = hidden['stroke_dash_ratio']
                 overrides['stroke_dash_period_px'] = hidden['stroke_dash_period_px']
-    return plane
+    return plane, index
 
 
 def _plane_style(style_config):
@@ -292,10 +328,11 @@ def render(doc, out=None, *, fmt='svg', style_config=None, export_layout=None, c
     :func:`sheet_layout` of ``export_layout`` (labels in pixels of the
     sheet). The report's elements are those of the plane document
     (:func:`to_document`)."""
-    from ..rendering import render as native_render
+    from .evaluate import evaluate
+    from .paint import prepare_render, render_plane
     doc = as_space_document(doc)
-    space = space_style(style_config)
-    flat = flat_scene(doc, camera, inputs=inputs, plane_look=space['plane']['look'])
-    plane = to_document(flat, doc, style_config=style_config)
-    return native_render(plane, style_config=_plane_style(style_config), export_layout=sheet_layout(export_layout),
-                         fmt=fmt, out=out, report=report)
+    ev = evaluate(doc, inputs=inputs)
+    flat = flat_scene(doc, camera, plane_look=space_style(style_config)['plane']['look'], evaluated=ev)
+    prepared = prepare_render(flat, doc, style_config=style_config, evaluated=ev)
+    return render_plane(prepared['document'], out, marks=prepared['marks'], style_config=style_config,
+                        export_layout=export_layout, fmt=fmt, report=report)

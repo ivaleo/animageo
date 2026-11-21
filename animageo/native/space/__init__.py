@@ -46,6 +46,7 @@ from .camera import PROJECTIONS, Camera, Projector
 from .document import camera_of, is_space, load, validate
 from .evaluate import evaluate
 from .flat import ScenePlane, ScenePoint, SceneSection, SceneSegment, SceneSolid, SpaceScene
+from .paint import layout_plane_labels, prepare_render, render_plane, resolve_paint
 from .registry import SPACE_REGISTRY_VERSION, space_registry
 from .scene import FLAT_SCENE_FORMAT
 from .scene import flat_scene as _flat_scene_of_document
@@ -90,7 +91,8 @@ def render(source, out=None, **kwargs):
 __all__ = [
     'vec',
     'SPACE_REGISTRY_VERSION', 'space_registry', 'is_space', 'load', 'validate', 'camera_of', 'evaluate',
-    'SpaceBuilder', 'FLAT_SCENE_FORMAT', 'flat_scene', 'to_document', 'render',
+    'SpaceBuilder', 'FLAT_SCENE_FORMAT', 'flat_scene', 'to_document', 'render', 'resolve_paint',
+    'prepare_render', 'render_plane', 'layout_plane_labels',
     'HIDDEN_LOOKS', 'FACE_LOOKS', 'SPACE_STYLE_DEFAULTS', 'space_style', 'sheet_layout',
     'PROJECTIONS', 'Camera', 'Projector',
     'Plane', 'Edge', 'Polyhedron', 'polyhedron', 'cube', 'prism', 'pyramid', 'tetrahedron', 'scale_of',

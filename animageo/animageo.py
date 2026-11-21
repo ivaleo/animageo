@@ -1362,6 +1362,10 @@ class AnimaGeoScene(MovingCameraScene):
             content=content,
             export=export,
         )
+        decorate = getattr(self, '_native_sheet_decoration', None)
+        if decorate is not None:
+            del self._native_sheet_decoration
+            decorate(self)
         self.addAllGeometry(show=True)
         if self.style_config.overlay.label_placement.get('enabled'):
             self.autoPlaceLabels()
