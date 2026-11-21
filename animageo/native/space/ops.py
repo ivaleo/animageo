@@ -266,14 +266,19 @@ def _plane_carrier(source):
     return tuple(value['p']), tuple(value['n'])
 
 
+def _normal_component(offset, direction):
+    # Cross products discard the component along the carrier without
+    # subtracting nearly equal large vectors in translated constructions.
+    crossed = vec.cross(direction, vec.cross(offset, direction))
+    return vec.mul(crossed, 1.0 / vec.dot(direction, direction))
+
+
 def _line(p, direction):
-    origin = vec.sub(p, vec.mul(direction, vec.dot(p, direction)))
-    return {'p': _list(origin), 'dir': _list(direction)}
+    return {'p': _list(_normal_component(p, direction)), 'dir': _list(direction)}
 
 
 def _to_line(point, origin, direction):
-    offset = vec.sub(point, origin)
-    return vec.sub(vec.mul(direction, vec.dot(offset, direction)), offset)
+    return vec.mul(_normal_component(vec.sub(point, origin), direction), -1.0)
 
 
 def _line3_by_points(args, ctx):

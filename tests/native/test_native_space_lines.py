@@ -103,6 +103,37 @@ def test_undefined_carriers_and_point_on_line_are_distinct():
     assert (out['R']['cause'], out['N']['cause'], out['P']['cause']) == ('bad', 'flat', 'flat')
 
 
+
+@pytest.mark.parametrize('origin', [0.0, 1e6, -1e6])
+def test_translated_diagonal_agrees_for_a_line_and_its_segment(origin):
+    b = SpaceBuilder('translated-diagonal')
+    b.point('A', origin, origin, 0)
+    b.point('B', origin + 1, origin + 1, 0)
+    b.point('P', origin + 2, origin + 2, 0)
+    line = b.line('l', 'A', 'B')
+    b.line('r', 'B', 'A')
+    segment = b.segment('s', 'A', 'B')
+    b.perpendicular_line('ql', 'P', line)
+    b.perpendicular_line('qs', 'P', segment)
+    b.projection_line('fl', 'P', line)
+    b.projection_line('fs', 'P', segment)
+
+    doc = b.data()
+    on = evaluate(doc).elements
+    assert on['ql'] == on['qs'] == {'state': 'undefined', 'type': 'line3', 'reason': 'point_on_line'}
+    for name, sign in (('l', 1), ('r', -1)):
+        assert on[name]['value']['p'] == pytest.approx([0, 0, 0], abs=1e-12)
+        assert on[name]['value']['dir'] == pytest.approx([sign / math.sqrt(2), sign / math.sqrt(2), 0])
+    foot = {'x': origin + 2, 'y': origin + 2, 'z': 0}
+    assert on['fl']['value'] == on['fs']['value'] == foot
+
+    off = evaluate(doc, inputs={'P': {'kind': 'point3', 'value': [origin + 2, origin + 2, 0.125]}}).elements
+    for tip in ('fl', 'fs'):
+        for coordinate, expected in foot.items():
+            assert off[tip]['value'][coordinate] == pytest.approx(expected, rel=0, abs=1e-12)
+    assert off['ql']['value'] == off['qs']['value'] == {'p': [origin + 2, origin + 2, 0], 'dir': [0, 0, -1]}
+
+
 def stroke(scene, name):
     return next(s for s in scene['strokes'] if s['id'] == name)
 
