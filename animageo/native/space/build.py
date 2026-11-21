@@ -17,7 +17,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ..document import DOCUMENT_FORMAT
-from .registry import SPACE_REGISTRY_VERSION, space_registry
+from ..registry import _version_tuple
+from .registry import space_registry
 
 __all__ = ['SpaceBuilder', 'Made']
 
@@ -114,6 +115,28 @@ class SpaceBuilder:
     def segment(self, element_id, a, b) -> str:
         return self._op(element_id, 'segment3.by_points', {'a': _ref(a), 'b': _ref(b)}).main
 
+    def line(self, element_id, a, b) -> str:
+        return self._op(element_id, 'line3.by_points', {'a': _ref(a), 'b': _ref(b)}).main
+
+    def parallel(self, element_id, point, line) -> str:
+        return self._op(element_id, 'line3.parallel', {'point': _ref(point), 'line': _ref(str(line))}).main
+
+    def perpendicular_line(self, element_id, point, line) -> str:
+        return self._op(element_id, 'line3.perpendicular_line',
+                        {'point': _ref(point), 'line': _ref(str(line))}).main
+
+    def perpendicular_plane(self, element_id, point, plane) -> str:
+        return self._op(element_id, 'line3.perpendicular_plane',
+                        {'point': _ref(point), 'plane': _ref(str(plane))}).main
+
+    def projection_line(self, element_id, point, line) -> str:
+        return self._op(element_id, 'point3.projection_line',
+                        {'point': _ref(point), 'line': _ref(str(line))}).main
+
+    def projection_plane(self, element_id, point, plane) -> str:
+        return self._op(element_id, 'point3.projection_plane',
+                        {'point': _ref(point), 'plane': _ref(str(plane))}).main
+
     def polygon(self, element_id, *vertices, sides=None) -> Made:
         return self._op(element_id, 'polygon3.by_points', {'vertices': _refs(vertices)},
                         self._names('side', sides))
@@ -151,10 +174,12 @@ class SpaceBuilder:
             view['camera'] = dict(self.camera)
         if self.ground is not None:
             view['ground'] = dict(self.ground)
+        reg = space_registry()
+        versions = (reg.get(op['op'])['since'] for op in self.operations.values())
         doc = {
             'format': DOCUMENT_FORMAT,
             'documentId': self.document_id,
-            'operationRegistryVersion': SPACE_REGISTRY_VERSION,
+            'operationRegistryVersion': max(versions, key=_version_tuple, default='1.0'),
             'space': 'space',
             'operations': dict(self.operations),
             'elements': dict(self.elements),

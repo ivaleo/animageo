@@ -1,4 +1,4 @@
-"""Evaluation of a space document (space registry 1.0, experimental).
+"""Evaluation of a space document (experimental).
 
 The contract is that of the plane (:func:`animageo.native.evaluate`):
 operations in Kahn's order with ties by ID; a cycle → ``error/cycle``; an
@@ -133,7 +133,7 @@ def compare_space_values(type_info: dict, expected, actual, scale: float, path: 
 def evaluate(doc, *, inputs=None, _decisions=None) -> Evaluated:
     """Evaluate the space document ``doc``; ``inputs`` overrides input values
     of free elements. The result is :class:`~animageo.native.kernel.evaluate.Evaluated`
-    with ``registry`` ``1.0`` (``animageo-evaluated/v1``)."""
+    with the installed space registry version (``animageo-evaluated/v1``)."""
     doc = as_space_document(doc)
     reg = space_registry()
     plane = plane_registry()

@@ -50,6 +50,10 @@ of ``solids``; tiers: plane 0, back faces 1, sections 2, hidden pieces 3,
 front faces 4. A hidden piece lies in the tier of the farthest solid that
 hides it (the first of ``hiddenBy``; for a hidden own edge — its solid),
 visible pieces at ``(len(solids) + 1)·10``. Fills of a layer go far to near.
+
+Straight lines are clipped after framing the drawn finite geometry.
+Their strokes have role ``segment`` with piece parameters affine on the
+picture. A clipped line can end at a perspective vanishing point.
 """
 from __future__ import annotations
 
@@ -254,11 +258,23 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
     rank = {sid: k + 1 for k, (sid, _p, _o) in enumerate(order)}
     top = (len(rank) + 1) * Z_RANK
 
-    def stroke(el_id, part, role, a, b, own_hidden, owner, solid=None):
+    def stroke(el_id, part, role, a, b, own_hidden, owner, solid=None, *, clipped=None):
         out = {'id': el_id, 'part': part, 'role': role}
         if solid is not None:
             out['solid'] = solid
-        pa, pb = projector.project(a), projector.project(b)
+        if clipped is None:
+            pa, pb = projector.project(a), projector.project(b)
+            weights = None
+
+            def at(t):
+                return _xy(projector.project(vec.lerp(a, b, t)))
+        else:
+            pa, pb = clipped.picture
+            weights = clipped.weights
+
+            def at(t):
+                return [pa[i] + (pb[i] - pa[i]) * t for i in range(2)]
+
         length = vec.norm((pb[0] - pa[0], pb[1] - pa[1], 0.0))
         out['pieces'] = []
         if length <= DECIDE_TOL * scale:              # seen end-on: nothing to draw
@@ -269,15 +285,14 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
             if own_hidden:
                 hiders.append((owner, (0.0, 1.0)))
             for sid, occ in occluders.items():
-                span = occ.hidden_interval(a, b) if sid != owner else None
+                span = occ.hidden_interval(a, b, weights=weights) if sid != owner else None
                 if span is not None:
                     hiders.append((sid, span))
         for piece in pieces([span for _, span in hiders], min_t):
             by = sorted({sid for sid, (h0, h1) in hiders if min(h1, piece.t1) > max(h0, piece.t0)},
                         key=rank.get) if piece.hidden else []
             layer = rank[by[0]] * Z_RANK + Z_TIERS['hidden'] if piece.hidden else top
-            out['pieces'].append({'a': _xy(projector.project(vec.lerp(a, b, piece.t0))),
-                                  'b': _xy(projector.project(vec.lerp(a, b, piece.t1))),
+            out['pieces'].append({'a': at(piece.t0), 'b': at(piece.t1),
                                   't': [piece.t0, piece.t1],
                                   'visibility': 'hidden' if piece.hidden else 'visible',
                                   'occluders': piece.occluders, 'hiddenBy': by, 'layer': layer})
@@ -346,6 +361,14 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
         if elements[el_id]['type'] == 'segment3' and el_id not in edge_owner:
             v = value(el_id)
             strokes.append(stroke(el_id, None, 'segment', tuple(v['a']), tuple(v['b']), False, None))
+    for el_id in sorted(drawn):
+        if elements[el_id]['type'] == 'line3':
+            v = value(el_id)
+            clip = projector.clip_line(tuple(v['p']), tuple(v['dir']), bounds, scale, decide_tol=DECIDE_TOL)
+            if clip is None:
+                strokes.append({'id': el_id, 'part': None, 'role': 'segment', 'pieces': []})
+            else:
+                strokes.append(stroke(el_id, None, 'segment', *clip.world, False, None, clipped=clip))
     for pid, corners in sheets:
         if plane_look == 'trace':
             if traces.get(pid):

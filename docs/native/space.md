@@ -1,6 +1,6 @@
 # Space (experimental): `animageo.native.space`
 
-**Experimental.** The space registry `1.0`, the space document, the flat
+**Experimental.** The space registry `1.1`, the space document, the flat
 scene `/1` and the fixtures may change without a deprecation period; the
 plane (its registry `REGISTRY_VERSION`, `native.*`) does not change.
 `native.has("space")` says that the package is there (an experimental
@@ -11,9 +11,11 @@ browser kernel of the web app repeats §2–§5 in TypeScript; the fixtures
 ## 1. The document
 
 A space document is `animageo-construction/v1` with `"space": "space"` and
-`operationRegistryVersion` `"1.0"` — the version of the space registry,
-a line of its own: the plane registry is `1.6`, a space document of `1.1`
-is `newer_registry` for this library. `viewDefaults.camera` is the view of
+`operationRegistryVersion` on a version line separate from the plane
+registry. `SpaceBuilder` writes the lowest version needed by the document:
+`"1.0"` for the original operations and `"1.1"` when a straight line or
+projection is used. A later declaration such as `"1.2"` is reported as
+`newer_registry`. `viewDefaults.camera` is the view of
 the export (`projection` `orthographic` | `oblique` | `perspective`,
 `azimuthDeg`, `elevationDeg`, `target`, `distance`, `oblique {angleDeg,
 ratio}`); `viewDefaults.ground` (`look` `none` | `sheet` | `grid`, `size`)
@@ -23,14 +25,13 @@ the ground is `Oxy`. Inputs: `point3 [x, y, z]`, `pathParameter t`,
 `space.load`, `space.validate` (codes of the plane plus `space_unsupported`
 for an operation of the plane).
 
-## 2. The space registry 1.0
+## 2. The space registry 1.1
 
-`animageo/native/ops/v1/space`: the groups `point3`, `segment3`,
-`polygon3`, `plane`, `polyhedron`, `section`, the types and reasons added to
-those of the plane, `INDEX.json` (`registryVersion 1.0`, `extends` — the
-plane `REGISTRY_VERSION` whose catalogs it adds to, `1.7`;
-`SPACE_REGISTRY_VERSION`). `registry index --check` checks both and says
-`registry 1.7 (space 1.0)`. The plane registry does not read this folder.
+`animageo/native/ops/v1/space` holds the operation groups, types and
+reasons. Its `INDEX.json` records the space registry version and the plane
+`REGISTRY_VERSION` it extends. `registry index --check` checks both. The
+plane registry does not read this folder. The signatures of the original
+space operations remain at `1.0`.
 An output may repeat by a formula: `count {per, times, plus}` —
 `N = times · n(per) + plus`.
 
@@ -48,6 +49,27 @@ An output may repeat by a formula: `count {per, times, plus}` —
 | `polyhedron.pyramid` | `base[≥3]`, `apex` | `solid`, `edge.1…2n`, `face.1…n+1` | the same |
 | `polyhedron.tetrahedron` | `a, b, c, d` | `solid`, `edge.1…6`, `face.1…4` | collinear_points, flat |
 | `section.plane_polyhedron` | `plane`, `solid` | `section {polygon, faces}` | outside, touch |
+| `line3.by_points` | `a, b` | `line {p, dir}` | coincident_points |
+| `line3.parallel` | `point, line: lineCarrier3` | `line` | coincident_points |
+| `line3.perpendicular_line` | `point, line: lineCarrier3` | `line` | coincident_points, point_on_line |
+| `line3.perpendicular_plane` | `point, plane: planeCarrier3` | `line` | upstream |
+| `point3.projection_line` | `point, line: lineCarrier3` | `point` | coincident_points |
+| `point3.projection_plane` | `point, plane: planeCarrier3` | `point` | upstream |
+
+A straight line has a unit `dir` and `p`, the projection of the world
+origin onto the line. The direction follows `a → b`, the direction of
+the parallel carrier, the direction from the source point to the foot
+on a line, or the normal of the plane carrier. A point on the line
+within the decide length has infinitely many perpendiculars, so
+`line3.perpendicular_line` reports `point_on_line`. Its projection is
+still defined.
+
+A `lineCarrier3` is a straight line or the supporting line of a segment.
+A `planeCarrier3` is a plane or the supporting plane of a polygon or
+solid face. Projection can place a foot beyond the segment or outside
+the face. A segment whose endpoints are within the decide length does
+not define a carrier. These families are separate from the `path3` and
+`surface` inputs of constrained points.
 
 **Canonical order of a solid.** A prism over `A, B, …` has the vertices
 `A …, A_1 …`; edges — the base, the top, then `AA_1, …`; faces — the base,
@@ -98,6 +120,15 @@ visible pieces at `(len(solids) + 1)·10`. `appearance.<id>.visibility`:
 its section, if shown, is a plane figure — rank 0, no `solid`, its sides
 hidden only by the solids that are drawn; 1.11.0rc8).
 
+The scene bounds are computed from drawn finite geometry, before
+straight lines are clipped. A line contributes a stroke with its own
+element ID and role `segment`. It contributes no pieces when it misses
+the frame, lies behind the near plane or projects end-on. Perspective
+clips at positive depth `1e-6 · scale` and uses the vanishing point as the
+image endpoint of an unbounded forward interval. The clipped line uses
+the same shadow volumes and visibility policies as the other strokes.
+For a clipped line, the piece interval `t` is affine on the picture.
+
 ## 5. Drawing and style
 
 `native.render(space_doc, …)` (or `space.render`) draws the flat scene as a
@@ -142,7 +173,12 @@ element. `face.look: lit` is drawn as `flat` for now.
 `parity/v1/space`: `space_values_*` (values by ID; a length within
 `1e-9·S`, an area `S²`, a volume `S³`) and `space_flat_*` (a scene seen by
 two or three cameras of a grid; numbers within `1e-9·max(1, scale)`).
-Numbers are rounded to 9 decimals.
+Numbers are rounded to 9 decimals. The additive `space_values_lines` and
+`space_flat_lines` fixtures cover registry 1.1, including feet outside the
+carriers, degenerate carriers, near-plane clipping and the shadows of
+solids. The seven registry 1.0 fixtures keep their original JSON; the
+historical future-version probe is evaluated with an actually newer
+declaration during replay.
 
 `space.flicker.flicker_events(doc)` walks the orbit (1°, elevations 0, 20,
 89.5°, 32 samples per line): a `blink` is a view that changes for one step

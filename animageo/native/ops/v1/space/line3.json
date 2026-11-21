@@ -1,0 +1,146 @@
+[
+  {
+    "op": "line3.by_points",
+    "status": "experimental",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "a",
+        "type": "point3"
+      },
+      {
+        "slot": "b",
+        "type": "point3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "coincident_points"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "line",
+    "phrases": {
+      "ru": "{line} — прямая через {a} и {b}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:f17bf0397f77835f502e471af3374da16af1d78b9acf1283860fc01c34aa246a"
+  },
+  {
+    "op": "line3.parallel",
+    "status": "experimental",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      },
+      {
+        "slot": "line",
+        "type": "lineCarrier3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "coincident_points"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "parallel",
+    "phrases": {
+      "ru": "{line} проходит через {point} параллельно опоре"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:933e4abe922ee0ed3250d1b0ffc91ddee365d6fde17a703ff19b9f8f40318b42"
+  },
+  {
+    "op": "line3.perpendicular_line",
+    "status": "experimental",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      },
+      {
+        "slot": "line",
+        "type": "lineCarrier3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "coincident_points",
+      "point_on_line"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "perpendicular",
+    "phrases": {
+      "ru": "{line} проходит через {point} перпендикулярно прямой-опоре"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:91c299e7b15611f7489f82c4f5b05747e64a5132ccbaa657f9e4fb10b8990285"
+  },
+  {
+    "op": "line3.perpendicular_plane",
+    "status": "experimental",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      },
+      {
+        "slot": "plane",
+        "type": "planeCarrier3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "line",
+        "type": "line3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "perpendicular",
+    "phrases": {
+      "ru": "{line} проходит через {point} перпендикулярно {plane}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:965f613c05776ef18a02e44e62ba589803fb4f79336c4f71e022a72992b6a027"
+  }
+]

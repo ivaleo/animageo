@@ -105,6 +105,34 @@ class Camera:
         return cls(**kwargs)
 
 
+@dataclass(frozen=True)
+class ClippedLine:
+    """Endpoints in picture and world coordinates.
+
+    Perspective world endpoints are homogeneous: ``weights`` contains their
+    fourth coordinates (0 at infinity). Their interpolant projects affinely
+    onto the picture segment. Parallel endpoints need no weights.
+    """
+    world: tuple
+    picture: tuple
+    weights: tuple | None
+
+
+def _line_interval(halfspaces):
+    """Intersect ``constant + slope * t >= 0`` over the real line."""
+    lo, hi = -math.inf, math.inf
+    for constant, slope in halfspaces:
+        if slope > 0.0:
+            lo = max(lo, -constant / slope)
+        elif slope < 0.0:
+            hi = min(hi, -constant / slope)
+        elif constant < 0.0:
+            return None
+        if lo >= hi:
+            return None
+    return lo, hi
+
+
 class Projector:
     """Projection of points of space to the picture (``project``) and the
     direction towards the eye (``toward_eye``) the visibility tests use."""
@@ -131,22 +159,71 @@ class Projector:
         else:
             self.eye = vec.add(camera.target, vec.mul(direction, camera.distance))
 
+    def _coordinates(self, d) -> tuple:
+        if self.camera.projection == 'oblique':
+            return (d[0] + self._ox * d[1], d[2] + self._oy * d[1], d[1])
+        return (vec.dot(d, self._r), vec.dot(d, self._u), vec.dot(d, self._f))
+
     def project(self, p) -> tuple:
         """``(x, y, depth)``: picture coordinates (y up) and the depth along
         the view; in perspective ``depth ≤ 0`` means behind the eye (the
         picture coordinates are then meaningless)."""
-        if self.camera.projection == 'oblique':
-            d = vec.sub(p, self._target)
-            return (d[0] + self._ox * d[1], d[2] + self._oy * d[1], d[1])
+        x, y, z = self._coordinates(vec.sub(p, self._target if self.parallel else self.eye))
         if self.parallel:
-            d = vec.sub(p, self._target)
-            return (vec.dot(d, self._r), vec.dot(d, self._u), vec.dot(d, self._f))
-        d = vec.sub(p, self.eye)
-        z = vec.dot(d, self._f)
+            return x, y, z
         if z <= 0.0:
             return (0.0, 0.0, z)
         k = self.camera.distance / z
-        return (vec.dot(d, self._r) * k, vec.dot(d, self._u) * k, z)
+        return x * k, y * k, z
+
+    def clip_line(self, p, direction, bounds, scale, *, decide_tol=1e-10) -> ClippedLine | None:
+        """Clip ``p + t * direction`` (unit direction) to the picture frame.
+
+        In perspective the image is ``(X/Z, Y/Z)``; the four frame planes
+        and the positive near plane are linear inequalities in ``t``. An
+        interval unbounded in space ends at a vanishing point on the sheet.
+        """
+        offset = vec.sub(p, self._target if self.parallel else self.eye)
+        x, y, z = self._coordinates(offset)
+        dx, dy, dz = self._coordinates(direction)
+        xmin, ymin, xmax, ymax = bounds
+        near = 1e-6 * scale  # the same near plane as finite geometry
+        if self.parallel:
+            if math.hypot(dx, dy) <= decide_tol:
+                return None
+            z, dz = 1.0, 0.0
+            halfspaces = []
+        else:
+            if vec.norm(vec.cross(offset, direction)) <= decide_tol * scale:
+                return None
+            distance = self.camera.distance
+            x, y, dx, dy = x * distance, y * distance, dx * distance, dy * distance
+            halfspaces = [(z - near, dz)]
+        span = _line_interval([*halfspaces, (x - xmin * z, dx - xmin * dz),
+                               (xmax * z - x, xmax * dz - dx), (y - ymin * z, dy - ymin * dz),
+                               (ymax * z - y, ymax * dz - dy)])
+        if span is None:
+            return None
+
+        world, picture, weights = [], [], []
+        for t in span:
+            if math.isinf(t):
+                # Only perspective can keep a half-line. The forward limit
+                # has positive depth and zero homogeneous weight.
+                w = 0.0
+                point = vec.mul(direction, 1.0 / dz)
+                xx, yy = dx / dz, dy / dz
+            else:
+                depth = 1.0 if self.parallel else max(near, z + t * dz)
+                w = 1.0 / depth
+                point = vec.mul(vec.add(p, vec.mul(direction, t)), w)
+                xx, yy = (x + t * dx) * w, (y + t * dy) * w
+            if not all(math.isfinite(c) for c in (*point, xx, yy, w)):
+                return None
+            world.append(point)
+            picture.append((min(xmax, max(xmin, xx)), min(ymax, max(ymin, yy))))
+            weights.append(w)
+        return ClippedLine(tuple(world), tuple(picture), None if self.parallel else tuple(weights))
 
     def toward_eye(self, p) -> tuple:
         """The unit vector from ``p`` towards the eye."""

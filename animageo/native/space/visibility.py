@@ -101,15 +101,22 @@ class ConvexOccluder:
         ``None`` when the solid hides nothing."""
         return self._planes
 
-    def hidden_interval(self, a, b):
+    def hidden_interval(self, a, b, *, weights=None):
         """``(t0, t1)`` — the part of the segment ``a + t·(b − a)``, ``t`` in
-        ``[0, 1]``, the solid hides, or ``None``."""
+        ``[0, 1]``, the solid hides, or ``None``. If given, ``weights`` are
+        the fourth coordinates of the homogeneous endpoints ``a`` and ``b``.
+        """
         if self._planes is None:
             return None
         t0, t1 = 0.0, 1.0
         for m, q, c in self._planes:
-            h0 = vec.dot(m, vec.sub(a, q)) - c
-            h1 = vec.dot(m, vec.sub(b, q)) - c
+            if weights is None:
+                h0 = vec.dot(m, vec.sub(a, q)) - c
+                h1 = vec.dot(m, vec.sub(b, q)) - c
+            else:
+                wa, wb = weights
+                h0 = vec.dot(m, vec.sub(a, vec.mul(q, wa))) - c * wa
+                h1 = vec.dot(m, vec.sub(b, vec.mul(q, wb))) - c * wb
             if h0 > 0 and h1 > 0:
                 return None
             if h0 > 0:

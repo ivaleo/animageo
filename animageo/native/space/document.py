@@ -20,8 +20,7 @@ Inputs: ``{"kind": "point3", "value": [x, y, z]}`` (``point3.free``),
 ``{"kind": "pathParameter", "value": t}`` (``point3.on_path``) and
 ``{"kind": "surfaceParameter", "value": [u, v]}`` (``point3.on_surface``);
 the plane ``point`` input is refused. The operations are those of the
-space registry 1.0 (:mod:`.registry`, a version line of its own:
-``operationRegistryVersion`` ``"1.0"``); an operation of the plane is
+space registry 1.0 (:mod:`.registry`, a version line of its own); an operation of the plane is
 ``space_unsupported``.
 
 :func:`load` checks the structure with the rules of the plane plus the ones
@@ -173,7 +172,7 @@ def camera_of(doc) -> Camera:
 
 def validate(doc) -> list:
     """All issues of a space document: structure first, then the graph rules
-    against the space registry 1.0. Codes: ``schema``, ``id_mismatch``,
+    against the space registry. Codes: ``schema``, ``id_mismatch``,
     ``space_unsupported`` (a plane operation), ``unknown_slot``,
     ``missing_slot``, ``dangling_ref``, ``type_mismatch``,
     ``producer_mismatch``, ``cycle``, ``input_not_free``, ``missing_input``

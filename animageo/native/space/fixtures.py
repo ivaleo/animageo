@@ -41,7 +41,8 @@ from .registry import SPACE_REGISTRY_VERSION, space_registry
 from .scene import flat_scene
 
 __all__ = ['SPACE_PARITY_FORMAT', 'DEFAULT_DIR', 'CAMERAS', 'build_fixtures', 'write_fixtures', 'check_fixtures',
-           'verify_fixture', 'verify_fixtures', 'value_themes', 'flat_themes']
+           'verify_fixture', 'verify_fixtures', 'value_themes', 'flat_themes',
+           'line_value_themes', 'line_flat_themes']
 
 SPACE_PARITY_FORMAT = 'animageo-space-parity/v1'
 DEFAULT_DIR = Path(__file__).resolve().parents[1] / 'parity' / 'v1' / 'space'
@@ -411,6 +412,7 @@ EXTRA_CAMERAS = {
     'top': {'projection': 'orthographic', 'azimuthDeg': 0, 'elevationDeg': 90},
     'front': {'projection': 'orthographic', 'azimuthDeg': -90, 'elevationDeg': 0},
     'side': {'projection': 'orthographic', 'azimuthDeg': 0, 'elevationDeg': 0},
+    'persp-side': {'projection': 'perspective', 'azimuthDeg': 0, 'elevationDeg': 0, 'distance': 5},
 }
 
 
@@ -418,6 +420,87 @@ def flat_themes():
     """``[(file stem, [(scene name, builder, target, camera names), …])]``."""
     return [('space_flat_solids', _flat_solids()), ('space_flat_sections', _flat_sections()),
             ('space_flat_degenerate', _flat_degenerate())]
+
+
+def _line_feet(name, point):
+    b = SpaceBuilder(name)
+    b.point('A', 1, 2, -1)
+    b.point('B', 3, 3, -1)
+    b.point('C', 1, 4, -1)
+    b.point('P', *point)
+    b.line('l', 'A', 'B')
+    b.line('reversed', 'B', 'A')
+    s = b.segment('s', 'A', 'B')
+    face = b.polygon('face', 'A', 'B', 'C').main
+    plane = b.plane('plane', 'A', 'C', 'B')
+    b.parallel('parallel_line', 'P', 'reversed')
+    b.parallel('parallel_segment', 'P', s)
+    b.perpendicular_line('perpendicular_line', 'P', 'l')
+    b.perpendicular_line('perpendicular_segment', 'P', s)
+    b.perpendicular_plane('perpendicular_face', 'P', face)
+    b.perpendicular_plane('perpendicular_plane', 'P', plane)
+    b.projection_line('line_foot', 'P', 'l')
+    b.projection_line('segment_foot', 'P', s)
+    b.projection_plane('face_foot', 'P', face)
+    b.projection_plane('plane_foot', 'P', plane)
+    return b
+
+
+def line_value_themes():
+    """Registry 1.1 value scenarios; the registry 1.0 suites stay frozen."""
+    cases = []
+    for name, point in (('feet_outside_carriers', (6, 4, 3)), ('feet_after_input_move', (-2, 1, 5)),
+                        ('point_on_carrier', (5, 4, -1))):
+        cases.append((name, _line_feet(name, point)))
+    b = SpaceBuilder('coincident_line_carriers')
+    b.point('A', 0, 0, 0)
+    b.point('X', 1, 0, 1)
+    b.line('bad', 'A', 'A')
+    s = b.segment('s', 'A', 'A')
+    b.projection_line('from_line', 'X', 'bad')
+    b.projection_line('from_segment', 'X', s)
+    b.perpendicular_line('normal', 'X', s)
+    b.parallel('parallel', 'X', s)
+    cases.append(('coincident_line_carriers', b))
+    return [('space_values_lines', cases)]
+
+
+def line_flat_themes():
+    """Registry 1.1 clipped lines and their visibility by named camera."""
+    b = SpaceBuilder('lines_in_shadow')
+    _cube(b)
+    b.point('P', 0, 1.25, 1)
+    b.point('Q', 3, 1.25, 1)
+    b.point('R', -1, 3, 1)
+    b.point('S', 3, 3, 1)
+    b.line('l', 'P', 'Q')
+    b.line('aux', 'R', 'S')
+    b.parallel('always', 'R', 'l')
+    shadows = b.data()
+    shadows['appearance'] = {n: {'visible': False} for n in 'PQRS'}
+    shadows['appearance']['always'] = {'visibility': 'always'}
+
+    b = SpaceBuilder('lines_at_eye_plane')
+    b.point('A', 0, -2, -2)
+    b.point('B', 0, 2, 2)
+    for prefix, a, end in (
+        ('ray', (0, 1, 0), (6, 1, 0)),
+        ('near', (0, 1e-7, 0), (6, 1e-7, 0)),
+        ('end_on', (0, 0, 0), (6, 0, 0)),
+        ('behind', (6, -1, 0), (6, 1, 0)),
+        ('outside', (0, -1, 10), (0, 1, 10)),
+    ):
+        b.point(prefix + '_a', *a)
+        b.point(prefix + '_b', *end)
+        b.line(prefix, prefix + '_a', prefix + '_b')
+    eye_plane = b.data()
+    eye_plane['appearance'] = {n: {'visible': False} for n in b.inputs if n not in ('A', 'B')}
+    return [('space_flat_lines', [
+        ('lines_in_shadow', shadows, [1, 1, 1], ('front', 'oblique', 'persp-side')),
+        ('lines_at_eye_plane', eye_plane, [0, 0, 0], ('side', 'ortho-a', 'persp-side')),
+        ('perpendicular_feet', _line_feet('perpendicular_feet', (6, 4, 3)), [2, 3, 0],
+         ('ortho-a', 'oblique', 'persp')),
+    ])]
 
 
 def _camera(name, target):
@@ -433,6 +516,12 @@ def _document(item):
 
 
 def _values_expect(document, inputs=None, decisions=None) -> dict:
+    # The frozen 1.0 suite used 1.1 as a future version. Replay only this
+    # probe against an actually future declaration, keeping its stored JSON.
+    if (document['documentId'] == 'newer_registry' and document.get('operationRegistryVersion') == '1.1'
+            and document['operations'].get('op-X', {}).get('op') == 'point3.on_line'):
+        major, minor = map(int, SPACE_REGISTRY_VERSION.split('.'))
+        document = dict(document, operationRegistryVersion=f'{major}.{minor + 1}')
     result = evaluate(document, inputs=inputs, _decisions=decisions)
     return _round({'scale': result.scale, 'elements': result.elements})
 
@@ -475,14 +564,17 @@ def build_fixtures() -> dict:
     """``{file name: fixture}``."""
     from ... import __version__
     out = {}
-    for stem, cases in value_themes():
-        out[stem + '.json'] = {'format': SPACE_PARITY_FORMAT, 'id': stem, 'kind': 'values',
-                               'registry': SPACE_REGISTRY_VERSION, 'generatedBy': f'animageo {__version__}',
-                               'cases': _value_rows(cases)}
-    for stem, scenes in flat_themes():
-        out[stem + '.json'] = {'format': SPACE_PARITY_FORMAT, 'id': stem, 'kind': 'flat',
-                               'registry': SPACE_REGISTRY_VERSION, 'generatedBy': f'animageo {__version__}',
-                               'cases': _flat_rows(scenes)}
+    suites = [
+        ('1.0', 'values', value_themes(), _value_rows),
+        ('1.0', 'flat', flat_themes(), _flat_rows),
+        (SPACE_REGISTRY_VERSION, 'values', line_value_themes(), _value_rows),
+        (SPACE_REGISTRY_VERSION, 'flat', line_flat_themes(), _flat_rows),
+    ]
+    for version, kind, themes, rows in suites:
+        for stem, cases in themes:
+            out[stem + '.json'] = {'format': SPACE_PARITY_FORMAT, 'id': stem, 'kind': kind,
+                                   'registry': version, 'generatedBy': f'animageo {__version__}',
+                                   'cases': rows(cases)}
     return out
 
 

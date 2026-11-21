@@ -1,0 +1,5951 @@
+{
+ "format": "animageo-space-parity/v1",
+ "id": "space_flat_lines",
+ "kind": "flat",
+ "registry": "1.1",
+ "generatedBy": "animageo 1.20.0",
+ "cases": [
+  {
+   "name": "lines_in_shadow",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "lines_in_shadow",
+    "operationRegistryVersion": "1.1",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-K": {
+      "id": "op-K",
+      "op": "polyhedron.cube",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "solid",
+        "elementId": "K"
+       },
+       {
+        "slot": "vertex.1",
+        "elementId": "C"
+       },
+       {
+        "slot": "vertex.2",
+        "elementId": "D"
+       },
+       {
+        "slot": "vertex.3",
+        "elementId": "A_1"
+       },
+       {
+        "slot": "vertex.4",
+        "elementId": "B_1"
+       },
+       {
+        "slot": "vertex.5",
+        "elementId": "C_1"
+       },
+       {
+        "slot": "vertex.6",
+        "elementId": "D_1"
+       },
+       {
+        "slot": "edge.1",
+        "elementId": "K_edge_1"
+       },
+       {
+        "slot": "edge.2",
+        "elementId": "K_edge_2"
+       },
+       {
+        "slot": "edge.3",
+        "elementId": "K_edge_3"
+       },
+       {
+        "slot": "edge.4",
+        "elementId": "K_edge_4"
+       },
+       {
+        "slot": "edge.5",
+        "elementId": "K_edge_5"
+       },
+       {
+        "slot": "edge.6",
+        "elementId": "K_edge_6"
+       },
+       {
+        "slot": "edge.7",
+        "elementId": "K_edge_7"
+       },
+       {
+        "slot": "edge.8",
+        "elementId": "K_edge_8"
+       },
+       {
+        "slot": "edge.9",
+        "elementId": "K_edge_9"
+       },
+       {
+        "slot": "edge.10",
+        "elementId": "K_edge_10"
+       },
+       {
+        "slot": "edge.11",
+        "elementId": "K_edge_11"
+       },
+       {
+        "slot": "edge.12",
+        "elementId": "K_edge_12"
+       },
+       {
+        "slot": "face.1",
+        "elementId": "K_face_1"
+       },
+       {
+        "slot": "face.2",
+        "elementId": "K_face_2"
+       },
+       {
+        "slot": "face.3",
+        "elementId": "K_face_3"
+       },
+       {
+        "slot": "face.4",
+        "elementId": "K_face_4"
+       },
+       {
+        "slot": "face.5",
+        "elementId": "K_face_5"
+       },
+       {
+        "slot": "face.6",
+        "elementId": "K_face_6"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P"
+       }
+      ]
+     },
+     "op-Q": {
+      "id": "op-Q",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "Q"
+       }
+      ]
+     },
+     "op-R": {
+      "id": "op-R",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "R"
+       }
+      ]
+     },
+     "op-S": {
+      "id": "op-S",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "S"
+       }
+      ]
+     },
+     "op-l": {
+      "id": "op-l",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "Q"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op-aux": {
+      "id": "op-aux",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "R"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "S"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "aux"
+       }
+      ]
+     },
+     "op-always": {
+      "id": "op-always",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "R"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "always"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "K": {
+      "id": "K",
+      "type": "polyhedron",
+      "displayName": "K",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "solid"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.1"
+      }
+     },
+     "D": {
+      "id": "D",
+      "type": "point3",
+      "displayName": "D",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.2"
+      }
+     },
+     "A_1": {
+      "id": "A_1",
+      "type": "point3",
+      "displayName": "A_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.3"
+      }
+     },
+     "B_1": {
+      "id": "B_1",
+      "type": "point3",
+      "displayName": "B_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.4"
+      }
+     },
+     "C_1": {
+      "id": "C_1",
+      "type": "point3",
+      "displayName": "C_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.5"
+      }
+     },
+     "D_1": {
+      "id": "D_1",
+      "type": "point3",
+      "displayName": "D_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "vertex.6"
+      }
+     },
+     "K_edge_1": {
+      "id": "K_edge_1",
+      "type": "segment3",
+      "displayName": "K_edge_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.1"
+      }
+     },
+     "K_edge_2": {
+      "id": "K_edge_2",
+      "type": "segment3",
+      "displayName": "K_edge_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.2"
+      }
+     },
+     "K_edge_3": {
+      "id": "K_edge_3",
+      "type": "segment3",
+      "displayName": "K_edge_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.3"
+      }
+     },
+     "K_edge_4": {
+      "id": "K_edge_4",
+      "type": "segment3",
+      "displayName": "K_edge_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.4"
+      }
+     },
+     "K_edge_5": {
+      "id": "K_edge_5",
+      "type": "segment3",
+      "displayName": "K_edge_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.5"
+      }
+     },
+     "K_edge_6": {
+      "id": "K_edge_6",
+      "type": "segment3",
+      "displayName": "K_edge_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.6"
+      }
+     },
+     "K_edge_7": {
+      "id": "K_edge_7",
+      "type": "segment3",
+      "displayName": "K_edge_7",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.7"
+      }
+     },
+     "K_edge_8": {
+      "id": "K_edge_8",
+      "type": "segment3",
+      "displayName": "K_edge_8",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.8"
+      }
+     },
+     "K_edge_9": {
+      "id": "K_edge_9",
+      "type": "segment3",
+      "displayName": "K_edge_9",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.9"
+      }
+     },
+     "K_edge_10": {
+      "id": "K_edge_10",
+      "type": "segment3",
+      "displayName": "K_edge_10",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.10"
+      }
+     },
+     "K_edge_11": {
+      "id": "K_edge_11",
+      "type": "segment3",
+      "displayName": "K_edge_11",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.11"
+      }
+     },
+     "K_edge_12": {
+      "id": "K_edge_12",
+      "type": "segment3",
+      "displayName": "K_edge_12",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "edge.12"
+      }
+     },
+     "K_face_1": {
+      "id": "K_face_1",
+      "type": "polygon3",
+      "displayName": "K_face_1",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.1"
+      }
+     },
+     "K_face_2": {
+      "id": "K_face_2",
+      "type": "polygon3",
+      "displayName": "K_face_2",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.2"
+      }
+     },
+     "K_face_3": {
+      "id": "K_face_3",
+      "type": "polygon3",
+      "displayName": "K_face_3",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.3"
+      }
+     },
+     "K_face_4": {
+      "id": "K_face_4",
+      "type": "polygon3",
+      "displayName": "K_face_4",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.4"
+      }
+     },
+     "K_face_5": {
+      "id": "K_face_5",
+      "type": "polygon3",
+      "displayName": "K_face_5",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.5"
+      }
+     },
+     "K_face_6": {
+      "id": "K_face_6",
+      "type": "polygon3",
+      "displayName": "K_face_6",
+      "producer": {
+       "operationId": "op-K",
+       "slot": "face.6"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "point3",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "point"
+      }
+     },
+     "Q": {
+      "id": "Q",
+      "type": "point3",
+      "displayName": "Q",
+      "producer": {
+       "operationId": "op-Q",
+       "slot": "point"
+      }
+     },
+     "R": {
+      "id": "R",
+      "type": "point3",
+      "displayName": "R",
+      "producer": {
+       "operationId": "op-R",
+       "slot": "point"
+      }
+     },
+     "S": {
+      "id": "S",
+      "type": "point3",
+      "displayName": "S",
+      "producer": {
+       "operationId": "op-S",
+       "slot": "point"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line3",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op-l",
+       "slot": "line"
+      }
+     },
+     "aux": {
+      "id": "aux",
+      "type": "line3",
+      "displayName": "aux",
+      "producer": {
+       "operationId": "op-aux",
+       "slot": "line"
+      }
+     },
+     "always": {
+      "id": "always",
+      "type": "line3",
+      "displayName": "always",
+      "producer": {
+       "operationId": "op-always",
+       "slot": "line"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     "P": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       1.25,
+       1.0
+      ]
+     },
+     "Q": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       1.25,
+       1.0
+      ]
+     },
+     "R": {
+      "kind": "point3",
+      "value": [
+       -1.0,
+       3.0,
+       1.0
+      ]
+     },
+     "S": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       3.0,
+       1.0
+      ]
+     }
+    },
+    "appearance": {
+     "P": {
+      "visible": false
+     },
+     "Q": {
+      "visible": false
+     },
+     "R": {
+      "visible": false
+     },
+     "S": {
+      "visible": false
+     },
+     "always": {
+      "visibility": "always"
+     }
+    }
+   },
+   "planeLook": "sheet",
+   "views": [
+    {
+     "name": "front",
+     "camera": {
+      "projection": "orthographic",
+      "azimuthDeg": -90,
+      "elevationDeg": 0,
+      "target": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "lines_in_shadow",
+      "camera": {
+       "projection": "orthographic",
+       "azimuthDeg": -90,
+       "elevationDeg": 0,
+       "target": [
+        1.0,
+        1.0,
+        1.0
+       ]
+      },
+      "scale": 3.464101615,
+      "bounds": [
+       -1.16,
+       -1.16,
+       1.16,
+       1.16
+      ],
+      "unit": 344.827586207,
+      "solids": [
+       "K"
+      ],
+      "fills": [
+       {
+        "id": "K_face_5",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          1.0,
+          -1.0
+         ],
+         [
+          -1.0,
+          -1.0
+         ],
+         [
+          -1.0,
+          1.0
+         ],
+         [
+          1.0,
+          1.0
+         ]
+        ],
+        "depth": 1.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_3",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -1.0,
+          -1.0
+         ],
+         [
+          1.0,
+          -1.0
+         ],
+         [
+          1.0,
+          1.0
+         ],
+         [
+          -1.0,
+          1.0
+         ]
+        ],
+        "depth": -1.0,
+        "layer": 14
+       }
+      ],
+      "strokes": [
+       {
+        "id": "K_edge_1",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.0,
+           -1.0
+          ],
+          "b": [
+           1.0,
+           -1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_2",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": []
+       },
+       {
+        "id": "K_edge_3",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.0,
+           -1.0
+          ],
+          "b": [
+           -1.0,
+           -1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_4",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": []
+       },
+       {
+        "id": "K_edge_5",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.0,
+           1.0
+          ],
+          "b": [
+           1.0,
+           1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_6",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": []
+       },
+       {
+        "id": "K_edge_7",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.0,
+           1.0
+          ],
+          "b": [
+           -1.0,
+           1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_8",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": []
+       },
+       {
+        "id": "K_edge_9",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.0,
+           -1.0
+          ],
+          "b": [
+           -1.0,
+           1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_10",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.0,
+           -1.0
+          ],
+          "b": [
+           1.0,
+           1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_11",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.0,
+           -1.0
+          ],
+          "b": [
+           1.0,
+           1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_12",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.0,
+           -1.0
+          ],
+          "b": [
+           -1.0,
+           1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "always",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.16,
+           0.0
+          ],
+          "b": [
+           1.16,
+           0.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "aux",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.16,
+           0.0
+          ],
+          "b": [
+           -1.0,
+           0.0
+          ],
+          "t": [
+           0.0,
+           0.068965517
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         },
+         {
+          "a": [
+           -1.0,
+           0.0
+          ],
+          "b": [
+           1.0,
+           0.0
+          ],
+          "t": [
+           0.068965517,
+           0.931034483
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         },
+         {
+          "a": [
+           1.0,
+           0.0
+          ],
+          "b": [
+           1.16,
+           0.0
+          ],
+          "t": [
+           0.931034483,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "l",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.16,
+           0.0
+          ],
+          "b": [
+           -1.0,
+           0.0
+          ],
+          "t": [
+           0.0,
+           0.068965517
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         },
+         {
+          "a": [
+           -1.0,
+           0.0
+          ],
+          "b": [
+           1.0,
+           0.0
+          ],
+          "t": [
+           0.068965517,
+           0.931034483
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         },
+         {
+          "a": [
+           1.0,
+           0.0
+          ],
+          "b": [
+           1.16,
+           0.0
+          ],
+          "t": [
+           0.931034483,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.0,
+         -1.0
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "A_1",
+        "name": "A_1",
+        "at": [
+         -1.0,
+         1.0
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         1.0,
+         -1.0
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B_1",
+        "name": "B_1",
+        "at": [
+         1.0,
+         1.0
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         1.0,
+         -1.0
+        ],
+        "depth": 1.0,
+        "visibility": "hidden"
+       },
+       {
+        "id": "C_1",
+        "name": "C_1",
+        "at": [
+         1.0,
+         1.0
+        ],
+        "depth": 1.0,
+        "visibility": "hidden"
+       },
+       {
+        "id": "D",
+        "name": "D",
+        "at": [
+         -1.0,
+         -1.0
+        ],
+        "depth": 1.0,
+        "visibility": "hidden"
+       },
+       {
+        "id": "D_1",
+        "name": "D_1",
+        "at": [
+         -1.0,
+         1.0
+        ],
+        "depth": 1.0,
+        "visibility": "hidden"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "oblique",
+     "camera": {
+      "projection": "oblique",
+      "target": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "lines_in_shadow",
+      "camera": {
+       "projection": "oblique",
+       "target": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "oblique": {
+        "angleDeg": 45.0,
+        "ratio": 0.5
+       }
+      },
+      "scale": 3.464101615,
+      "bounds": [
+       -1.570121933,
+       -1.570121933,
+       1.570121933,
+       1.570121933
+      ],
+      "unit": 254.757284495,
+      "solids": [
+       "K"
+      ],
+      "fills": [
+       {
+        "id": "K_face_5",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          1.353553391,
+          -0.646446609
+         ],
+         [
+          -0.646446609,
+          -0.646446609
+         ],
+         [
+          -0.646446609,
+          1.353553391
+         ],
+         [
+          1.353553391,
+          1.353553391
+         ]
+        ],
+        "depth": 1.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_1",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -1.353553391,
+          -1.353553391
+         ],
+         [
+          -0.646446609,
+          -0.646446609
+         ],
+         [
+          1.353553391,
+          -0.646446609
+         ],
+         [
+          0.646446609,
+          -1.353553391
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_6",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -0.646446609,
+          -0.646446609
+         ],
+         [
+          -1.353553391,
+          -1.353553391
+         ],
+         [
+          -1.353553391,
+          0.646446609
+         ],
+         [
+          -0.646446609,
+          1.353553391
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_2",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -1.353553391,
+          0.646446609
+         ],
+         [
+          0.646446609,
+          0.646446609
+         ],
+         [
+          1.353553391,
+          1.353553391
+         ],
+         [
+          -0.646446609,
+          1.353553391
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 14
+       },
+       {
+        "id": "K_face_4",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          0.646446609,
+          -1.353553391
+         ],
+         [
+          1.353553391,
+          -0.646446609
+         ],
+         [
+          1.353553391,
+          1.353553391
+         ],
+         [
+          0.646446609,
+          0.646446609
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 14
+       },
+       {
+        "id": "K_face_3",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -1.353553391,
+          -1.353553391
+         ],
+         [
+          0.646446609,
+          -1.353553391
+         ],
+         [
+          0.646446609,
+          0.646446609
+         ],
+         [
+          -1.353553391,
+          0.646446609
+         ]
+        ],
+        "depth": -1.0,
+        "layer": 14
+       }
+      ],
+      "strokes": [
+       {
+        "id": "K_edge_1",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.353553391,
+           -1.353553391
+          ],
+          "b": [
+           0.646446609,
+           -1.353553391
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_2",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.646446609,
+           -1.353553391
+          ],
+          "b": [
+           1.353553391,
+           -0.646446609
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_3",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.353553391,
+           -0.646446609
+          ],
+          "b": [
+           -0.646446609,
+           -0.646446609
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_4",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.353553391,
+           -1.353553391
+          ],
+          "b": [
+           -0.646446609,
+           -0.646446609
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_5",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.353553391,
+           0.646446609
+          ],
+          "b": [
+           0.646446609,
+           0.646446609
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_6",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.646446609,
+           0.646446609
+          ],
+          "b": [
+           1.353553391,
+           1.353553391
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_7",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.353553391,
+           1.353553391
+          ],
+          "b": [
+           -0.646446609,
+           1.353553391
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_8",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.353553391,
+           0.646446609
+          ],
+          "b": [
+           -0.646446609,
+           1.353553391
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_9",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.353553391,
+           -1.353553391
+          ],
+          "b": [
+           -1.353553391,
+           0.646446609
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_10",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.646446609,
+           -1.353553391
+          ],
+          "b": [
+           0.646446609,
+           0.646446609
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_11",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.353553391,
+           -0.646446609
+          ],
+          "b": [
+           1.353553391,
+           1.353553391
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_12",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.646446609,
+           -0.646446609
+          ],
+          "b": [
+           -0.646446609,
+           1.353553391
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "always",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.570121933,
+           0.707106781
+          ],
+          "b": [
+           1.570121933,
+           0.707106781
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "aux",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.570121933,
+           0.707106781
+          ],
+          "b": [
+           -1.292893219,
+           0.707106781
+          ],
+          "t": [
+           0.0,
+           0.088282543
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         },
+         {
+          "a": [
+           -1.292893219,
+           0.707106781
+          ],
+          "b": [
+           1.353553391,
+           0.707106781
+          ],
+          "t": [
+           0.088282543,
+           0.931034483
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         },
+         {
+          "a": [
+           1.353553391,
+           0.707106781
+          ],
+          "b": [
+           1.570121933,
+           0.707106781
+          ],
+          "t": [
+           0.931034483,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "l",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.570121933,
+           0.088388348
+          ],
+          "b": [
+           -1.353553391,
+           0.088388348
+          ],
+          "t": [
+           0.0,
+           0.068965517
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         },
+         {
+          "a": [
+           -1.353553391,
+           0.088388348
+          ],
+          "b": [
+           1.088388347,
+           0.088388348
+          ],
+          "t": [
+           0.068965517,
+           0.846593575
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         },
+         {
+          "a": [
+           1.088388347,
+           0.088388348
+          ],
+          "b": [
+           1.570121933,
+           0.088388348
+          ],
+          "t": [
+           0.846593575,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.353553391,
+         -1.353553391
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "A_1",
+        "name": "A_1",
+        "at": [
+         -1.353553391,
+         0.646446609
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         0.646446609,
+         -1.353553391
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B_1",
+        "name": "B_1",
+        "at": [
+         0.646446609,
+         0.646446609
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         1.353553391,
+         -0.646446609
+        ],
+        "depth": 1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "C_1",
+        "name": "C_1",
+        "at": [
+         1.353553391,
+         1.353553391
+        ],
+        "depth": 1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "D",
+        "name": "D",
+        "at": [
+         -0.646446609,
+         -0.646446609
+        ],
+        "depth": 1.0,
+        "visibility": "hidden"
+       },
+       {
+        "id": "D_1",
+        "name": "D_1",
+        "at": [
+         -0.646446609,
+         1.353553391
+        ],
+        "depth": 1.0,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "persp-side",
+     "camera": {
+      "projection": "perspective",
+      "azimuthDeg": 0,
+      "elevationDeg": 0,
+      "distance": 5,
+      "target": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "lines_in_shadow",
+      "camera": {
+       "projection": "perspective",
+       "azimuthDeg": 0,
+       "elevationDeg": 0,
+       "target": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "distance": 5
+      },
+      "scale": 3.464101615,
+      "bounds": [
+       -1.45,
+       -1.45,
+       1.45,
+       1.45
+      ],
+      "unit": 275.862068966,
+      "solids": [
+       "K"
+      ],
+      "fills": [
+       {
+        "id": "K_face_6",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          0.833333333,
+          -0.833333333
+         ],
+         [
+          -0.833333333,
+          -0.833333333
+         ],
+         [
+          -0.833333333,
+          0.833333333
+         ],
+         [
+          0.833333333,
+          0.833333333
+         ]
+        ],
+        "depth": 6.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_1",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -0.833333333,
+          -0.833333333
+         ],
+         [
+          0.833333333,
+          -0.833333333
+         ],
+         [
+          1.25,
+          -1.25
+         ],
+         [
+          -1.25,
+          -1.25
+         ]
+        ],
+        "depth": 5.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_2",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -0.833333333,
+          0.833333333
+         ],
+         [
+          -1.25,
+          1.25
+         ],
+         [
+          1.25,
+          1.25
+         ],
+         [
+          0.833333333,
+          0.833333333
+         ]
+        ],
+        "depth": 5.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_3",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          -0.833333333,
+          -0.833333333
+         ],
+         [
+          -1.25,
+          -1.25
+         ],
+         [
+          -1.25,
+          1.25
+         ],
+         [
+          -0.833333333,
+          0.833333333
+         ]
+        ],
+        "depth": 5.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_5",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "back",
+        "polygon": [
+         [
+          1.25,
+          -1.25
+         ],
+         [
+          0.833333333,
+          -0.833333333
+         ],
+         [
+          0.833333333,
+          0.833333333
+         ],
+         [
+          1.25,
+          1.25
+         ]
+        ],
+        "depth": 5.0,
+        "layer": 11
+       },
+       {
+        "id": "K_face_4",
+        "part": null,
+        "role": "face",
+        "solid": "K",
+        "facing": "front",
+        "polygon": [
+         [
+          -1.25,
+          -1.25
+         ],
+         [
+          1.25,
+          -1.25
+         ],
+         [
+          1.25,
+          1.25
+         ],
+         [
+          -1.25,
+          1.25
+         ]
+        ],
+        "depth": 4.0,
+        "layer": 14
+       }
+      ],
+      "strokes": [
+       {
+        "id": "K_edge_1",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.833333333,
+           -0.833333333
+          ],
+          "b": [
+           -1.25,
+           -1.25
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_2",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.25,
+           -1.25
+          ],
+          "b": [
+           1.25,
+           -1.25
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_3",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.25,
+           -1.25
+          ],
+          "b": [
+           0.833333333,
+           -0.833333333
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_4",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.833333333,
+           -0.833333333
+          ],
+          "b": [
+           0.833333333,
+           -0.833333333
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_5",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.833333333,
+           0.833333333
+          ],
+          "b": [
+           -1.25,
+           1.25
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_6",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.25,
+           1.25
+          ],
+          "b": [
+           1.25,
+           1.25
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_7",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.25,
+           1.25
+          ],
+          "b": [
+           0.833333333,
+           0.833333333
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_8",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.833333333,
+           0.833333333
+          ],
+          "b": [
+           0.833333333,
+           0.833333333
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_9",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -0.833333333,
+           -0.833333333
+          ],
+          "b": [
+           -0.833333333,
+           0.833333333
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "K_edge_10",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           -1.25,
+           -1.25
+          ],
+          "b": [
+           -1.25,
+           1.25
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_11",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           1.25,
+           -1.25
+          ],
+          "b": [
+           1.25,
+           1.25
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "K_edge_12",
+        "part": null,
+        "role": "edge",
+        "solid": "K",
+        "pieces": [
+         {
+          "a": [
+           0.833333333,
+           -0.833333333
+          ],
+          "b": [
+           0.833333333,
+           0.833333333
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         }
+        ]
+       },
+       {
+        "id": "always",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           0.0,
+           0.0
+          ],
+          "b": [
+           1.45,
+           0.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "aux",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           0.0,
+           0.0
+          ],
+          "b": [
+           1.25,
+           0.0
+          ],
+          "t": [
+           0.0,
+           0.862068966
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         },
+         {
+          "a": [
+           1.25,
+           0.0
+          ],
+          "b": [
+           1.45,
+           0.0
+          ],
+          "t": [
+           0.862068966,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       },
+       {
+        "id": "l",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           0.0,
+           0.0
+          ],
+          "b": [
+           0.3125,
+           0.0
+          ],
+          "t": [
+           0.0,
+           0.215517241
+          ],
+          "visibility": "hidden",
+          "occluders": 1,
+          "hiddenBy": [
+           "K"
+          ],
+          "layer": 13
+         },
+         {
+          "a": [
+           0.3125,
+           0.0
+          ],
+          "b": [
+           1.45,
+           0.0
+          ],
+          "t": [
+           0.215517241,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 20
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -0.833333333,
+         -0.833333333
+        ],
+        "depth": 6.0,
+        "visibility": "hidden"
+       },
+       {
+        "id": "A_1",
+        "name": "A_1",
+        "at": [
+         -0.833333333,
+         0.833333333
+        ],
+        "depth": 6.0,
+        "visibility": "hidden"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         -1.25,
+         -1.25
+        ],
+        "depth": 4.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B_1",
+        "name": "B_1",
+        "at": [
+         -1.25,
+         1.25
+        ],
+        "depth": 4.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         1.25,
+         -1.25
+        ],
+        "depth": 4.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "C_1",
+        "name": "C_1",
+        "at": [
+         1.25,
+         1.25
+        ],
+        "depth": 4.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "D",
+        "name": "D",
+        "at": [
+         0.833333333,
+         -0.833333333
+        ],
+        "depth": 6.0,
+        "visibility": "hidden"
+       },
+       {
+        "id": "D_1",
+        "name": "D_1",
+        "at": [
+         0.833333333,
+         0.833333333
+        ],
+        "depth": 6.0,
+        "visibility": "hidden"
+       }
+      ],
+      "diagnostics": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "lines_at_eye_plane",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "lines_at_eye_plane",
+    "operationRegistryVersion": "1.1",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-ray_a": {
+      "id": "op-ray_a",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "ray_a"
+       }
+      ]
+     },
+     "op-ray_b": {
+      "id": "op-ray_b",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "ray_b"
+       }
+      ]
+     },
+     "op-ray": {
+      "id": "op-ray",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "ray_a"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "ray_b"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "ray"
+       }
+      ]
+     },
+     "op-near_a": {
+      "id": "op-near_a",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "near_a"
+       }
+      ]
+     },
+     "op-near_b": {
+      "id": "op-near_b",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "near_b"
+       }
+      ]
+     },
+     "op-near": {
+      "id": "op-near",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "near_a"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "near_b"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "near"
+       }
+      ]
+     },
+     "op-end_on_a": {
+      "id": "op-end_on_a",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "end_on_a"
+       }
+      ]
+     },
+     "op-end_on_b": {
+      "id": "op-end_on_b",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "end_on_b"
+       }
+      ]
+     },
+     "op-end_on": {
+      "id": "op-end_on",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "end_on_a"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "end_on_b"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "end_on"
+       }
+      ]
+     },
+     "op-behind_a": {
+      "id": "op-behind_a",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "behind_a"
+       }
+      ]
+     },
+     "op-behind_b": {
+      "id": "op-behind_b",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "behind_b"
+       }
+      ]
+     },
+     "op-behind": {
+      "id": "op-behind",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "behind_a"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "behind_b"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "behind"
+       }
+      ]
+     },
+     "op-outside_a": {
+      "id": "op-outside_a",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "outside_a"
+       }
+      ]
+     },
+     "op-outside_b": {
+      "id": "op-outside_b",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "outside_b"
+       }
+      ]
+     },
+     "op-outside": {
+      "id": "op-outside",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "outside_a"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "outside_b"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "outside"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "ray_a": {
+      "id": "ray_a",
+      "type": "point3",
+      "displayName": "ray_a",
+      "producer": {
+       "operationId": "op-ray_a",
+       "slot": "point"
+      }
+     },
+     "ray_b": {
+      "id": "ray_b",
+      "type": "point3",
+      "displayName": "ray_b",
+      "producer": {
+       "operationId": "op-ray_b",
+       "slot": "point"
+      }
+     },
+     "ray": {
+      "id": "ray",
+      "type": "line3",
+      "displayName": "ray",
+      "producer": {
+       "operationId": "op-ray",
+       "slot": "line"
+      }
+     },
+     "near_a": {
+      "id": "near_a",
+      "type": "point3",
+      "displayName": "near_a",
+      "producer": {
+       "operationId": "op-near_a",
+       "slot": "point"
+      }
+     },
+     "near_b": {
+      "id": "near_b",
+      "type": "point3",
+      "displayName": "near_b",
+      "producer": {
+       "operationId": "op-near_b",
+       "slot": "point"
+      }
+     },
+     "near": {
+      "id": "near",
+      "type": "line3",
+      "displayName": "near",
+      "producer": {
+       "operationId": "op-near",
+       "slot": "line"
+      }
+     },
+     "end_on_a": {
+      "id": "end_on_a",
+      "type": "point3",
+      "displayName": "end_on_a",
+      "producer": {
+       "operationId": "op-end_on_a",
+       "slot": "point"
+      }
+     },
+     "end_on_b": {
+      "id": "end_on_b",
+      "type": "point3",
+      "displayName": "end_on_b",
+      "producer": {
+       "operationId": "op-end_on_b",
+       "slot": "point"
+      }
+     },
+     "end_on": {
+      "id": "end_on",
+      "type": "line3",
+      "displayName": "end_on",
+      "producer": {
+       "operationId": "op-end_on",
+       "slot": "line"
+      }
+     },
+     "behind_a": {
+      "id": "behind_a",
+      "type": "point3",
+      "displayName": "behind_a",
+      "producer": {
+       "operationId": "op-behind_a",
+       "slot": "point"
+      }
+     },
+     "behind_b": {
+      "id": "behind_b",
+      "type": "point3",
+      "displayName": "behind_b",
+      "producer": {
+       "operationId": "op-behind_b",
+       "slot": "point"
+      }
+     },
+     "behind": {
+      "id": "behind",
+      "type": "line3",
+      "displayName": "behind",
+      "producer": {
+       "operationId": "op-behind",
+       "slot": "line"
+      }
+     },
+     "outside_a": {
+      "id": "outside_a",
+      "type": "point3",
+      "displayName": "outside_a",
+      "producer": {
+       "operationId": "op-outside_a",
+       "slot": "point"
+      }
+     },
+     "outside_b": {
+      "id": "outside_b",
+      "type": "point3",
+      "displayName": "outside_b",
+      "producer": {
+       "operationId": "op-outside_b",
+       "slot": "point"
+      }
+     },
+     "outside": {
+      "id": "outside",
+      "type": "line3",
+      "displayName": "outside",
+      "producer": {
+       "operationId": "op-outside",
+       "slot": "line"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       -2.0,
+       -2.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       2.0,
+       2.0
+      ]
+     },
+     "ray_a": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       1.0,
+       0.0
+      ]
+     },
+     "ray_b": {
+      "kind": "point3",
+      "value": [
+       6.0,
+       1.0,
+       0.0
+      ]
+     },
+     "near_a": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       1e-07,
+       0.0
+      ]
+     },
+     "near_b": {
+      "kind": "point3",
+      "value": [
+       6.0,
+       1e-07,
+       0.0
+      ]
+     },
+     "end_on_a": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "end_on_b": {
+      "kind": "point3",
+      "value": [
+       6.0,
+       0.0,
+       0.0
+      ]
+     },
+     "behind_a": {
+      "kind": "point3",
+      "value": [
+       6.0,
+       -1.0,
+       0.0
+      ]
+     },
+     "behind_b": {
+      "kind": "point3",
+      "value": [
+       6.0,
+       1.0,
+       0.0
+      ]
+     },
+     "outside_a": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       -1.0,
+       10.0
+      ]
+     },
+     "outside_b": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       1.0,
+       10.0
+      ]
+     }
+    },
+    "appearance": {
+     "ray_a": {
+      "visible": false
+     },
+     "ray_b": {
+      "visible": false
+     },
+     "near_a": {
+      "visible": false
+     },
+     "near_b": {
+      "visible": false
+     },
+     "end_on_a": {
+      "visible": false
+     },
+     "end_on_b": {
+      "visible": false
+     },
+     "behind_a": {
+      "visible": false
+     },
+     "behind_b": {
+      "visible": false
+     },
+     "outside_a": {
+      "visible": false
+     },
+     "outside_b": {
+      "visible": false
+     }
+    }
+   },
+   "planeLook": "sheet",
+   "views": [
+    {
+     "name": "side",
+     "camera": {
+      "projection": "orthographic",
+      "azimuthDeg": 0,
+      "elevationDeg": 0,
+      "target": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "lines_at_eye_plane",
+      "camera": {
+       "projection": "orthographic",
+       "azimuthDeg": 0,
+       "elevationDeg": 0,
+       "target": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "scale": 5.656854249,
+      "bounds": [
+       -2.32,
+       -2.32,
+       2.32,
+       2.32
+      ],
+      "unit": 172.413793103,
+      "solids": [],
+      "fills": [],
+      "strokes": [
+       {
+        "id": "behind",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -2.32,
+           0.0
+          ],
+          "b": [
+           2.32,
+           0.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "end_on",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "near",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "outside",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "ray",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -2.0,
+         -2.0
+        ],
+        "depth": 0.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         2.0,
+         2.0
+        ],
+        "depth": 0.0,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "ortho-a",
+     "camera": {
+      "projection": "orthographic",
+      "azimuthDeg": -60,
+      "elevationDeg": 25,
+      "target": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "lines_at_eye_plane",
+      "camera": {
+       "projection": "orthographic",
+       "azimuthDeg": -60,
+       "elevationDeg": 25,
+       "target": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "scale": 5.656854249,
+      "bounds": [
+       -1.4071379,
+       -2.951749776,
+       1.4071379,
+       2.951749776
+      ],
+      "unit": 284.264960792,
+      "solids": [],
+      "fills": [],
+      "strokes": [
+       {
+        "id": "behind",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "end_on",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.4071379,
+           0.343339913
+          ],
+          "b": [
+           1.4071379,
+           -0.343339913
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "near",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.4071379,
+           0.343339962
+          ],
+          "b": [
+           1.4071379,
+           -0.343339864
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "outside",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "ray",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.4071379,
+           0.831337447
+          ],
+          "b": [
+           1.4071379,
+           0.144657621
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.0,
+         -2.544611876
+        ],
+        "depth": -0.724534611,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         1.0,
+         2.544611876
+        ],
+        "depth": 0.724534611,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "persp-side",
+     "camera": {
+      "projection": "perspective",
+      "azimuthDeg": 0,
+      "elevationDeg": 0,
+      "distance": 5,
+      "target": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "lines_at_eye_plane",
+      "camera": {
+       "projection": "perspective",
+       "azimuthDeg": 0,
+       "elevationDeg": 0,
+       "target": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "distance": 5
+      },
+      "scale": 5.656854249,
+      "bounds": [
+       -2.32,
+       -2.32,
+       2.32,
+       2.32
+      ],
+      "unit": 172.413793103,
+      "solids": [],
+      "fills": [],
+      "strokes": [
+       {
+        "id": "behind",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "end_on",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "near",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           0.0,
+           0.0
+          ],
+          "b": [
+           0.088388348,
+           0.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "outside",
+        "part": null,
+        "role": "segment",
+        "pieces": []
+       },
+       {
+        "id": "ray",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           0.0,
+           0.0
+          ],
+          "b": [
+           2.32,
+           0.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -2.0,
+         -2.0
+        ],
+        "depth": 5.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         2.0,
+         2.0
+        ],
+        "depth": 5.0,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "perpendicular_feet",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "perpendicular_feet",
+    "operationRegistryVersion": "1.1",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P"
+       }
+      ]
+     },
+     "op-l": {
+      "id": "op-l",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op-reversed": {
+      "id": "op-reversed",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "reversed"
+       }
+      ]
+     },
+     "op-s": {
+      "id": "op-s",
+      "op": "segment3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op-face": {
+      "id": "op-face",
+      "op": "polygon3.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "face"
+       },
+       {
+        "slot": "side.1",
+        "elementId": "face_side_1"
+       },
+       {
+        "slot": "side.2",
+        "elementId": "face_side_2"
+       },
+       {
+        "slot": "side.3",
+        "elementId": "face_side_3"
+       }
+      ]
+     },
+     "op-plane": {
+      "id": "op-plane",
+      "op": "plane.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "plane",
+        "elementId": "plane"
+       }
+      ]
+     },
+     "op-parallel_line": {
+      "id": "op-parallel_line",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "reversed"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_line"
+       }
+      ]
+     },
+     "op-parallel_segment": {
+      "id": "op-parallel_segment",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_segment"
+       }
+      ]
+     },
+     "op-perpendicular_line": {
+      "id": "op-perpendicular_line",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_line"
+       }
+      ]
+     },
+     "op-perpendicular_segment": {
+      "id": "op-perpendicular_segment",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_segment"
+       }
+      ]
+     },
+     "op-perpendicular_face": {
+      "id": "op-perpendicular_face",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_face"
+       }
+      ]
+     },
+     "op-perpendicular_plane": {
+      "id": "op-perpendicular_plane",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_plane"
+       }
+      ]
+     },
+     "op-line_foot": {
+      "id": "op-line_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "line_foot"
+       }
+      ]
+     },
+     "op-segment_foot": {
+      "id": "op-segment_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "segment_foot"
+       }
+      ]
+     },
+     "op-face_foot": {
+      "id": "op-face_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "face_foot"
+       }
+      ]
+     },
+     "op-plane_foot": {
+      "id": "op-plane_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "plane_foot"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "point3",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "point"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line3",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op-l",
+       "slot": "line"
+      }
+     },
+     "reversed": {
+      "id": "reversed",
+      "type": "line3",
+      "displayName": "reversed",
+      "producer": {
+       "operationId": "op-reversed",
+       "slot": "line"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment3",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op-s",
+       "slot": "segment"
+      }
+     },
+     "face": {
+      "id": "face",
+      "type": "polygon3",
+      "displayName": "face",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "polygon"
+      }
+     },
+     "face_side_1": {
+      "id": "face_side_1",
+      "type": "segment3",
+      "displayName": "face_side_1",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.1"
+      }
+     },
+     "face_side_2": {
+      "id": "face_side_2",
+      "type": "segment3",
+      "displayName": "face_side_2",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.2"
+      }
+     },
+     "face_side_3": {
+      "id": "face_side_3",
+      "type": "segment3",
+      "displayName": "face_side_3",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.3"
+      }
+     },
+     "plane": {
+      "id": "plane",
+      "type": "plane",
+      "displayName": "plane",
+      "producer": {
+       "operationId": "op-plane",
+       "slot": "plane"
+      }
+     },
+     "parallel_line": {
+      "id": "parallel_line",
+      "type": "line3",
+      "displayName": "parallel_line",
+      "producer": {
+       "operationId": "op-parallel_line",
+       "slot": "line"
+      }
+     },
+     "parallel_segment": {
+      "id": "parallel_segment",
+      "type": "line3",
+      "displayName": "parallel_segment",
+      "producer": {
+       "operationId": "op-parallel_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_line": {
+      "id": "perpendicular_line",
+      "type": "line3",
+      "displayName": "perpendicular_line",
+      "producer": {
+       "operationId": "op-perpendicular_line",
+       "slot": "line"
+      }
+     },
+     "perpendicular_segment": {
+      "id": "perpendicular_segment",
+      "type": "line3",
+      "displayName": "perpendicular_segment",
+      "producer": {
+       "operationId": "op-perpendicular_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_face": {
+      "id": "perpendicular_face",
+      "type": "line3",
+      "displayName": "perpendicular_face",
+      "producer": {
+       "operationId": "op-perpendicular_face",
+       "slot": "line"
+      }
+     },
+     "perpendicular_plane": {
+      "id": "perpendicular_plane",
+      "type": "line3",
+      "displayName": "perpendicular_plane",
+      "producer": {
+       "operationId": "op-perpendicular_plane",
+       "slot": "line"
+      }
+     },
+     "line_foot": {
+      "id": "line_foot",
+      "type": "point3",
+      "displayName": "line_foot",
+      "producer": {
+       "operationId": "op-line_foot",
+       "slot": "point"
+      }
+     },
+     "segment_foot": {
+      "id": "segment_foot",
+      "type": "point3",
+      "displayName": "segment_foot",
+      "producer": {
+       "operationId": "op-segment_foot",
+       "slot": "point"
+      }
+     },
+     "face_foot": {
+      "id": "face_foot",
+      "type": "point3",
+      "displayName": "face_foot",
+      "producer": {
+       "operationId": "op-face_foot",
+       "slot": "point"
+      }
+     },
+     "plane_foot": {
+      "id": "plane_foot",
+      "type": "point3",
+      "displayName": "plane_foot",
+      "producer": {
+       "operationId": "op-plane_foot",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       2.0,
+       -1.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       3.0,
+       -1.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       4.0,
+       -1.0
+      ]
+     },
+     "P": {
+      "kind": "point3",
+      "value": [
+       6.0,
+       4.0,
+       3.0
+      ]
+     }
+    }
+   },
+   "planeLook": "sheet",
+   "views": [
+    {
+     "name": "ortho-a",
+     "camera": {
+      "projection": "orthographic",
+      "azimuthDeg": -60,
+      "elevationDeg": 25,
+      "target": [
+       2.0,
+       3.0,
+       0.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "perpendicular_feet",
+      "camera": {
+       "projection": "orthographic",
+       "azimuthDeg": -60,
+       "elevationDeg": 25,
+       "target": [
+        2.0,
+        3.0,
+        0.0
+       ]
+      },
+      "scale": 7.433034374,
+      "bounds": [
+       -2.532232877,
+       -2.255463481,
+       4.474091306,
+       2.72287976
+      ],
+      "unit": 114.182555526,
+      "solids": [],
+      "fills": [
+       {
+        "id": "face",
+        "part": null,
+        "role": "polygon",
+        "polygon": [
+         [
+          -1.366025404,
+          -1.060996807
+         ],
+         [
+          0.866025404,
+          -1.117616918
+         ],
+         [
+          -0.366025404,
+          -0.329000505
+         ]
+        ],
+        "depth": 0.57366956,
+        "layer": 0
+       },
+       {
+        "id": "plane",
+        "part": null,
+        "role": "plane",
+        "polygon": [
+         [
+          -0.549038106,
+          -0.040346865
+         ],
+         [
+          2.049038106,
+          -0.674274257
+         ],
+         [
+          0.549038106,
+          -1.772268709
+         ],
+         [
+          -2.049038106,
+          -1.138341317
+         ]
+        ],
+        "depth": 0.422618262,
+        "layer": 0
+       }
+      ],
+      "strokes": [
+       {
+        "id": "face_side_1",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           -1.060996807
+          ],
+          "b": [
+           0.866025404,
+           -1.117616918
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "face_side_2",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           0.866025404,
+           -1.117616918
+          ],
+          "b": [
+           -0.366025404,
+           -0.329000505
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "face_side_3",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -0.366025404,
+           -0.329000505
+          ],
+          "b": [
+           -1.366025404,
+           -1.060996807
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "s",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.366025404,
+           -1.060996807
+          ],
+          "b": [
+           0.866025404,
+           -1.117616918
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "l",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -2.532232877,
+           -1.03141379
+          ],
+          "b": [
+           4.474091306,
+           -1.209142205
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "parallel_line",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.474091306,
+           2.226748153
+          ],
+          "b": [
+           -2.532232877,
+           2.404476569
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "parallel_segment",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -2.532232877,
+           2.404476569
+          ],
+          "b": [
+           4.474091306,
+           2.226748153
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_face",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           3.964101615,
+           -2.255463481
+          ],
+          "b": [
+           3.964101615,
+           2.72287976
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_line",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           3.960334148,
+           2.72287976
+          ],
+          "b": [
+           3.999150265,
+           -2.255463481
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_plane",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           3.964101615,
+           2.72287976
+          ],
+          "b": [
+           3.964101615,
+           -2.255463481
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_segment",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           3.960334148,
+           2.72287976
+          ],
+          "b": [
+           3.999150265,
+           -2.255463481
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "reversed",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.474091306,
+           -1.209142205
+          ],
+          "b": [
+           -2.532232877,
+           -1.03141379
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.1",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -0.549038106,
+           -0.040346865
+          ],
+          "b": [
+           2.049038106,
+           -0.674274257
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.2",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           2.049038106,
+           -0.674274257
+          ],
+          "b": [
+           0.549038106,
+           -1.772268709
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.3",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           0.549038106,
+           -1.772268709
+          ],
+          "b": [
+           -2.049038106,
+           -1.138341317
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.4",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -2.049038106,
+           -1.138341317
+          ],
+          "b": [
+           -0.549038106,
+           -0.040346865
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.366025404,
+         -1.060996807
+        ],
+        "depth": 0.090886588,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         0.866025404,
+         -1.117616918
+        ],
+        "depth": -0.030535632,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         -0.366025404,
+         -0.329000505
+        ],
+        "depth": 1.660657722,
+        "visibility": "visible"
+       },
+       {
+        "id": "P",
+        "name": "P",
+        "at": [
+         3.964101615,
+         2.239684988
+        ],
+        "depth": -2.295584792,
+        "visibility": "visible"
+       },
+       {
+        "id": "face_foot",
+        "name": "face_foot",
+        "at": [
+         3.964101615,
+         -1.38554616
+        ],
+        "depth": -0.605111745,
+        "visibility": "visible"
+       },
+       {
+        "id": "line_foot",
+        "name": "line_foot",
+        "at": [
+         3.990896534,
+         -1.196885073
+        ],
+        "depth": -0.20052674,
+        "visibility": "visible"
+       },
+       {
+        "id": "plane_foot",
+        "name": "plane_foot",
+        "at": [
+         3.964101615,
+         -1.38554616
+        ],
+        "depth": -0.605111745,
+        "visibility": "visible"
+       },
+       {
+        "id": "segment_foot",
+        "name": "segment_foot",
+        "at": [
+         3.990896534,
+         -1.196885073
+        ],
+        "depth": -0.20052674,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "oblique",
+     "camera": {
+      "projection": "oblique",
+      "target": [
+       2.0,
+       3.0,
+       0.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "perpendicular_feet",
+      "camera": {
+       "projection": "oblique",
+       "target": [
+        2.0,
+        3.0,
+        0.0
+       ],
+       "oblique": {
+        "angleDeg": 45.0,
+        "ratio": 0.5
+       }
+      },
+      "scale": 7.433034374,
+      "bounds": [
+       -2.541040764,
+       -2.041040764,
+       4.864264069,
+       3.864264069
+      ],
+      "unit": 108.030664243,
+      "solids": [],
+      "fills": [
+       {
+        "id": "face",
+        "part": null,
+        "role": "polygon",
+        "polygon": [
+         [
+          -1.353553391,
+          -1.353553391
+         ],
+         [
+          1.0,
+          -1.0
+         ],
+         [
+          -0.646446609,
+          -0.646446609
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 0
+       },
+       {
+        "id": "plane",
+        "part": null,
+        "role": "plane",
+        "polygon": [
+         [
+          -0.969669914,
+          -0.469669914
+         ],
+         [
+          2.030330086,
+          -0.469669914
+         ],
+         [
+          0.969669914,
+          -1.530330086
+         ],
+         [
+          -2.030330086,
+          -1.530330086
+         ]
+        ],
+        "depth": 0.0,
+        "layer": 0
+       }
+      ],
+      "strokes": [
+       {
+        "id": "face_side_1",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.353553391,
+           -1.353553391
+          ],
+          "b": [
+           1.0,
+           -1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "face_side_2",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           1.0,
+           -1.0
+          ],
+          "b": [
+           -0.646446609,
+           -0.646446609
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "face_side_3",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -0.646446609,
+           -0.646446609
+          ],
+          "b": [
+           -1.353553391,
+           -1.353553391
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "s",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.353553391,
+           -1.353553391
+          ],
+          "b": [
+           1.0,
+           -1.0
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "l",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -2.541040764,
+           -1.531939056
+          ],
+          "b": [
+           4.864264069,
+           -0.419505982
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "parallel_line",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.864264069,
+           3.430272913
+          ],
+          "b": [
+           -2.541040764,
+           2.317839839
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "parallel_segment",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -2.541040764,
+           2.317839839
+          ],
+          "b": [
+           4.864264069,
+           3.430272913
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_face",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.353553391,
+           -2.041040764
+          ],
+          "b": [
+           4.353553391,
+           3.864264069
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_line",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.361306696,
+           3.864264069
+          ],
+          "b": [
+           4.271655874,
+           -2.041040764
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_plane",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.353553391,
+           3.864264069
+          ],
+          "b": [
+           4.353553391,
+           -2.041040764
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_segment",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.361306696,
+           3.864264069
+          ],
+          "b": [
+           4.271655874,
+           -2.041040764
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "reversed",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.864264069,
+           -0.419505982
+          ],
+          "b": [
+           -2.541040764,
+           -1.531939056
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.1",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -0.969669914,
+           -0.469669914
+          ],
+          "b": [
+           2.030330086,
+           -0.469669914
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.2",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           2.030330086,
+           -0.469669914
+          ],
+          "b": [
+           0.969669914,
+           -1.530330086
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.3",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           0.969669914,
+           -1.530330086
+          ],
+          "b": [
+           -2.030330086,
+           -1.530330086
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.4",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -2.030330086,
+           -1.530330086
+          ],
+          "b": [
+           -0.969669914,
+           -0.469669914
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.353553391,
+         -1.353553391
+        ],
+        "depth": -1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         1.0,
+         -1.0
+        ],
+        "depth": 0.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         -0.646446609,
+         -0.646446609
+        ],
+        "depth": 1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "P",
+        "name": "P",
+        "at": [
+         4.353553391,
+         3.353553391
+        ],
+        "depth": 1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "face_foot",
+        "name": "face_foot",
+        "at": [
+         4.353553391,
+         -0.646446609
+        ],
+        "depth": 1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "line_foot",
+        "name": "line_foot",
+        "at": [
+         4.294974747,
+         -0.505025253
+        ],
+        "depth": 1.4,
+        "visibility": "visible"
+       },
+       {
+        "id": "plane_foot",
+        "name": "plane_foot",
+        "at": [
+         4.353553391,
+         -0.646446609
+        ],
+        "depth": 1.0,
+        "visibility": "visible"
+       },
+       {
+        "id": "segment_foot",
+        "name": "segment_foot",
+        "at": [
+         4.294974747,
+         -0.505025253
+        ],
+        "depth": 1.4,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    },
+    {
+     "name": "persp",
+     "camera": {
+      "projection": "perspective",
+      "azimuthDeg": -50,
+      "elevationDeg": 22,
+      "distance": 14,
+      "target": [
+       2.0,
+       3.0,
+       0.0
+      ]
+     },
+     "expect": {
+      "format": "animageo-flat-scene/1",
+      "documentId": "perpendicular_feet",
+      "camera": {
+       "projection": "perspective",
+       "azimuthDeg": -50,
+       "elevationDeg": 22,
+       "target": [
+        2.0,
+        3.0,
+        0.0
+       ],
+       "distance": 14
+      },
+      "scale": 7.433034374,
+      "bounds": [
+       -2.62027163,
+       -2.475476798,
+       5.169921081,
+       3.168347523
+      ],
+      "unit": 102.693223355,
+      "solids": [],
+      "fills": [
+       {
+        "id": "face",
+        "part": null,
+        "role": "polygon",
+        "polygon": [
+         [
+          -1.383113565,
+          -0.955587872
+         ],
+         [
+          0.778352176,
+          -1.186741745
+         ],
+         [
+          -0.110044758,
+          -0.356611029
+         ]
+        ],
+        "depth": 14.573267358,
+        "layer": 0
+       },
+       {
+        "id": "plane",
+        "part": null,
+        "role": "plane",
+        "polygon": [
+         [
+          -0.158466835,
+          -0.116178734
+         ],
+         [
+          2.033920919,
+          -0.825719825
+         ],
+         [
+          0.208485225,
+          -1.938222128
+         ],
+         [
+          -2.08301696,
+          -0.982188449
+         ]
+        ],
+        "depth": 14.374606593,
+        "layer": 0
+       }
+      ],
+      "strokes": [
+       {
+        "id": "face_side_1",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.383113565,
+           -0.955587872
+          ],
+          "b": [
+           0.778352176,
+           -1.186741745
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "face_side_2",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           0.778352176,
+           -1.186741745
+          ],
+          "b": [
+           -0.110044758,
+           -0.356611029
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "face_side_3",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -0.110044758,
+           -0.356611029
+          ],
+          "b": [
+           -1.383113565,
+           -0.955587872
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "s",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -1.383113565,
+           -0.955587872
+          ],
+          "b": [
+           0.778352176,
+           -1.186741745
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "l",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -2.62027163,
+           -0.823282339
+          ],
+          "b": [
+           5.169921081,
+           -1.656389789
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "parallel_line",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           5.169921081,
+           2.607135308
+          ],
+          "b": [
+           -2.62027163,
+           2.95451972
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "parallel_segment",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           -2.62027163,
+           2.95451972
+          ],
+          "b": [
+           5.169921081,
+           2.607135308
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_face",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           3.998128624,
+           -2.475476798
+          ],
+          "b": [
+           4.699425196,
+           3.168347523
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_line",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.704982967,
+           3.168347523
+          ],
+          "b": [
+           3.945302387,
+           -2.475476798
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_plane",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.699425196,
+           3.168347523
+          ],
+          "b": [
+           3.998128624,
+           -2.475476798
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "perpendicular_segment",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           4.704982967,
+           3.168347523
+          ],
+          "b": [
+           3.945302387,
+           -2.475476798
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "reversed",
+        "part": null,
+        "role": "segment",
+        "pieces": [
+         {
+          "a": [
+           5.169921081,
+           -1.656389789
+          ],
+          "b": [
+           -2.62027163,
+           -0.823282339
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.1",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -0.158466835,
+           -0.116178734
+          ],
+          "b": [
+           2.033920919,
+           -0.825719825
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.2",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           2.033920919,
+           -0.825719825
+          ],
+          "b": [
+           0.208485225,
+           -1.938222128
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.3",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           0.208485225,
+           -1.938222128
+          ],
+          "b": [
+           -2.08301696,
+           -0.982188449
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       },
+       {
+        "id": "plane",
+        "part": "border.4",
+        "role": "plane",
+        "pieces": [
+         {
+          "a": [
+           -2.08301696,
+           -0.982188449
+          ],
+          "b": [
+           -0.158466835,
+           -0.116178734
+          ],
+          "t": [
+           0.0,
+           1.0
+          ],
+          "visibility": "visible",
+          "occluders": 0,
+          "hiddenBy": [],
+          "layer": 10
+         }
+        ]
+       }
+      ],
+      "points": [
+       {
+        "id": "A",
+        "name": "A",
+        "at": [
+         -1.383113565,
+         -0.955587872
+        ],
+        "depth": 14.260324847,
+        "visibility": "visible"
+       },
+       {
+        "id": "B",
+        "name": "B",
+        "at": [
+         0.778352176,
+         -1.186741745
+        ],
+        "depth": 13.7786243,
+        "visibility": "visible"
+       },
+       {
+        "id": "C",
+        "name": "C",
+        "at": [
+         -0.110044758,
+         -0.356611029
+        ],
+        "depth": 15.680852927,
+        "visibility": "visible"
+       },
+       {
+        "id": "P",
+        "name": "P",
+        "at": [
+         4.632666411,
+         2.631092854
+        ],
+        "depth": 11.202515085,
+        "visibility": "visible"
+       },
+       {
+        "id": "face_foot",
+        "name": "face_foot",
+        "at": [
+         4.086115625,
+         -1.767383823
+        ],
+        "depth": 12.700941458,
+        "visibility": "visible"
+       },
+       {
+        "id": "line_foot",
+        "name": "line_foot",
+        "at": [
+         4.071368285,
+         -1.538907134
+        ],
+        "depth": 13.104243533,
+        "visibility": "visible"
+       },
+       {
+        "id": "plane_foot",
+        "name": "plane_foot",
+        "at": [
+         4.086115625,
+         -1.767383823
+        ],
+        "depth": 12.700941458,
+        "visibility": "visible"
+       },
+       {
+        "id": "segment_foot",
+        "name": "segment_foot",
+        "at": [
+         4.071368285,
+         -1.538907134
+        ],
+        "depth": 13.104243533,
+        "visibility": "visible"
+       }
+      ],
+      "diagnostics": []
+     }
+    }
+   ]
+  }
+ ]
+}

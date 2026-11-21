@@ -1,4 +1,4 @@
-"""Implementations of the operations of space (space registry 1.0).
+"""Implementations of the operations of space.
 
 Each takes the resolved arguments (``Input`` s of
 :mod:`animageo.native.kernel.values`) and an ``OpContext`` and returns
@@ -8,6 +8,7 @@ Each takes the resolved arguments (``Input`` s of
 |------------|-------|
 | point3     | ``{x, y, z}`` |
 | segment3   | ``{a: [x, y, z], b: [x, y, z], length}`` |
+| line3      | ``{p: [x, y, z], dir: [x, y, z]}`` — ``p`` is the projection of the origin |
 | polygon3   | ``{vertices: [[x, y, z], …], normal: [x, y, z], area}`` |
 | plane      | ``{p: [x, y, z], n: [x, y, z]}`` — ``p`` the projection of the origin |
 | polyhedron | ``{vertices, faces, edges, area, volume}`` |
@@ -240,6 +241,83 @@ def _plane_by_points(args, ctx):
     return {'plane': {'p': _list(vec.mul(n, vec.dot(n, a))), 'n': _list(n)}}
 
 
+# ── straight lines and perpendicular feet ───────────────────────────────
+
+def _line_axis(a, b, ctx):
+    raw = vec.sub(b, a)
+    length = vec.norm(raw)
+    ctx.decide('coincident', length, ctx.tol.decide_length)
+    if length <= ctx.tol.decide_length:
+        return Undefined('coincident_points')
+    return a, vec.unit(raw)
+
+
+def _line_carrier(source, ctx):
+    value = source.value
+    if source.type == 'segment3':
+        return _line_axis(tuple(value['a']), tuple(value['b']), ctx)
+    return tuple(value['p']), tuple(value['dir'])
+
+
+def _plane_carrier(source):
+    value = source.value
+    if source.type == 'polygon3':
+        return tuple(value['vertices'][0]), tuple(value['normal'])
+    return tuple(value['p']), tuple(value['n'])
+
+
+def _line(p, direction):
+    origin = vec.sub(p, vec.mul(direction, vec.dot(p, direction)))
+    return {'p': _list(origin), 'dir': _list(direction)}
+
+
+def _to_line(point, origin, direction):
+    offset = vec.sub(point, origin)
+    return vec.sub(vec.mul(direction, vec.dot(offset, direction)), offset)
+
+
+def _line3_by_points(args, ctx):
+    axis = _line_axis(_p(args['a']), _p(args['b']), ctx)
+    return {'line': axis if isinstance(axis, Undefined) else _line(*axis)}
+
+
+def _line3_parallel(args, ctx):
+    axis = _line_carrier(args['line'], ctx)
+    return {'line': axis if isinstance(axis, Undefined) else _line(_p(args['point']), axis[1])}
+
+
+def _line3_perpendicular_line(args, ctx):
+    axis = _line_carrier(args['line'], ctx)
+    if isinstance(axis, Undefined):
+        return {'line': axis}
+    point = _p(args['point'])
+    to_foot = _to_line(point, *axis)
+    distance = vec.norm(to_foot)
+    ctx.decide('point_on_line', distance, ctx.tol.decide_length)
+    if distance <= ctx.tol.decide_length:
+        return {'line': Undefined('point_on_line')}
+    return {'line': _line(point, vec.unit(to_foot))}
+
+
+def _line3_perpendicular_plane(args, ctx):
+    _, normal = _plane_carrier(args['plane'])
+    return {'line': _line(_p(args['point']), normal)}
+
+
+def _point3_projection_line(args, ctx):
+    axis = _line_carrier(args['line'], ctx)
+    if isinstance(axis, Undefined):
+        return {'point': axis}
+    point = _p(args['point'])
+    return {'point': _point(vec.add(point, _to_line(point, *axis)))}
+
+
+def _point3_projection_plane(args, ctx):
+    origin, normal = _plane_carrier(args['plane'])
+    point = _p(args['point'])
+    return {'point': _point(vec.sub(point, vec.mul(normal, vec.dot(normal, vec.sub(point, origin)))))}
+
+
 # ── solids ───────────────────────────────────────────────────────────────
 
 def _polyhedron_cube(args, ctx):
@@ -321,6 +399,12 @@ IMPLEMENTATIONS = {
     'point3.on_path': _point3_on_path,
     'point3.on_surface': _point3_on_surface,
     'point3.midpoint': _point3_midpoint,
+    'point3.projection_line': _point3_projection_line,
+    'point3.projection_plane': _point3_projection_plane,
+    'line3.by_points': _line3_by_points,
+    'line3.parallel': _line3_parallel,
+    'line3.perpendicular_line': _line3_perpendicular_line,
+    'line3.perpendicular_plane': _line3_perpendicular_plane,
     'segment3.by_points': _segment3_by_points,
     'polygon3.by_points': _polygon3_by_points,
     'plane.by_points': _plane_by_points,

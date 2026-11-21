@@ -1,0 +1,3098 @@
+{
+ "format": "animageo-space-parity/v1",
+ "id": "space_values_lines",
+ "kind": "values",
+ "registry": "1.1",
+ "generatedBy": "animageo 1.20.0",
+ "cases": [
+  {
+   "name": "feet_outside_carriers",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "feet_outside_carriers",
+    "operationRegistryVersion": "1.1",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P"
+       }
+      ]
+     },
+     "op-l": {
+      "id": "op-l",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op-reversed": {
+      "id": "op-reversed",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "reversed"
+       }
+      ]
+     },
+     "op-s": {
+      "id": "op-s",
+      "op": "segment3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op-face": {
+      "id": "op-face",
+      "op": "polygon3.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "face"
+       },
+       {
+        "slot": "side.1",
+        "elementId": "face_side_1"
+       },
+       {
+        "slot": "side.2",
+        "elementId": "face_side_2"
+       },
+       {
+        "slot": "side.3",
+        "elementId": "face_side_3"
+       }
+      ]
+     },
+     "op-plane": {
+      "id": "op-plane",
+      "op": "plane.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "plane",
+        "elementId": "plane"
+       }
+      ]
+     },
+     "op-parallel_line": {
+      "id": "op-parallel_line",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "reversed"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_line"
+       }
+      ]
+     },
+     "op-parallel_segment": {
+      "id": "op-parallel_segment",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_segment"
+       }
+      ]
+     },
+     "op-perpendicular_line": {
+      "id": "op-perpendicular_line",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_line"
+       }
+      ]
+     },
+     "op-perpendicular_segment": {
+      "id": "op-perpendicular_segment",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_segment"
+       }
+      ]
+     },
+     "op-perpendicular_face": {
+      "id": "op-perpendicular_face",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_face"
+       }
+      ]
+     },
+     "op-perpendicular_plane": {
+      "id": "op-perpendicular_plane",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_plane"
+       }
+      ]
+     },
+     "op-line_foot": {
+      "id": "op-line_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "line_foot"
+       }
+      ]
+     },
+     "op-segment_foot": {
+      "id": "op-segment_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "segment_foot"
+       }
+      ]
+     },
+     "op-face_foot": {
+      "id": "op-face_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "face_foot"
+       }
+      ]
+     },
+     "op-plane_foot": {
+      "id": "op-plane_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "plane_foot"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "point3",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "point"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line3",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op-l",
+       "slot": "line"
+      }
+     },
+     "reversed": {
+      "id": "reversed",
+      "type": "line3",
+      "displayName": "reversed",
+      "producer": {
+       "operationId": "op-reversed",
+       "slot": "line"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment3",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op-s",
+       "slot": "segment"
+      }
+     },
+     "face": {
+      "id": "face",
+      "type": "polygon3",
+      "displayName": "face",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "polygon"
+      }
+     },
+     "face_side_1": {
+      "id": "face_side_1",
+      "type": "segment3",
+      "displayName": "face_side_1",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.1"
+      }
+     },
+     "face_side_2": {
+      "id": "face_side_2",
+      "type": "segment3",
+      "displayName": "face_side_2",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.2"
+      }
+     },
+     "face_side_3": {
+      "id": "face_side_3",
+      "type": "segment3",
+      "displayName": "face_side_3",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.3"
+      }
+     },
+     "plane": {
+      "id": "plane",
+      "type": "plane",
+      "displayName": "plane",
+      "producer": {
+       "operationId": "op-plane",
+       "slot": "plane"
+      }
+     },
+     "parallel_line": {
+      "id": "parallel_line",
+      "type": "line3",
+      "displayName": "parallel_line",
+      "producer": {
+       "operationId": "op-parallel_line",
+       "slot": "line"
+      }
+     },
+     "parallel_segment": {
+      "id": "parallel_segment",
+      "type": "line3",
+      "displayName": "parallel_segment",
+      "producer": {
+       "operationId": "op-parallel_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_line": {
+      "id": "perpendicular_line",
+      "type": "line3",
+      "displayName": "perpendicular_line",
+      "producer": {
+       "operationId": "op-perpendicular_line",
+       "slot": "line"
+      }
+     },
+     "perpendicular_segment": {
+      "id": "perpendicular_segment",
+      "type": "line3",
+      "displayName": "perpendicular_segment",
+      "producer": {
+       "operationId": "op-perpendicular_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_face": {
+      "id": "perpendicular_face",
+      "type": "line3",
+      "displayName": "perpendicular_face",
+      "producer": {
+       "operationId": "op-perpendicular_face",
+       "slot": "line"
+      }
+     },
+     "perpendicular_plane": {
+      "id": "perpendicular_plane",
+      "type": "line3",
+      "displayName": "perpendicular_plane",
+      "producer": {
+       "operationId": "op-perpendicular_plane",
+       "slot": "line"
+      }
+     },
+     "line_foot": {
+      "id": "line_foot",
+      "type": "point3",
+      "displayName": "line_foot",
+      "producer": {
+       "operationId": "op-line_foot",
+       "slot": "point"
+      }
+     },
+     "segment_foot": {
+      "id": "segment_foot",
+      "type": "point3",
+      "displayName": "segment_foot",
+      "producer": {
+       "operationId": "op-segment_foot",
+       "slot": "point"
+      }
+     },
+     "face_foot": {
+      "id": "face_foot",
+      "type": "point3",
+      "displayName": "face_foot",
+      "producer": {
+       "operationId": "op-face_foot",
+       "slot": "point"
+      }
+     },
+     "plane_foot": {
+      "id": "plane_foot",
+      "type": "point3",
+      "displayName": "plane_foot",
+      "producer": {
+       "operationId": "op-plane_foot",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       2.0,
+       -1.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       3.0,
+       -1.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       4.0,
+       -1.0
+      ]
+     },
+     "P": {
+      "kind": "point3",
+      "value": [
+       6.0,
+       4.0,
+       3.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 6.708203932,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 2.0,
+       "z": -1.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 3.0,
+       "y": 3.0,
+       "z": -1.0
+      }
+     },
+     "C": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "P": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 6.0,
+       "y": 4.0,
+       "z": 3.0
+      }
+     },
+     "face": {
+      "state": "defined",
+      "type": "polygon3",
+      "value": {
+       "vertices": [
+        [
+         1.0,
+         2.0,
+         -1.0
+        ],
+        [
+         3.0,
+         3.0,
+         -1.0
+        ],
+        [
+         1.0,
+         4.0,
+         -1.0
+        ]
+       ],
+       "normal": [
+        0.0,
+        0.0,
+        1.0
+       ],
+       "area": 2.0
+      }
+     },
+     "face_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 6.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "face_side_1": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "b": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "face_side_2": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "b": [
+        1.0,
+        4.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "face_side_3": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        4.0,
+        -1.0
+       ],
+       "b": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "length": 2.0
+      }
+     },
+     "l": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        0.894427191,
+        0.447213595,
+        0.0
+       ]
+      }
+     },
+     "line_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 5.8,
+       "y": 4.4,
+       "z": -1.0
+      }
+     },
+     "parallel_line": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.4,
+        0.8,
+        3.0
+       ],
+       "dir": [
+        -0.894427191,
+        -0.447213595,
+        0.0
+       ]
+      }
+     },
+     "parallel_segment": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.4,
+        0.8,
+        3.0
+       ],
+       "dir": [
+        0.894427191,
+        0.447213595,
+        0.0
+       ]
+      }
+     },
+     "perpendicular_face": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        6.0,
+        4.0,
+        0.0
+       ],
+       "dir": [
+        0.0,
+        0.0,
+        1.0
+       ]
+      }
+     },
+     "perpendicular_line": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        5.856790123,
+        4.286419753,
+        0.135802469
+       ],
+       "dir": [
+        -0.049690399,
+        0.099380799,
+        -0.99380799
+       ]
+      }
+     },
+     "perpendicular_plane": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        6.0,
+        4.0,
+        0.0
+       ],
+       "dir": [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      }
+     },
+     "perpendicular_segment": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        5.856790123,
+        4.286419753,
+        0.135802469
+       ],
+       "dir": [
+        -0.049690399,
+        0.099380799,
+        -0.99380799
+       ]
+      }
+     },
+     "plane": {
+      "state": "defined",
+      "type": "plane",
+      "value": {
+       "p": [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       "n": [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      }
+     },
+     "plane_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 6.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "reversed": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        -0.894427191,
+        -0.447213595,
+        0.0
+       ]
+      }
+     },
+     "s": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "b": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "segment_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 5.8,
+       "y": 4.4,
+       "z": -1.0
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "feet_after_input_move",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "feet_after_input_move",
+    "operationRegistryVersion": "1.1",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P"
+       }
+      ]
+     },
+     "op-l": {
+      "id": "op-l",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op-reversed": {
+      "id": "op-reversed",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "reversed"
+       }
+      ]
+     },
+     "op-s": {
+      "id": "op-s",
+      "op": "segment3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op-face": {
+      "id": "op-face",
+      "op": "polygon3.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "face"
+       },
+       {
+        "slot": "side.1",
+        "elementId": "face_side_1"
+       },
+       {
+        "slot": "side.2",
+        "elementId": "face_side_2"
+       },
+       {
+        "slot": "side.3",
+        "elementId": "face_side_3"
+       }
+      ]
+     },
+     "op-plane": {
+      "id": "op-plane",
+      "op": "plane.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "plane",
+        "elementId": "plane"
+       }
+      ]
+     },
+     "op-parallel_line": {
+      "id": "op-parallel_line",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "reversed"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_line"
+       }
+      ]
+     },
+     "op-parallel_segment": {
+      "id": "op-parallel_segment",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_segment"
+       }
+      ]
+     },
+     "op-perpendicular_line": {
+      "id": "op-perpendicular_line",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_line"
+       }
+      ]
+     },
+     "op-perpendicular_segment": {
+      "id": "op-perpendicular_segment",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_segment"
+       }
+      ]
+     },
+     "op-perpendicular_face": {
+      "id": "op-perpendicular_face",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_face"
+       }
+      ]
+     },
+     "op-perpendicular_plane": {
+      "id": "op-perpendicular_plane",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_plane"
+       }
+      ]
+     },
+     "op-line_foot": {
+      "id": "op-line_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "line_foot"
+       }
+      ]
+     },
+     "op-segment_foot": {
+      "id": "op-segment_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "segment_foot"
+       }
+      ]
+     },
+     "op-face_foot": {
+      "id": "op-face_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "face_foot"
+       }
+      ]
+     },
+     "op-plane_foot": {
+      "id": "op-plane_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "plane_foot"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "point3",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "point"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line3",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op-l",
+       "slot": "line"
+      }
+     },
+     "reversed": {
+      "id": "reversed",
+      "type": "line3",
+      "displayName": "reversed",
+      "producer": {
+       "operationId": "op-reversed",
+       "slot": "line"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment3",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op-s",
+       "slot": "segment"
+      }
+     },
+     "face": {
+      "id": "face",
+      "type": "polygon3",
+      "displayName": "face",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "polygon"
+      }
+     },
+     "face_side_1": {
+      "id": "face_side_1",
+      "type": "segment3",
+      "displayName": "face_side_1",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.1"
+      }
+     },
+     "face_side_2": {
+      "id": "face_side_2",
+      "type": "segment3",
+      "displayName": "face_side_2",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.2"
+      }
+     },
+     "face_side_3": {
+      "id": "face_side_3",
+      "type": "segment3",
+      "displayName": "face_side_3",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.3"
+      }
+     },
+     "plane": {
+      "id": "plane",
+      "type": "plane",
+      "displayName": "plane",
+      "producer": {
+       "operationId": "op-plane",
+       "slot": "plane"
+      }
+     },
+     "parallel_line": {
+      "id": "parallel_line",
+      "type": "line3",
+      "displayName": "parallel_line",
+      "producer": {
+       "operationId": "op-parallel_line",
+       "slot": "line"
+      }
+     },
+     "parallel_segment": {
+      "id": "parallel_segment",
+      "type": "line3",
+      "displayName": "parallel_segment",
+      "producer": {
+       "operationId": "op-parallel_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_line": {
+      "id": "perpendicular_line",
+      "type": "line3",
+      "displayName": "perpendicular_line",
+      "producer": {
+       "operationId": "op-perpendicular_line",
+       "slot": "line"
+      }
+     },
+     "perpendicular_segment": {
+      "id": "perpendicular_segment",
+      "type": "line3",
+      "displayName": "perpendicular_segment",
+      "producer": {
+       "operationId": "op-perpendicular_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_face": {
+      "id": "perpendicular_face",
+      "type": "line3",
+      "displayName": "perpendicular_face",
+      "producer": {
+       "operationId": "op-perpendicular_face",
+       "slot": "line"
+      }
+     },
+     "perpendicular_plane": {
+      "id": "perpendicular_plane",
+      "type": "line3",
+      "displayName": "perpendicular_plane",
+      "producer": {
+       "operationId": "op-perpendicular_plane",
+       "slot": "line"
+      }
+     },
+     "line_foot": {
+      "id": "line_foot",
+      "type": "point3",
+      "displayName": "line_foot",
+      "producer": {
+       "operationId": "op-line_foot",
+       "slot": "point"
+      }
+     },
+     "segment_foot": {
+      "id": "segment_foot",
+      "type": "point3",
+      "displayName": "segment_foot",
+      "producer": {
+       "operationId": "op-segment_foot",
+       "slot": "point"
+      }
+     },
+     "face_foot": {
+      "id": "face_foot",
+      "type": "point3",
+      "displayName": "face_foot",
+      "producer": {
+       "operationId": "op-face_foot",
+       "slot": "point"
+      }
+     },
+     "plane_foot": {
+      "id": "plane_foot",
+      "type": "point3",
+      "displayName": "plane_foot",
+      "producer": {
+       "operationId": "op-plane_foot",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       2.0,
+       -1.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       3.0,
+       -1.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       4.0,
+       -1.0
+      ]
+     },
+     "P": {
+      "kind": "point3",
+      "value": [
+       -2.0,
+       1.0,
+       5.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 8.366600265,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 2.0,
+       "z": -1.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 3.0,
+       "y": 3.0,
+       "z": -1.0
+      }
+     },
+     "C": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "P": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": -2.0,
+       "y": 1.0,
+       "z": 5.0
+      }
+     },
+     "face": {
+      "state": "defined",
+      "type": "polygon3",
+      "value": {
+       "vertices": [
+        [
+         1.0,
+         2.0,
+         -1.0
+        ],
+        [
+         3.0,
+         3.0,
+         -1.0
+        ],
+        [
+         1.0,
+         4.0,
+         -1.0
+        ]
+       ],
+       "normal": [
+        0.0,
+        0.0,
+        1.0
+       ],
+       "area": 2.0
+      }
+     },
+     "face_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": -2.0,
+       "y": 1.0,
+       "z": -1.0
+      }
+     },
+     "face_side_1": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "b": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "face_side_2": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "b": [
+        1.0,
+        4.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "face_side_3": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        4.0,
+        -1.0
+       ],
+       "b": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "length": 2.0
+      }
+     },
+     "l": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        0.894427191,
+        0.447213595,
+        0.0
+       ]
+      }
+     },
+     "line_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": -1.8,
+       "y": 0.6,
+       "z": -1.0
+      }
+     },
+     "parallel_line": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.8,
+        1.6,
+        5.0
+       ],
+       "dir": [
+        -0.894427191,
+        -0.447213595,
+        0.0
+       ]
+      }
+     },
+     "parallel_segment": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.8,
+        1.6,
+        5.0
+       ],
+       "dir": [
+        0.894427191,
+        0.447213595,
+        0.0
+       ]
+      }
+     },
+     "perpendicular_face": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -2.0,
+        1.0,
+        0.0
+       ],
+       "dir": [
+        0.0,
+        0.0,
+        1.0
+       ]
+      }
+     },
+     "perpendicular_line": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -1.829834254,
+        0.659668508,
+        -0.104972376
+       ],
+       "dir": [
+        0.033241125,
+        -0.06648225,
+        -0.997233743
+       ]
+      }
+     },
+     "perpendicular_plane": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -2.0,
+        1.0,
+        0.0
+       ],
+       "dir": [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      }
+     },
+     "perpendicular_segment": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -1.829834254,
+        0.659668508,
+        -0.104972376
+       ],
+       "dir": [
+        0.033241125,
+        -0.06648225,
+        -0.997233743
+       ]
+      }
+     },
+     "plane": {
+      "state": "defined",
+      "type": "plane",
+      "value": {
+       "p": [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       "n": [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      }
+     },
+     "plane_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": -2.0,
+       "y": 1.0,
+       "z": -1.0
+      }
+     },
+     "reversed": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        -0.894427191,
+        -0.447213595,
+        0.0
+       ]
+      }
+     },
+     "s": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "b": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "segment_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": -1.8,
+       "y": 0.6,
+       "z": -1.0
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "point_on_carrier",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "point_on_carrier",
+    "operationRegistryVersion": "1.1",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-B": {
+      "id": "op-B",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "B"
+       }
+      ]
+     },
+     "op-C": {
+      "id": "op-C",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "C"
+       }
+      ]
+     },
+     "op-P": {
+      "id": "op-P",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "P"
+       }
+      ]
+     },
+     "op-l": {
+      "id": "op-l",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "l"
+       }
+      ]
+     },
+     "op-reversed": {
+      "id": "op-reversed",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "B"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "reversed"
+       }
+      ]
+     },
+     "op-s": {
+      "id": "op-s",
+      "op": "segment3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op-face": {
+      "id": "op-face",
+      "op": "polygon3.by_points",
+      "args": {
+       "vertices": {
+        "kind": "list",
+        "items": [
+         {
+          "kind": "ref",
+          "elementId": "A"
+         },
+         {
+          "kind": "ref",
+          "elementId": "B"
+         },
+         {
+          "kind": "ref",
+          "elementId": "C"
+         }
+        ]
+       }
+      },
+      "outputs": [
+       {
+        "slot": "polygon",
+        "elementId": "face"
+       },
+       {
+        "slot": "side.1",
+        "elementId": "face_side_1"
+       },
+       {
+        "slot": "side.2",
+        "elementId": "face_side_2"
+       },
+       {
+        "slot": "side.3",
+        "elementId": "face_side_3"
+       }
+      ]
+     },
+     "op-plane": {
+      "id": "op-plane",
+      "op": "plane.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "C"
+       },
+       "c": {
+        "kind": "ref",
+        "elementId": "B"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "plane",
+        "elementId": "plane"
+       }
+      ]
+     },
+     "op-parallel_line": {
+      "id": "op-parallel_line",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "reversed"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_line"
+       }
+      ]
+     },
+     "op-parallel_segment": {
+      "id": "op-parallel_segment",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel_segment"
+       }
+      ]
+     },
+     "op-perpendicular_line": {
+      "id": "op-perpendicular_line",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_line"
+       }
+      ]
+     },
+     "op-perpendicular_segment": {
+      "id": "op-perpendicular_segment",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_segment"
+       }
+      ]
+     },
+     "op-perpendicular_face": {
+      "id": "op-perpendicular_face",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_face"
+       }
+      ]
+     },
+     "op-perpendicular_plane": {
+      "id": "op-perpendicular_plane",
+      "op": "line3.perpendicular_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "perpendicular_plane"
+       }
+      ]
+     },
+     "op-line_foot": {
+      "id": "op-line_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "l"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "line_foot"
+       }
+      ]
+     },
+     "op-segment_foot": {
+      "id": "op-segment_foot",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "segment_foot"
+       }
+      ]
+     },
+     "op-face_foot": {
+      "id": "op-face_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "face"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "face_foot"
+       }
+      ]
+     },
+     "op-plane_foot": {
+      "id": "op-plane_foot",
+      "op": "point3.projection_plane",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "P"
+       },
+       "plane": {
+        "kind": "ref",
+        "elementId": "plane"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "plane_foot"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "B": {
+      "id": "B",
+      "type": "point3",
+      "displayName": "B",
+      "producer": {
+       "operationId": "op-B",
+       "slot": "point"
+      }
+     },
+     "C": {
+      "id": "C",
+      "type": "point3",
+      "displayName": "C",
+      "producer": {
+       "operationId": "op-C",
+       "slot": "point"
+      }
+     },
+     "P": {
+      "id": "P",
+      "type": "point3",
+      "displayName": "P",
+      "producer": {
+       "operationId": "op-P",
+       "slot": "point"
+      }
+     },
+     "l": {
+      "id": "l",
+      "type": "line3",
+      "displayName": "l",
+      "producer": {
+       "operationId": "op-l",
+       "slot": "line"
+      }
+     },
+     "reversed": {
+      "id": "reversed",
+      "type": "line3",
+      "displayName": "reversed",
+      "producer": {
+       "operationId": "op-reversed",
+       "slot": "line"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment3",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op-s",
+       "slot": "segment"
+      }
+     },
+     "face": {
+      "id": "face",
+      "type": "polygon3",
+      "displayName": "face",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "polygon"
+      }
+     },
+     "face_side_1": {
+      "id": "face_side_1",
+      "type": "segment3",
+      "displayName": "face_side_1",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.1"
+      }
+     },
+     "face_side_2": {
+      "id": "face_side_2",
+      "type": "segment3",
+      "displayName": "face_side_2",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.2"
+      }
+     },
+     "face_side_3": {
+      "id": "face_side_3",
+      "type": "segment3",
+      "displayName": "face_side_3",
+      "producer": {
+       "operationId": "op-face",
+       "slot": "side.3"
+      }
+     },
+     "plane": {
+      "id": "plane",
+      "type": "plane",
+      "displayName": "plane",
+      "producer": {
+       "operationId": "op-plane",
+       "slot": "plane"
+      }
+     },
+     "parallel_line": {
+      "id": "parallel_line",
+      "type": "line3",
+      "displayName": "parallel_line",
+      "producer": {
+       "operationId": "op-parallel_line",
+       "slot": "line"
+      }
+     },
+     "parallel_segment": {
+      "id": "parallel_segment",
+      "type": "line3",
+      "displayName": "parallel_segment",
+      "producer": {
+       "operationId": "op-parallel_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_line": {
+      "id": "perpendicular_line",
+      "type": "line3",
+      "displayName": "perpendicular_line",
+      "producer": {
+       "operationId": "op-perpendicular_line",
+       "slot": "line"
+      }
+     },
+     "perpendicular_segment": {
+      "id": "perpendicular_segment",
+      "type": "line3",
+      "displayName": "perpendicular_segment",
+      "producer": {
+       "operationId": "op-perpendicular_segment",
+       "slot": "line"
+      }
+     },
+     "perpendicular_face": {
+      "id": "perpendicular_face",
+      "type": "line3",
+      "displayName": "perpendicular_face",
+      "producer": {
+       "operationId": "op-perpendicular_face",
+       "slot": "line"
+      }
+     },
+     "perpendicular_plane": {
+      "id": "perpendicular_plane",
+      "type": "line3",
+      "displayName": "perpendicular_plane",
+      "producer": {
+       "operationId": "op-perpendicular_plane",
+       "slot": "line"
+      }
+     },
+     "line_foot": {
+      "id": "line_foot",
+      "type": "point3",
+      "displayName": "line_foot",
+      "producer": {
+       "operationId": "op-line_foot",
+       "slot": "point"
+      }
+     },
+     "segment_foot": {
+      "id": "segment_foot",
+      "type": "point3",
+      "displayName": "segment_foot",
+      "producer": {
+       "operationId": "op-segment_foot",
+       "slot": "point"
+      }
+     },
+     "face_foot": {
+      "id": "face_foot",
+      "type": "point3",
+      "displayName": "face_foot",
+      "producer": {
+       "operationId": "op-face_foot",
+       "slot": "point"
+      }
+     },
+     "plane_foot": {
+      "id": "plane_foot",
+      "type": "point3",
+      "displayName": "plane_foot",
+      "producer": {
+       "operationId": "op-plane_foot",
+       "slot": "point"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       2.0,
+       -1.0
+      ]
+     },
+     "B": {
+      "kind": "point3",
+      "value": [
+       3.0,
+       3.0,
+       -1.0
+      ]
+     },
+     "C": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       4.0,
+       -1.0
+      ]
+     },
+     "P": {
+      "kind": "point3",
+      "value": [
+       5.0,
+       4.0,
+       -1.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 4.472135955,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 2.0,
+       "z": -1.0
+      }
+     },
+     "B": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 3.0,
+       "y": 3.0,
+       "z": -1.0
+      }
+     },
+     "C": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "P": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 5.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "face": {
+      "state": "defined",
+      "type": "polygon3",
+      "value": {
+       "vertices": [
+        [
+         1.0,
+         2.0,
+         -1.0
+        ],
+        [
+         3.0,
+         3.0,
+         -1.0
+        ],
+        [
+         1.0,
+         4.0,
+         -1.0
+        ]
+       ],
+       "normal": [
+        0.0,
+        0.0,
+        1.0
+       ],
+       "area": 2.0
+      }
+     },
+     "face_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 5.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "face_side_1": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "b": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "face_side_2": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "b": [
+        1.0,
+        4.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "face_side_3": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        4.0,
+        -1.0
+       ],
+       "b": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "length": 2.0
+      }
+     },
+     "l": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        0.894427191,
+        0.447213595,
+        0.0
+       ]
+      }
+     },
+     "line_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 5.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "parallel_line": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        -0.894427191,
+        -0.447213595,
+        0.0
+       ]
+      }
+     },
+     "parallel_segment": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        0.894427191,
+        0.447213595,
+        0.0
+       ]
+      }
+     },
+     "perpendicular_face": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        5.0,
+        4.0,
+        0.0
+       ],
+       "dir": [
+        0.0,
+        0.0,
+        1.0
+       ]
+      }
+     },
+     "perpendicular_line": {
+      "state": "undefined",
+      "type": "line3",
+      "reason": "point_on_line"
+     },
+     "perpendicular_plane": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        5.0,
+        4.0,
+        0.0
+       ],
+       "dir": [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      }
+     },
+     "perpendicular_segment": {
+      "state": "undefined",
+      "type": "line3",
+      "reason": "point_on_line"
+     },
+     "plane": {
+      "state": "defined",
+      "type": "plane",
+      "value": {
+       "p": [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       "n": [
+        0.0,
+        0.0,
+        -1.0
+       ]
+      }
+     },
+     "plane_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 5.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     },
+     "reversed": {
+      "state": "defined",
+      "type": "line3",
+      "value": {
+       "p": [
+        -0.6,
+        1.2,
+        -1.0
+       ],
+       "dir": [
+        -0.894427191,
+        -0.447213595,
+        0.0
+       ]
+      }
+     },
+     "s": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        1.0,
+        2.0,
+        -1.0
+       ],
+       "b": [
+        3.0,
+        3.0,
+        -1.0
+       ],
+       "length": 2.236067977
+      }
+     },
+     "segment_foot": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 5.0,
+       "y": 4.0,
+       "z": -1.0
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "coincident_line_carriers",
+   "document": {
+    "format": "animageo-construction/v1",
+    "documentId": "coincident_line_carriers",
+    "operationRegistryVersion": "1.1",
+    "space": "space",
+    "operations": {
+     "op-A": {
+      "id": "op-A",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "A"
+       }
+      ]
+     },
+     "op-X": {
+      "id": "op-X",
+      "op": "point3.free",
+      "args": {},
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "X"
+       }
+      ]
+     },
+     "op-bad": {
+      "id": "op-bad",
+      "op": "line3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "bad"
+       }
+      ]
+     },
+     "op-s": {
+      "id": "op-s",
+      "op": "segment3.by_points",
+      "args": {
+       "a": {
+        "kind": "ref",
+        "elementId": "A"
+       },
+       "b": {
+        "kind": "ref",
+        "elementId": "A"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "segment",
+        "elementId": "s"
+       }
+      ]
+     },
+     "op-from_line": {
+      "id": "op-from_line",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "X"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "bad"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "from_line"
+       }
+      ]
+     },
+     "op-from_segment": {
+      "id": "op-from_segment",
+      "op": "point3.projection_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "X"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "point",
+        "elementId": "from_segment"
+       }
+      ]
+     },
+     "op-normal": {
+      "id": "op-normal",
+      "op": "line3.perpendicular_line",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "X"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "normal"
+       }
+      ]
+     },
+     "op-parallel": {
+      "id": "op-parallel",
+      "op": "line3.parallel",
+      "args": {
+       "point": {
+        "kind": "ref",
+        "elementId": "X"
+       },
+       "line": {
+        "kind": "ref",
+        "elementId": "s"
+       }
+      },
+      "outputs": [
+       {
+        "slot": "line",
+        "elementId": "parallel"
+       }
+      ]
+     }
+    },
+    "elements": {
+     "A": {
+      "id": "A",
+      "type": "point3",
+      "displayName": "A",
+      "producer": {
+       "operationId": "op-A",
+       "slot": "point"
+      }
+     },
+     "X": {
+      "id": "X",
+      "type": "point3",
+      "displayName": "X",
+      "producer": {
+       "operationId": "op-X",
+       "slot": "point"
+      }
+     },
+     "bad": {
+      "id": "bad",
+      "type": "line3",
+      "displayName": "bad",
+      "producer": {
+       "operationId": "op-bad",
+       "slot": "line"
+      }
+     },
+     "s": {
+      "id": "s",
+      "type": "segment3",
+      "displayName": "s",
+      "producer": {
+       "operationId": "op-s",
+       "slot": "segment"
+      }
+     },
+     "from_line": {
+      "id": "from_line",
+      "type": "point3",
+      "displayName": "from_line",
+      "producer": {
+       "operationId": "op-from_line",
+       "slot": "point"
+      }
+     },
+     "from_segment": {
+      "id": "from_segment",
+      "type": "point3",
+      "displayName": "from_segment",
+      "producer": {
+       "operationId": "op-from_segment",
+       "slot": "point"
+      }
+     },
+     "normal": {
+      "id": "normal",
+      "type": "line3",
+      "displayName": "normal",
+      "producer": {
+       "operationId": "op-normal",
+       "slot": "line"
+      }
+     },
+     "parallel": {
+      "id": "parallel",
+      "type": "line3",
+      "displayName": "parallel",
+      "producer": {
+       "operationId": "op-parallel",
+       "slot": "line"
+      }
+     }
+    },
+    "inputs": {
+     "A": {
+      "kind": "point3",
+      "value": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "X": {
+      "kind": "point3",
+      "value": [
+       1.0,
+       0.0,
+       1.0
+      ]
+     }
+    }
+   },
+   "inputs": null,
+   "expect": {
+    "scale": 1.414213562,
+    "elements": {
+     "A": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      }
+     },
+     "X": {
+      "state": "defined",
+      "type": "point3",
+      "value": {
+       "x": 1.0,
+       "y": 0.0,
+       "z": 1.0
+      }
+     },
+     "bad": {
+      "state": "undefined",
+      "type": "line3",
+      "reason": "coincident_points"
+     },
+     "from_line": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "upstream",
+      "cause": "bad"
+     },
+     "from_segment": {
+      "state": "undefined",
+      "type": "point3",
+      "reason": "coincident_points"
+     },
+     "normal": {
+      "state": "undefined",
+      "type": "line3",
+      "reason": "coincident_points"
+     },
+     "parallel": {
+      "state": "undefined",
+      "type": "line3",
+      "reason": "coincident_points"
+     },
+     "s": {
+      "state": "defined",
+      "type": "segment3",
+      "value": {
+       "a": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "b": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "length": 0.0
+      }
+     }
+    }
+   }
+  }
+ ]
+}

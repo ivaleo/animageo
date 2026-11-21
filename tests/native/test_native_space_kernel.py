@@ -194,7 +194,7 @@ def test_scale_and_tolerances():
     b.point('A', 0, 0, 0)
     b.point('B', 30, 40, 120)
     result = evaluate(b.data())
-    assert result.scale == 130.0 and result.registry == '1.0'
+    assert result.scale == 130.0 and result.registry == '1.1'
 
 
 def test_compare_space_values_by_kind():

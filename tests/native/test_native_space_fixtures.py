@@ -21,7 +21,7 @@ def test_fixtures_are_fresh_and_replay():
     assert fx.check_fixtures() == []
     files, cases, mismatches = fx.verify_fixtures()
     assert mismatches == []
-    assert files == 7 and cases >= 45
+    assert files == 9 and cases >= 45
 
 
 def test_counts_of_the_3d1_gate(shipped):
@@ -32,8 +32,9 @@ def test_counts_of_the_3d1_gate(shipped):
     assert all(2 <= len(c['views']) <= 3 for c in flats)
     projections = {v['camera']['projection'] for c in flats for v in c['views']}
     assert projections == {'orthographic', 'oblique', 'perspective'}
-    for f in shipped.values():
-        assert f['format'] == 'animageo-space-parity/v1' and f['registry'] == '1.0'
+    for name, f in shipped.items():
+        version = '1.1' if name.endswith('_lines.json') else '1.0'
+        assert f['format'] == 'animageo-space-parity/v1' and f['registry'] == version
 
 
 def test_numbers_are_rounded_to_nine_decimals(shipped):

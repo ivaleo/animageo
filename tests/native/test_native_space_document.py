@@ -1,4 +1,4 @@
-"""The space registry 1.0 and the space document (3D-1, experimental)."""
+"""The experimental space registry and document."""
 from __future__ import annotations
 
 import copy
@@ -40,14 +40,14 @@ def cube_doc(**camera):
 
 # ── registry ──
 
-def test_space_registry_is_1_0_and_consistent():
+def test_space_registry_is_1_1_and_consistent():
     reg = space_registry()
-    assert SPACE_REGISTRY_VERSION == '1.0'
-    assert reg.version == '1.0'
-    assert set(reg.ops) == MINIMUM
+    assert SPACE_REGISTRY_VERSION == '1.1'
+    assert reg.version == '1.1'
+    assert MINIMUM < set(reg.ops)
     assert space_registry_problems() == []
     assert reg.index == build_space_index()
-    assert reg.index['registryVersion'] == '1.0'
+    assert reg.index['registryVersion'] == '1.1'
     assert reg.index['extends'] == REGISTRY_VERSION
     assert write_space_index(check=True) == []
 
@@ -55,22 +55,23 @@ def test_space_registry_is_1_0_and_consistent():
 def test_plane_registry_is_untouched():
     plane = registry()
     assert plane.version == REGISTRY_VERSION != SPACE_REGISTRY_VERSION
-    assert not (set(plane.ops) & MINIMUM)
+    assert not (set(plane.ops) & set(space_registry().ops))
     assert registry_problems() == []
     assert plane.index == build_index()
     assert 'point3' not in plane.types
 
 
-def test_every_space_op_is_experimental_and_new_in_space_1_0():
-    for record in space_registry().ops.values():
+def test_space_ops_keep_their_original_versions():
+    for name, record in space_registry().ops.items():
         assert record['status'] == 'experimental'
-        assert record['since'] == '1.0'
+        assert record['since'] == ('1.0' if name in MINIMUM else '1.1')
 
 
 def test_space_reasons_name_the_space_registry():
     path = Path(__file__).resolve().parents[2] / 'animageo' / 'native' / 'ops' / 'v1' / 'space' / '_reasons.json'
-    for reason in json.loads(path.read_text(encoding='utf-8'))['reasons'].values():
-        assert '(space registry 1.0)' in reason['text'] and 'registry 1.6' not in reason['text']
+    for name, reason in json.loads(path.read_text(encoding='utf-8'))['reasons'].items():
+        version = '1.1' if name == 'point_on_line' else '1.0'
+        assert f'(space registry {version})' in reason['text']
 
 
 @pytest.mark.parametrize('n,counts', [(3, (2, 9, 5)), (4, (3, 12, 6)), (6, (5, 18, 8))])
@@ -159,7 +160,7 @@ def test_graph_rules():
     assert {i.code for i in sdoc.validate(doc)} == {'type_mismatch'}
 
     doc = cube_doc()
-    doc['operationRegistryVersion'] = '1.1'
+    doc['operationRegistryVersion'] = '1.2'
     doc['operations']['op-M']['op'] = 'point3.on_line'
     codes = {i.code for i in sdoc.validate(doc)}
     assert 'newer_registry' in codes
@@ -167,9 +168,10 @@ def test_graph_rules():
 
 def test_space_version_is_its_own_line():
     """A space document is read against the space registry, not the plane one:
-    ``1.1`` is newer than space 1.0 even though the plane has 1.6."""
+    ``1.2`` is newer than space 1.1 regardless of the plane registry."""
     assert not sdoc.is_newer_space_registry('1.0')
-    assert sdoc.is_newer_space_registry('1.1')
+    assert not sdoc.is_newer_space_registry('1.1')
+    assert sdoc.is_newer_space_registry('1.2')
     assert sdoc.is_newer_space_registry(REGISTRY_VERSION)
 
 

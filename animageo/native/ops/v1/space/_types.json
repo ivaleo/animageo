@@ -47,6 +47,13 @@
         "faces": null
       },
       "text": "section {polygon: [[x, y, z], ...], faces: [[k, ...], ...]}: the polygon a plane cuts from a solid, counterclockwise about the normal of the plane; faces[i] are the indices of the faces of the solid side i lies on (two when it runs along an edge)"
+    },
+    "line3": {
+      "value": {
+        "p": "length",
+        "dir": "scalar"
+      },
+      "text": "line3 {p: [x, y, z], dir: [x, y, z]}: p is the projection of the origin, dir is the unit direction oriented by the definition"
     }
   },
   "families": {
@@ -54,6 +61,14 @@
       "segment3"
     ],
     "surface": [
+      "polygon3"
+    ],
+    "lineCarrier3": [
+      "line3",
+      "segment3"
+    ],
+    "planeCarrier3": [
+      "plane",
       "polygon3"
     ]
   },

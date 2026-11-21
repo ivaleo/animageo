@@ -1,20 +1,20 @@
-"""The operation registry of space: space registry ``1.0`` (experimental).
+"""The operation registry of space: space registry ``1.1`` (experimental).
 
 The space registry has a version line of its own, apart from the plane one
 (``REGISTRY_VERSION``, ``1.6`` with graphs and conics): a space document
-(``"space": "space"``) carries ``operationRegistryVersion`` ``"1.0"`` and is
+(``"space": "space"``) carries its own ``operationRegistryVersion`` and is
 read against this registry only. Space adds to the catalogs of the plane
 registry it is shipped with (``extends``), only by addition. The operations
 of space live in ``animageo/native/ops/v1/space`` next to the plane groups:
 
 - ``<group>.json`` — operation records (``point3``, ``segment3``,
-  ``polygon3``, ``plane``, ``polyhedron``, ``section``), the same fields as
+  ``line3``, ``polygon3``, ``plane``, ``polyhedron``, ``section``), the same fields as
   a plane record (:mod:`animageo.native.registry`);
 - ``_types.json`` — the types, families and paths of space, added to those
   of the plane;
-- ``_reasons.json`` — the reasons of the space registry 1.0, added to the
+- ``_reasons.json`` — the reasons of the space registry, added to the
   plane catalog;
-- ``INDEX.json`` — generated: ``{registryVersion: "1.0", extends: <the plane
+- ``INDEX.json`` — generated: ``{registryVersion: "1.1", extends: <the plane
   REGISTRY_VERSION>, ops: {op: signatureHash}}`` (``python -m
   animageo.native registry index`` refreshes it with the plane one).
 
@@ -46,7 +46,7 @@ __all__ = ['SPACE_REGISTRY_VERSION', 'BASE_REGISTRY_VERSION', 'SpaceRegistry', '
            'space_signature', 'space_signature_hash', 'build_space_index', 'space_registry_problems',
            'write_space_index', 'PLANE_OPS_IN_SPACE']
 
-SPACE_REGISTRY_VERSION = '1.0'
+SPACE_REGISTRY_VERSION = '1.1'
 # The plane registry whose catalogs (types, families, paths, reasons) space extends.
 BASE_REGISTRY_VERSION = REGISTRY_VERSION
 _INDEX_FILE = 'INDEX.json'
@@ -83,8 +83,8 @@ def space_signature_hash(record: dict) -> str:
 
 
 class SpaceRegistry(Registry):
-    """The registry of a space document: the operations of space 1.0 and
-    the catalogs of the plane with the additions of space 1.0."""
+    """The registry of a space document: the operations and
+    catalogs of space, separate from the plane registry."""
 
     def output_count(self, record: dict, out: dict, args: dict, graph=None) -> int:
         """The number of slots of the ``count`` output ``out`` for ``args``."""
@@ -178,7 +178,7 @@ def _load(directory) -> SpaceRegistry:
 
 @lru_cache(maxsize=1)
 def space_registry() -> SpaceRegistry:
-    """The space registry 1.0 shipped with this library (cached)."""
+    """The space registry shipped with this library (cached)."""
     return _load(_ops_dir())
 
 
@@ -192,7 +192,7 @@ def build_space_index(reg: SpaceRegistry | None = None) -> dict:
 
 
 def space_registry_problems(reg: SpaceRegistry | None = None) -> list:
-    """Inconsistencies of the files of the space registry 1.0, as strings."""
+    """Inconsistencies of the files of the space registry, as strings."""
     reg = reg or space_registry()
     problems = []
     known = set(reg.types) | set(reg.families)
@@ -202,11 +202,9 @@ def space_registry_problems(reg: SpaceRegistry | None = None) -> list:
             if member not in reg.types:
                 problems.append(f'family {family!r}: unknown type {member!r}')
     for op, record in reg.ops.items():
-        if record.get('since') != SPACE_REGISTRY_VERSION:
-            problems.append(f"{op}: since {record.get('since')!r}, an operation of space is new in "
-                            f'{SPACE_REGISTRY_VERSION}')
-        if _version_tuple(record.get('since')) is None or _version_tuple(record.get('since')) > ours:
-            problems.append(f"{op}: since {record.get('since')!r} is not a registry version up to {reg.version}")
+        since = _version_tuple(record.get('since'))
+        if since is None or not (1, 0) <= since <= ours:
+            problems.append(f"{op}: since {record.get('since')!r} is not a space registry version up to {reg.version}")
         if record.get('signatureHash') != space_signature_hash(record):
             problems.append(f"{op}: signatureHash is {record.get('signatureHash')!r}, "
                             f'computed {space_signature_hash(record)}')

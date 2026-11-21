@@ -128,5 +128,76 @@
     },
     "math": "docs/native/space.md",
     "signatureHash": "sha256:174af9fd6fdc5ef0f39aa2533fb376d5831fbc9e6fd0f7fc0b62804dfecab674"
+  },
+  {
+    "op": "point3.projection_line",
+    "status": "experimental",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      },
+      {
+        "slot": "line",
+        "type": "lineCarrier3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream",
+      "coincident_points"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "projection",
+    "phrases": {
+      "ru": "{point} — проекция точки на {line}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:2577e227001165ac110d81a9de32215e38c929c3640396b74e1a9fcd550aeae8"
+  },
+  {
+    "op": "point3.projection_plane",
+    "status": "experimental",
+    "since": "1.1",
+    "inputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      },
+      {
+        "slot": "plane",
+        "type": "planeCarrier3"
+      }
+    ],
+    "params": [],
+    "outputs": [
+      {
+        "slot": "point",
+        "type": "point3"
+      }
+    ],
+    "branch": null,
+    "undefined": [
+      "upstream"
+    ],
+    "checks": [],
+    "orientation": null,
+    "pathParam": null,
+    "stepKind": "projection",
+    "phrases": {
+      "ru": "{point} — проекция точки на {plane}"
+    },
+    "math": "docs/native/space.md",
+    "signatureHash": "sha256:091300063fc3d4b0990694b4cd8caaceff836963e6a25bf306d423cd52fbedc3"
   }
 ]
