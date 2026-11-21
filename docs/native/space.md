@@ -120,6 +120,13 @@ visible pieces at `(len(solids) + 1)·10`. `appearance.<id>.visibility`:
 its section, if shown, is a plane figure — rank 0, no `solid`, its sides
 hidden only by the solids that are drawn; 1.11.0rc8).
 
+When the interiors of two drawn solids intersect, `diagnostics` includes
+`{"code": "overlap_order", "id": "A", "otherId": "B"}` with their solid
+element IDs in lexical order. The scene keeps the analytic edge and
+section strokes and omits the face and section fills of the listed
+solids. Plane sheets and other solids keep their fills. Face, edge and
+point contacts keep the ordinary painting order.
+
 The scene bounds are computed from drawn finite geometry, before
 straight lines are clipped. A line contributes a stroke with its own
 element ID and role `segment`. It contributes no pieces when it misses

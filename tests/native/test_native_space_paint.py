@@ -140,13 +140,21 @@ def test_overlap_fixture_and_one_visible_half():
 
     fixture = build_fixture()
     assert DEFAULT_PATH.read_text(encoding='utf-8') == fixture_text(fixture)
-    overlap, perspective, _, _, half = fixture['cases']
-    assert overlap['name'] == 'overlap-ortho'
+    cases = {case['name']: case for case in fixture['cases']}
+    overlap = cases['overlap-ortho']
+    perspective = cases['overlap-perspective-no-hidden']
+    hidden_solid = cases['overlap-hidden-solid']
+    half = cases['marks-occluded-half']
+    for case in (overlap, perspective):
+        assert case['diagnostics'] == [{'code': 'overlap_order', 'id': 'J', 'otherId': 'K'}]
+        assert {f['id'] for f in case['expect']['fills']} == {'pl', 'triangle'}
+    assert hidden_solid['diagnostics'] == []
     line = next(s for s in overlap['expect']['strokes'] if s['id'] == 'l')
     assert line['pieces'][1]['hiddenBy'] == ['J', 'K']
     assert line['pieces'][1]['stroke']['dash']['drawn']
     assert line['pieces'][0]['stroke']['color'] == '#3166a5'
-    assert {label['id'] for label in overlap['expect']['labels'] if label['kind'] == 'fill'} == {'pl', 'cut', 'triangle'}
+    assert {label['id'] for label in overlap['expect']['labels'] if label['kind'] == 'fill'} == {'pl', 'triangle'}
+    assert {label['id'] for label in hidden_solid['expect']['labels'] if label['kind'] == 'fill'} == {'pl', 'cut', 'triangle'}
     assert all(stroke['stroke'] is None for s in perspective['expect']['strokes'] if s['id'] == 'l'
                for stroke in s['pieces'] if stroke['visibility'] == 'hidden')
     tick, = half['expect']['marks']

@@ -30,6 +30,12 @@ drawn like a polygon (rank 0, no ``solid``), its sides hidden only by the
 solids that are drawn. Undefined elements are listed in ``diagnostics``
 (``not_defined`` with ``state`` and ``reason``).
 
+Positive-volume intersections of drawn solids are listed as ``overlap_order``
+diagnostics, one per pair of solid element IDs (``id``, ``otherId``) in
+lexicographic order. The affected faces and sections contribute their
+analytic outline without fills. Plane sheets and unrelated solids keep
+their fills. Touching solids keep their ordinary paint order.
+
 The rules of visibility are those of :mod:`.visibility` (spec §3.3): a face
 is ``front`` or ``back`` (``side`` faces are not filled); an own edge and an
 own vertex are seen when one of their faces is ``front``; any other line or
@@ -65,6 +71,7 @@ from .document import as_space_document, camera_of
 from .evaluate import evaluate
 from .flat import CORNER_SHARE, MARGIN, MIN_PIECE_PX, PLANE_LOOKS, SOURCE_WIDTH, Z_RANK, Z_TIERS, _ground_trace
 from .ops import plane_of, polyhedron_of, xyz
+from .overlap import overlapping_solids
 from .section import Section, plane_sheet, section_visibility
 from .solids import scale_of
 from .visibility import DECIDE_TOL, ConvexOccluder, edge_visibility, face_facing, pieces, vertex_visibility
@@ -202,6 +209,10 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
             if el_id is not None:
                 vertex_owners.setdefault(el_id, []).append((sid, i))
     by_id = {sid: (poly, op) for sid, poly, op in solids}
+    overlapping = set()
+    for aid, bid in overlapping_solids((sid, poly) for sid, poly, _op in solids):
+        diagnostics.append({'code': 'overlap_order', 'id': aid, 'otherId': bid})
+        overlapping.update((aid, bid))
 
     sections = []                 # (id, solid id, Section)
     for el_id in sorted(drawn):
@@ -328,6 +339,8 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
         if el_id in drawn:
             faces_of.setdefault(sid, []).append((k, el_id))
     for sid, poly, _op in order:
+        if sid in overlapping:
+            continue
         states_ = facing[sid]
         r = rank[sid] * Z_RANK
         back = [fill(el_id, None, 'face', [poly.vertices[i] for i in poly.faces[k]], r + Z_TIERS['back'], 'back', sid)

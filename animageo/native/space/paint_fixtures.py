@@ -8,6 +8,7 @@ from pathlib import Path
 from .build import SpaceBuilder
 from .fixtures import _cube, _round
 from .paint import resolve_paint
+from .scene import flat_scene
 
 FORMAT = 'animageo-space-paint-parity/v1'
 DEFAULT_PATH = Path(__file__).resolve().parent.parent / 'parity' / 'v1' / 'space_paint' / 'space_paint_pieces.json'
@@ -81,6 +82,7 @@ def build_fixture():
     style = {'space': {'hidden': {'stroke_dash_period_px': 13, 'stroke_dash_ratio': 0.4}},
              'roles': {'auxiliary': {'stroke': '#3166a5', 'stroke_width_px': 1.3}}}
     overlap = _overlapping_document()
+    outline_resolved = {**overlap, 'appearance': {**overlap['appearance'], 'J': {'visible': False}}}
     marks = decorations_document()
     cases = []
     for name, doc, style_config, camera, layout in (
@@ -90,6 +92,9 @@ def build_fixture():
         ('overlap-perspective-no-hidden', overlap, {**style, 'space': {'hidden': {'look': 'none'}}},
          {'projection': 'perspective', 'azimuthDeg': -82, 'elevationDeg': 13, 'distance': 12,
           'target': [1.5, 1.5, 1.0]}, {'export': {'size': [1050, 680]}}),
+        ('overlap-hidden-solid', outline_resolved, style,
+         {'azimuthDeg': -81, 'elevationDeg': 8, 'target': [1.5, 1.5, 1.0]},
+         {'export': {'size': [620, 420]}}),
         ('marks-oblique', marks, {}, {'projection': 'oblique'}, {'export': {'size': [460, 340]}}),
         ('marks-perspective', marks, {},
          {**marks['viewDefaults']['camera'], 'projection': 'perspective', 'distance': 20},
@@ -98,7 +103,7 @@ def build_fixture():
          {'export': {'size': [640, 380]}}),
     ):
         cases.append({'name': name, 'document': doc, 'styleConfig': style_config, 'camera': camera,
-                      'exportLayout': layout,
+                      'exportLayout': layout, 'diagnostics': flat_scene(doc, camera)['diagnostics'],
                       'expect': _round(resolve_paint(doc, style_config, camera=camera, export_layout=layout))})
     return {'format': FORMAT, 'cases': cases}
 

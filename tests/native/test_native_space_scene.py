@@ -194,6 +194,83 @@ def test_a_segment_behind_a_solid_is_cut_into_pieces():
     assert seg['pieces'][1]['hiddenBy'] == ['K'] and seg['pieces'][1]['t'] == pytest.approx([0.375, 0.625])
 
 
+def _add_cube(b, name, x, y, z, size=2):
+    a = b.point(f'{name}A', x, y, z)
+    q = b.point(f'{name}B', x + size, y, z)
+    return b.cube(name, a, q)
+
+
+def _intersecting_cubes():
+    b = SpaceBuilder('intersecting', camera={'azimuthDeg': 45, 'elevationDeg': 0})
+    _add_cube(b, 'K', 0, 0, 0)
+    _add_cube(b, 'J', 1, -1, 0)
+    _add_cube(b, 'T', 7, 0, 0)
+    for name, pt in {'P': (2, 0, 1), 'Q': (2, 2, 1), 'R': (1, 1, 1),
+                     'U': (3, 1, 1)}.items():
+        b.point(name, *pt)
+    b.plane('pl', 'P', 'Q', 'R')
+    b.section('cut', 'pl', 'K')
+    b.section('cutJ', 'pl', 'J')
+    b.segment('kFront', 'P', 'Q')
+    b.segment('jFront', 'R', 'U')
+    return b
+
+
+def test_intersecting_cubes_keep_the_outline_and_lose_only_ambiguous_fills():
+    flat = flat_scene(_intersecting_cubes().data())
+    assert flat['diagnostics'] == [{'code': 'overlap_order', 'id': 'J', 'otherId': 'K'}]
+    assert set(flat['solids']) == {'J', 'K', 'T'}
+    assert {(f['role'], f.get('solid')) for f in flat['fills']} == {('plane', None), ('face', 'T')}
+    assert {s['solid'] for s in flat['strokes'] if s['role'] == 'edge'} == {'J', 'K', 'T'}
+    assert {s['id'] for s in flat['strokes'] if s['role'] == 'section'} == {'cut', 'cutJ'}
+    assert {'KA', 'JA', 'P', 'Q'} <= {p['id'] for p in flat['points']}
+    # The front surface alternates between the two bodies across this projection.
+    # On each face, the first half of the probe sits behind the other body.
+    strokes = strokes_by_id(flat)
+    for probe, occluder in [('kFront', 'J'), ('jFront', 'K')]:
+        hidden, visible = strokes[(probe, None)]['pieces']
+        assert (hidden['visibility'], hidden['hiddenBy'], visible['visibility']) == ('hidden', [occluder], 'visible')
+        assert hidden['t'] == pytest.approx([0, 0.5])
+        assert visible['t'] == pytest.approx([0.5, 1])
+
+
+def test_hiding_a_solid_restores_supported_fills():
+    doc = _intersecting_cubes().data()
+    doc['appearance'] = {'K': {'visible': False}}
+    flat = flat_scene(doc)
+    assert flat['diagnostics'] == []
+    assert {f.get('solid') for f in flat['fills'] if f['role'] == 'face'} == {'J', 'T'}
+    assert {(f['id'], f.get('solid')) for f in flat['fills'] if f['role'] == 'section'} == {
+        ('cut', None), ('cutJ', 'J'),
+    }
+
+
+@pytest.mark.parametrize('contact', [(2, 0, 0), (2, 2, 0), (2, 2, 2), (2.5, 1, 1)])
+def test_cube_contact_and_separation_preserve_fills(contact):
+    b = SpaceBuilder('contact')
+    _add_cube(b, 'K', 0, 0, 0)
+    _add_cube(b, 'J', *contact)
+    flat = flat_scene(b.data())
+    assert flat['diagnostics'] == []
+    assert {f['solid'] for f in flat['fills']} == {'J', 'K'}
+
+
+@pytest.mark.parametrize('y,intersect', [(3, False), (2.25, False), (1, True)])
+@pytest.mark.parametrize('shift', [0, 1_000_000])
+def test_oblique_prism_and_cube_with_overlapping_bounds(y, intersect, shift):
+    # Their face-normal intervals all overlap. At y=3 the edge-cross axis
+    # z-y separates the solids; at y=2.25 they touch along the support of that axis.
+    b = SpaceBuilder('prism', camera={'target': [shift] * 3})
+    _add_cube(b, 'K', shift, shift, shift)
+    for name, (x, dy, z) in {'P': (2, 0, -1), 'Q': (3, 1, 1), 'R': (3, 3, -1),
+                              'U': (2, 2, -3), 'V': (0, -2, -3)}.items():
+        b.point(name, x + shift, dy + y + shift, z + 0.25 + shift)
+    b.prism('J', ['P', 'Q', 'R', 'U'], 'V')
+    flat = flat_scene(b.data())
+    assert flat['diagnostics'] == ([{'code': 'overlap_order', 'id': 'J', 'otherId': 'K'}] if intersect else [])
+    assert {f['solid'] for f in flat['fills']} == (set() if intersect else {'J', 'K'})
+
+
 # ── the plane document ──
 
 def test_plane_document_is_valid_and_keeps_ids():
