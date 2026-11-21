@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.20.0] - 2026-11-21
+
 ### Added
 
-- Registry 1.14 adds literal `text.block` content, bounded deterministic T2A
-  font-metric wrapping, alignment and size controls. `has("text.block")` exposes
-  support; native exports and video share explicit line/glyph positions.
-  New normalization, plain-text serialization and layout APIs preserve existing
-  `text.free` and label behavior.
+- Native registry 1.14 adds `text.block` for literal text with deterministic
+  wrapping, alignment and font metrics shared by exports and video.
+- Each block supports up to 20,000 Unicode code points and 200 paragraphs.
+  Rendering checks scene limits on blocks, code points, glyphs, outline points
+  and raster size before drawing.
 
 ## [1.19.0] - 2026-11-14
 
@@ -4059,7 +4061,8 @@ First stable release. Substantial rewrite of the style system, parsers, and geom
 - **`package-data`** — `style/builtin.json` and `*.pyi` stub files now ship inside the wheel.
 - **`find_packages`** — restricted to `animageo*`; `tests/` is no longer included in the distribution.
 
-[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.19.0...HEAD
+[Unreleased]: https://github.com/ivaleo/animageo/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/ivaleo/animageo/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/ivaleo/animageo/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/ivaleo/animageo/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/ivaleo/animageo/compare/v1.16.0...v1.17.0
