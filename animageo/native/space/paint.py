@@ -1,7 +1,6 @@
 """The paint of the plane primitives that draw a space document."""
 from __future__ import annotations
 
-from ...style.config import StyleConfig
 from ..document import as_document
 from ..paint import resolve_paint as _plane_paint
 from .bridge import _plane_document, _plane_style, sheet_layout, space_style
@@ -24,6 +23,8 @@ def _shown(entry, channel):
 
 def resolve_paint(doc, style_config=None, *, camera=None, inputs=None, export_layout=None):
     """The actual paint of each space primitive on the requested sheet."""
+    from ...style.config import StyleConfig
+
     doc = as_space_document(doc)
     ev = evaluate(doc, inputs=inputs)
     flat = flat_scene(doc, camera, plane_look=space_style(style_config)['plane']['look'], evaluated=ev)

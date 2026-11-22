@@ -154,6 +154,10 @@ LAZY_ALLOWED = {
                                  'animageo.label_placement', 'animageo.labels', 'animageo.hatch',
                                  'animageo.export_layout', 'animageo.angle_marker', 'animageo.mark_shapes', 'animageo.fill_order'),
     'animageo/native/paint_fixtures.py': ('animageo.style',),
+    # Spatial paint uses the same style resolver as plane paint.
+    # The decoration callback runs only in the renderer or label solver.
+    'animageo/native/space/paint.py': ('animageo.style.config', 'animageo.label_placement'),
+    'animageo/native/space/marks.py': (GEO, 'numpy'),
     # registry 1.6 (view axes and grid): the colours of the style keys as hex
     'animageo/native/view.py': ('animageo.style.colorspace',),
 }
