@@ -15,6 +15,9 @@ from .visibility import ConvexOccluder
 
 SPACE_MARKS_FORMAT = 'animageo-space-marks/v1'
 _PERPENDICULAR = ('line3.perpendicular_line', 'line3.perpendicular_plane')
+# One, two and three ticks; a further class of equal lengths has no marks of its own.
+MAX_TICK_CLASSES = 3
+_DIAGNOSTICS = ('mark_classes_exhausted',)
 
 
 def _on_segment(p, a, b, eps):
@@ -163,7 +166,8 @@ def _right_guide(op_id, element_id, ref, name, args, by_id, fills, projector, ne
 def prepare_marks(doc, evaluated, flat, index):
     """The visible carriers and world angle data needed on the final sheet."""
     camera = Camera.from_dict(flat['camera'])
-    result = {'format': SPACE_MARKS_FORMAT, 'camera': camera.to_dict(), 'scale': flat['scale'], 'guides': []}
+    result = {'format': SPACE_MARKS_FORMAT, 'camera': camera.to_dict(), 'scale': flat['scale'], 'guides': [],
+              'diagnostics': []}
     data, ops = doc.data, doc.operations
     settings = (data.get('viewDefaults') or {}).get('autoMarks') or {}
     appearance = data.get('appearance') or {}
@@ -204,7 +208,11 @@ def prepare_marks(doc, evaluated, flat, index):
                          len(lengths))
             if group == len(lengths):
                 lengths.append(length)
-            result['guides'].extend({**guide, 'count': min(group + 1, 3)} for guide in guides)
+            if group >= MAX_TICK_CLASSES:
+                # Three ticks would claim an equality with the third class.
+                result['diagnostics'].append({'code': 'mark_classes_exhausted', 'source': op_id})
+                continue
+            result['guides'].extend({**guide, 'count': group + 1} for guide in guides)
         elif (op_id, 'right_angle') not in suppressed:
             ref = ops[op_id]['args']['line' if name == _PERPENDICULAR[0] else 'plane'].get('elementId')
             guide = _right_guide(op_id, el_ids[0], ref, name, args, by_id, index['fills'], projector,
@@ -242,6 +250,12 @@ def _on_sheet(point, frame):
             and frame[0] <= point[0] <= frame[2] and frame[1] <= point[1] <= frame[3])
 
 
+def _diagnostics(items, limit):
+    return isinstance(items, list) and len(items) <= limit and all(
+        isinstance(item, dict) and set(item) == {'code', 'source'} and item['code'] in _DIAGNOSTICS
+        and isinstance(item['source'], str) for item in items)
+
+
 def checked_marks(sidecar, doc):
     """Accept only the data produced by the space bridge, across process boundaries.
 
@@ -250,9 +264,11 @@ def checked_marks(sidecar, doc):
     twice that size."""
     if sidecar is None:
         return None
-    if (not isinstance(sidecar, dict) or set(sidecar) != {'format', 'camera', 'scale', 'guides'}
+    # ``diagnostics`` is new in 1.21.1; a sidecar of 1.21.0 has none.
+    if (not isinstance(sidecar, dict) or set(sidecar) - {'diagnostics'} != {'format', 'camera', 'scale', 'guides'}
             or sidecar['format'] != SPACE_MARKS_FORMAT or not _positive(sidecar['scale'])
-            or not isinstance(sidecar['guides'], list) or len(sidecar['guides']) > 2 * len(doc.elements)):
+            or not isinstance(sidecar['guides'], list) or len(sidecar['guides']) > 2 * len(doc.elements)
+            or not _diagnostics(sidecar.get('diagnostics', []), 2 * len(doc.elements))):
         raise ValueError('invalid space mark sidecar')
     camera = Camera.from_dict(sidecar['camera'])
     if camera.to_dict() != sidecar['camera']:

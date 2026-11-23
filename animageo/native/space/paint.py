@@ -90,6 +90,7 @@ def render_plane(plane, out=None, *, marks=None, fmt='svg', style_config=None, e
                      decorate=decorate)
     if result.report is not None and marks is not None:
         result.report['spaceMarks'] = emitted
+        result.report['spaceMarkDiagnostics'] = list(marks.get('diagnostics', []))
     return result
 
 

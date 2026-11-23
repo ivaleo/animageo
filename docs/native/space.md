@@ -212,8 +212,11 @@ export_layout=None)` returns `animageo-space-paint/v1`:
 A visible midpoint on a drawn segment gives ticks on the two actual
 halves, centered at the projected world quarter points. A hidden half
 contributes no tick. Equal original lengths reuse a count. New classes
-take one, two and then three ticks in dependency order, with subsequent
-classes using three. Tick length, width, spacing and color use the visible
+take one, two and then three ticks in dependency order. A fourth and
+later class gets no ticks (three would claim an equality with the third
+class): the sidecar lists `{"code": "mark_classes_exhausted", "source":
+operationId}` in `diagnostics` for each such midpoint, as the plane does
+with its warning. Tick length, width, spacing and color use the visible
 carrier's segment paint. A perpendicular can give a right-angle corner
 at its real foot, with sides on the perpendicular and on the support.
 The two projected arms are scaled in sheet pixels, then the corner of
@@ -239,7 +242,9 @@ result = space.render_plane(prepared['document'], out, marks=prepared['marks'],
 `prepare_render(flat, doc, *, style_config=None, evaluated=None)` returns
 a plain JSON object `{document, marks}`. Pass the same `evaluated` as
 for the flat scene when overriding inputs. `marks` is a closed
-`animageo-space-marks/v1` sidecar `{format, camera, scale, guides}`.
+`animageo-space-marks/v1` sidecar `{format, camera, scale, guides,
+diagnostics}` (a sidecar without `diagnostics`, as 1.21.0 wrote it, is
+accepted).
 Each guide names a projected segment (`planeId`), its `layer` and
 source operation. A ticks guide gives `half`, `count`, the projected
 center `at` and tangent `direction`. A right-angle guide gives the world
@@ -262,7 +267,8 @@ to the existing plane label solver's obstacles. It returns the usual
 plane label layout keyed by plane ID.
 
 With a sidecar and reporting enabled, the render report includes
-`spaceMarks` with the emitted records. The same records appear in
+`spaceMarks` with the emitted records and `spaceMarkDiagnostics` with
+the sidecar's `diagnostics`. The same records appear in
 `space.resolve_paint(...)["marks"]`. Each carries `kind`, `source`,
 `layer`, `z`, `color`, `opacity` and `widthPx`. Ticks also give
 `half`, `count`, `at`, `lengthPx`, `shiftPx` and

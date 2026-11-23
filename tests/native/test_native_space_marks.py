@@ -94,3 +94,52 @@ def test_projection_never_emits_non_finite_strokes():
     assert ('ticks', ticks['source'], ticks['half']) not in emitted
     assert ('right_angle', right['source'], None) not in emitted
     assert len(records) == len(marks['guides']) - 2
+
+
+def _classes_document(sizes):
+    b = space.SpaceBuilder('classes', camera={'azimuthDeg': -64, 'elevationDeg': 33})
+    for k, size in enumerate(sizes, 1):
+        b.point(f'A{k}', 0, k * 2, 0)
+        b.point(f'B{k}', size, k * 2, 0)
+        b.segment(f's{k}', f'A{k}', f'B{k}')
+        b.midpoint(f'M{k}', f'A{k}', f'B{k}')
+    return b.data()
+
+
+def test_a_fourth_class_of_equal_segments_is_not_drawn_as_a_third():
+    doc = _classes_document([4, 5, 6, 7, 5, 8])
+    marks = space.prepare_render(space.flat_scene(doc), doc)['marks']
+    counts = {(g['source'], g['half']): g['count'] for g in marks['guides'] if g['kind'] == 'ticks'}
+    assert counts == {('op-M1', 1): 1, ('op-M1', 2): 1, ('op-M2', 1): 2, ('op-M2', 2): 2,
+                      ('op-M3', 1): 3, ('op-M3', 2): 3, ('op-M5', 1): 2, ('op-M5', 2): 2}
+    assert marks['diagnostics'] == [{'code': 'mark_classes_exhausted', 'source': 'op-M4'},
+                                    {'code': 'mark_classes_exhausted', 'source': 'op-M6'}]
+    assert {m['source'] for m in space.resolve_paint(doc)['marks']} == {'op-M1', 'op-M2', 'op-M3', 'op-M5'}
+
+
+def test_three_classes_raise_no_diagnostic():
+    doc = _classes_document([4, 5, 6, 4])
+    marks = space.prepare_render(space.flat_scene(doc), doc)['marks']
+    assert marks['diagnostics'] == []
+    assert len(marks['guides']) == 8
+
+
+def test_the_check_reads_diagnostics_and_older_sidecars():
+    bundle = _bundle()
+    plane = as_document(bundle['document'])
+    old = {k: v for k, v in bundle['marks'].items() if k != 'diagnostics'}
+    assert checked_marks(old, plane) is not None
+    for bad in ([{'code': 'mark_classes_exhausted'}], [{'code': 'other', 'source': 'op-M1'}],
+                [{'code': 'mark_classes_exhausted', 'source': 1}], {'code': 'mark_classes_exhausted'}):
+        with pytest.raises(ValueError, match='invalid space mark sidecar'):
+            checked_marks({**bundle['marks'], 'diagnostics': bad}, plane)
+
+
+@pytest.mark.manim
+def test_the_render_report_carries_the_mark_diagnostics(tmp_path):
+    pytest.importorskip('manim')
+    from animageo.native import render
+    doc = _classes_document([4, 5, 6, 7])
+    result = render(doc, out=tmp_path / 'classes.svg')
+    assert result.report['spaceMarkDiagnostics'] == [{'code': 'mark_classes_exhausted', 'source': 'op-M4'}]
+    assert {m['source'] for m in result.report['spaceMarks']} == {'op-M1', 'op-M2', 'op-M3'}
