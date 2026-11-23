@@ -14,7 +14,9 @@ of its faces is ``front`` (the section lies on the surface).
 
 :func:`plane_sheet` — the four corners of the drawn part of a plane (the
 sheet of a school drawing): the rectangle around given points of the plane
-with its first side horizontal, widened by ``margin`` of its size.
+with its first side horizontal, widened by ``margin`` of its size on each
+side (``SHEET_MARGIN`` by default: the sheet of the reference drawings hugs
+its section instead of reaching far beyond the solid).
 """
 from __future__ import annotations
 
@@ -116,7 +118,11 @@ def section_visibility(poly, cut, projector, facing=None) -> tuple:
     return tuple(out)
 
 
-def plane_sheet(plane, around, margin=0.25, min_size=0.0) -> tuple:
+# The share of the size of the points a sheet is drawn around left on each side.
+SHEET_MARGIN = 0.12
+
+
+def plane_sheet(plane, around, margin=SHEET_MARGIN, min_size=0.0) -> tuple:
     """The corners of the sheet of ``plane`` around the points ``around``
     (projected to the plane), counterclockwise about its normal."""
     e1, e2 = plane_basis(plane.normal)

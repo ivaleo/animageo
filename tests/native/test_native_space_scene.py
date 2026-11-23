@@ -358,3 +358,29 @@ def test_a_scene_with_nothing_drawn_is_still_empty():
     doc['appearance'] = {el: {'visible': False} for el in doc['elements']}
     with pytest.raises(ValueError, match='empty'):
         flat_scene(doc)
+
+
+def test_the_sheet_hugs_what_it_is_drawn_around():
+    """The sheet of a plane leaves ``SHEET_MARGIN`` of the size of its points and
+    sections on each side (the school sheet of the reference drawings), not a
+    large parallelogram far beyond the solid. In a parallel view the sheet is a
+    parallelogram and its affine coordinates are those of the plane."""
+    from animageo.native.space.section import SHEET_MARGIN
+
+    flat = flat_scene(cube_doc({**CAMERA, 'projection': 'orthographic'}))
+    sheet = next(f['polygon'] for f in flat['fills'] if f['role'] == 'plane')
+    cut = next(f['polygon'] for f in flat['fills'] if f['role'] == 'section')
+    around = cut + [p['at'] for p in flat['points'] if p['id'] in ('M', 'N', 'D_1')]
+    o, a, b = sheet[0], sheet[1], sheet[3]
+    ax, ay, bx, by = a[0] - o[0], a[1] - o[1], b[0] - o[0], b[1] - o[1]
+    det = ax * by - ay * bx
+
+    def coords(p):
+        px, py = p[0] - o[0], p[1] - o[1]
+        return ((px * by - py * bx) / det, (ax * py - ay * px) / det)
+
+    us, vs = zip(*(coords(p) for p in around))
+    edge = SHEET_MARGIN / (1 + 2 * SHEET_MARGIN)
+    for lo, hi in ((min(us), max(us)), (min(vs), max(vs))):
+        assert lo == pytest.approx(edge, abs=1e-9) and hi == pytest.approx(1 - edge, abs=1e-9)
+    assert SHEET_MARGIN == 0.12

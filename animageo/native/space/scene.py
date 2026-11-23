@@ -258,7 +258,7 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
                   if states.get(i, {}).get('state') == 'defined']
         around += [p for cid, _sid, cut in sections for p in cut.polygon
                    if _ids(producer(cid)[0]['args'].get('plane')) == [el_id]]
-        sheets.append((el_id, plane_sheet(plane_of(value(el_id)), around, 0.25)))
+        sheets.append((el_id, plane_sheet(plane_of(value(el_id)), around)))
     traces = {pid: _ground_trace(corners) for pid, corners in sheets} if plane_look == 'trace' else {}
 
     # ── the frame ──
