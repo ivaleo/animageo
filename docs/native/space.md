@@ -125,7 +125,11 @@ When the interiors of two drawn solids intersect, `diagnostics` includes
 element IDs in lexical order. The scene keeps the analytic edge and
 section strokes and omits the face and section fills of the listed
 solids. Plane sheets and other solids keep their fills. Face, edge and
-point contacts keep the ordinary painting order.
+point contacts keep the ordinary painting order. The test is bounded: a
+point found inside both bodies proves an intersection, parallel edges
+give one separating axis, and a pair that needs more than
+`overlap.AXIS_BUDGET` vertex projections (very large bases) is listed
+with `"approximate": true` — treated as intersecting without a proof.
 
 The scene bounds are computed from drawn finite geometry, before
 straight lines are clipped. A line contributes a stroke with its own

@@ -34,7 +34,9 @@ Positive-volume intersections of drawn solids are listed as ``overlap_order``
 diagnostics, one per pair of solid element IDs (``id``, ``otherId``) in
 lexicographic order. The affected faces and sections contribute their
 analytic outline without fills. Plane sheets and unrelated solids keep
-their fills. Touching solids keep their ordinary paint order.
+their fills. Touching solids keep their ordinary paint order. A pair the
+bounded test of :mod:`.overlap` cannot decide is listed with
+``approximate: true``.
 
 The rules of visibility are those of :mod:`.visibility` (spec §3.3): a face
 is ``front`` or ``back`` (``side`` faces are not filled); an own edge and an
@@ -210,8 +212,9 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
                 vertex_owners.setdefault(el_id, []).append((sid, i))
     by_id = {sid: (poly, op) for sid, poly, op in solids}
     overlapping = set()
-    for aid, bid in overlapping_solids((sid, poly) for sid, poly, _op in solids):
-        diagnostics.append({'code': 'overlap_order', 'id': aid, 'otherId': bid})
+    for aid, bid, exact in overlapping_solids((sid, poly) for sid, poly, _op in solids):
+        diagnostics.append({'code': 'overlap_order', 'id': aid, 'otherId': bid,
+                            **({} if exact else {'approximate': True})})
         overlapping.update((aid, bid))
 
     sections = []                 # (id, solid id, Section)
