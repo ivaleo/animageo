@@ -20,6 +20,28 @@ MAX_TICK_CLASSES = 3
 _DIAGNOSTICS = ('mark_classes_exhausted',)
 
 
+def _rounding(size):
+    """The rounding of coordinates of ``size``, in their units (64 ulps)."""
+    return 64 * math.ulp(size)
+
+
+def _match_tol(eps, projector, *points):
+    """``eps`` widened by the rounding of the world and picture coordinates of
+    ``points`` seen by ``projector``: a scene far from the origin keeps its
+    marks (a picture coordinate subtracts the target or the eye)."""
+    camera = projector.camera
+    size = max(abs(c) for p in (*points, camera.target) for c in p)
+    if not projector.parallel:
+        size += camera.distance
+    return eps + _rounding(size)
+
+
+def _square_tol(foot, length):
+    """The tolerance of the right angle between two unit arms from ``foot``
+    to a point at ``length``: the rounding of their coordinates."""
+    return 1e-9 + _rounding(max(map(abs, foot)) + length) / length
+
+
 def _on_segment(p, a, b, eps):
     length = math.dist(a, b)
     if length <= eps:
@@ -40,6 +62,7 @@ def _ids(op):
 
 
 def _midpoint_guides(segments, op_id, a, middle, b, projector, eps):
+    eps = _match_tol(eps, projector, a, b)
     guides = []
     for half, (start, end) in enumerate(((a, middle), (middle, b)), 1):
         at = projector.project(vec.lerp(start, end, 0.5))[:2]
@@ -121,7 +144,8 @@ def _right_guide(op_id, element_id, ref, name, args, by_id, fills, projector, ne
     if (length <= eps or (not projector.parallel and depth <= near)
             or any(occ.hides(foot) for occ in occluders)):
         return None
-    visible = _visible_piece(by_id.get(element_id, ()), at, eps)
+    match = _match_tol(eps, projector, foot, point)
+    visible = _visible_piece(by_id.get(element_id, ()), at, match)
     if visible is None:
         return None
     pid, piece = visible
@@ -133,12 +157,12 @@ def _right_guide(op_id, element_id, ref, name, args, by_id, fills, projector, ne
         axis = _line_carrier(args['line'], ctx)
         if isinstance(axis, Undefined):
             return None
-        support = _visible_piece(by_id.get(ref, ()), at, eps)
+        support = _visible_piece(by_id.get(ref, ()), at, match)
         if support is None:
             return None
         if args['line'].type == 'segment3':
             value = args['line'].value
-            if not _on_segment(foot, tuple(value['a']), tuple(value['b']), eps):
+            if not _on_segment(foot, tuple(value['a']), tuple(value['b']), match):
                 return None
         tangent = axis[1]
         candidates = (tangent, vec.mul(tangent, -1))
@@ -155,7 +179,8 @@ def _right_guide(op_id, element_id, ref, name, args, by_id, fills, projector, ne
     if not options:
         return None
     tangent, reach_cross = max(options, key=lambda option: option[1])
-    if not math.isfinite(reach_cross) or reach_cross <= eps or abs(vec.dot(along, tangent)) > 1e-9:
+    if (not math.isfinite(reach_cross) or reach_cross <= eps
+            or abs(vec.dot(along, tangent)) > _square_tol(foot, length)):
         return None
     size = overrides.get('right_angle_size_px')
     return {'kind': 'right_angle', 'source': op_id, 'planeId': pid, 'layer': piece['layer'], 'foot': foot,
@@ -293,8 +318,9 @@ def checked_marks(sidecar, doc):
             valid = (set(guide) == keys | {'foot', 'arms', 'length', 'reach', 'sizePx'} and _coords(guide['foot'], 3)
                      and isinstance(guide['arms'], (list, tuple)) and len(guide['arms']) == 2
                      and all(_coords(arm, 3) and abs(vec.norm(arm) - 1) <= 1e-9 for arm in guide['arms'])
-                     and abs(vec.dot(*guide['arms'])) <= 1e-9
-                     and _positive(guide['length']) and _coords(guide['reach'], 2) and all(map(_positive, guide['reach']))
+                     and _positive(guide['length'])
+                     and abs(vec.dot(*guide['arms'])) <= _square_tol(guide['foot'], guide['length'])
+                     and _coords(guide['reach'], 2) and all(map(_positive, guide['reach']))
                      and max(guide['reach']) <= 2 * room and _on_sheet(projector.project(guide['foot']), frame)
                      and (guide['sizePx'] is None or _positive(guide['sizePx'])
                           or (isinstance(guide['sizePx'], str) and guide['sizePx'].startswith('presets.'))))

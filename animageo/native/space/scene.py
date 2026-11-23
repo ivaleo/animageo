@@ -61,7 +61,9 @@ visible pieces at ``(len(solids) + 1)·10``. Fills of a layer go far to near.
 
 Straight lines are clipped after framing the drawn finite geometry.
 Their strokes have role ``segment`` with piece parameters affine on the
-picture. A clipped line can end at a perspective vanishing point.
+picture. A clipped line can end at a perspective vanishing point. A scene
+of straight lines alone is framed by the points their operations take,
+drawn or not, and the point ``p`` of each line.
 """
 from __future__ import annotations
 
@@ -140,6 +142,25 @@ def drawn_elements(doc, states) -> set:
                 if slot.startswith(('edge.', 'face.')):
                     drawn.discard(el_id)
     return drawn
+
+
+def _line_supports(drawn, elements, states, producer) -> list:
+    """The frame of a scene of straight lines alone: the defined points their
+    operations take (drawn or not) and the point ``p`` of each line; a
+    single point is widened along the line by one unit each way."""
+    points = []
+    for el_id in sorted(drawn):
+        if elements[el_id]['type'] != 'line3':
+            continue
+        op, _slot = producer(el_id)
+        line = states[el_id]['value']
+        p = tuple(line['p'])
+        ends = [xyz(states[i]['value']) for arg in op['args'].values() for i in _ids(arg)
+                if i in elements and elements[i]['type'] == 'point3' and states[i]['state'] == 'defined']
+        if all(q == p for q in ends):
+            ends = [vec.add(p, line['dir']), vec.sub(p, line['dir'])]
+        points += [p, *ends]
+    return points
 
 
 def _policy(appearance, el_id) -> str:
@@ -255,6 +276,8 @@ def flat_scene(doc, camera=None, *, inputs=None, plane_look='sheet', min_piece_p
         every += [p for trace in traces.values() if trace for p in trace]
     else:
         every += [c for _pid, corners in sheets for c in corners]
+    if not every:
+        every = _line_supports(drawn, elements, states, producer)
     if not every:
         raise ValueError('empty: nothing to draw')
     scale = scale_of(every)

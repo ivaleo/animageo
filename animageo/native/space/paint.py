@@ -53,11 +53,16 @@ def resolve_paint(doc, style_config=None, *, camera=None, inputs=None, export_la
             'strokes': strokes, 'fills': fills, 'points': points, 'labels': labels, 'marks': resolved_marks}
 
 
-def prepare_render(flat, doc, *, style_config=None, evaluated=None):
-    """Adapt a /1 flat scene and its evaluated document into a plane render job."""
+def prepare_render(flat, doc, *, style_config=None, evaluated=None, inputs=None):
+    """Adapt a /1 flat scene and its evaluated document into a plane render job.
+
+    Pass the ``evaluated`` document or the ``inputs`` the flat scene was made
+    with (not both); without them the document's own inputs are used."""
     doc = as_space_document(doc)
+    if evaluated is not None and inputs is not None:
+        raise ValueError('prepare_render: pass inputs or evaluated, not both')
     if evaluated is None:
-        evaluated = evaluate(doc)
+        evaluated = evaluate(doc, inputs=inputs)
     plane, index = _plane_document(flat, doc, style_config)
     return {'document': plane, 'marks': prepare_marks(doc, evaluated, flat, index)}
 

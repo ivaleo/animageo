@@ -322,3 +322,39 @@ def test_z_index_follows_layers():
     z = {el_id: a.get('overrides', {}).get('z_index') for el_id, a in plane['appearance'].items()}
     assert z['P'] < z['K_face_1'] < z['S'] < z[piece_id('K_edge_3', None, 1)] < z['K_face_2'] < \
         z[piece_id('K_edge_1', None, 1)] < 50
+
+
+@pytest.mark.parametrize('build', ['by_points', 'parallel', 'perpendicular'])
+def test_a_scene_of_lines_alone_is_framed_by_their_supports(build):
+    b = SpaceBuilder('lines-only', camera=CAMERA)
+    b.point('A', 0, 0, 0)
+    b.point('B', 3, 1, 0)
+    b.point('P', 1, 2, 2)
+    b.line('l', 'A', 'B')
+    shown = {'l': 'l', 'parallel': 'm', 'perpendicular': 'q'}
+    if build == 'parallel':
+        b.parallel('m', 'P', 'l')
+    elif build == 'perpendicular':
+        b.perpendicular_line('q', 'P', 'l')
+    doc = b.data()
+    drawn = 'l' if build == 'by_points' else shown[build]
+    doc['appearance'] = {el: {'visible': False} for el in doc['elements'] if el != drawn}
+    flat = flat_scene(doc)
+    stroke, = flat['strokes']
+    assert stroke['id'] == drawn and stroke['pieces']
+    assert flat['points'] == [] and flat['bounds'][0] < flat['bounds'][2]
+    xmin, ymin, xmax, ymax = flat['bounds']
+    for piece in stroke['pieces']:
+        for x, y in (piece['a'], piece['b']):
+            assert xmin - 1e-9 <= x <= xmax + 1e-9 and ymin - 1e-9 <= y <= ymax + 1e-9
+
+
+def test_a_scene_with_nothing_drawn_is_still_empty():
+    b = SpaceBuilder('nothing', camera=CAMERA)
+    b.point('A', 0, 0, 0)
+    b.point('B', 3, 1, 0)
+    b.line('l', 'A', 'B')
+    doc = b.data()
+    doc['appearance'] = {el: {'visible': False} for el in doc['elements']}
+    with pytest.raises(ValueError, match='empty'):
+        flat_scene(doc)

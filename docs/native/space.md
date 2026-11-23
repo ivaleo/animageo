@@ -135,7 +135,9 @@ give one separating axis, and a pair that needs more than
 with `"approximate": true` — treated as intersecting without a proof.
 
 The scene bounds are computed from drawn finite geometry, before
-straight lines are clipped. A line contributes a stroke with its own
+straight lines are clipped; a scene of straight lines alone is framed
+by the points their operations take (drawn or not) and the point `p` of
+each line. A line contributes a stroke with its own
 element ID and role `segment`. It contributes no pieces when it misses
 the frame, lies behind the near plane or projects end-on. Perspective
 clips at positive depth `1e-6 · scale` and uses the vanishing point as the
@@ -226,7 +228,9 @@ The two projected arms are scaled in sheet pixels, then the corner of
 their world parallelogram is projected through the same camera. A hidden
 foot, an end-on angle or a corner that cannot fit its visible carriers
 omits the mark. The per-element `right_angle_size_px` and
-`right_angle_marker` can size or suppress it.
+`right_angle_marker` can size or suppress it. Matching a mark to its
+carriers allows for the rounding of the coordinates, so a scene far
+from the origin (a shift of `1e8`) keeps its marks.
 
 Space `viewDefaults.autoMarks.equalities` and `rightAngles` default to
 true. `suppressedMarks` disables an individual mark with
@@ -242,9 +246,10 @@ result = space.render_plane(prepared['document'], out, marks=prepared['marks'],
                             style_config=style_config, export_layout=layout, fmt='svg')
 ```
 
-`prepare_render(flat, doc, *, style_config=None, evaluated=None)` returns
-a plain JSON object `{document, marks}`. Pass the same `evaluated` as
-for the flat scene when overriding inputs. `marks` is a closed
+`prepare_render(flat, doc, *, style_config=None, evaluated=None,
+inputs=None)` returns a plain JSON object `{document, marks}`. Pass the
+same `evaluated` or the same `inputs` as for the flat scene when
+overriding inputs (not both). `marks` is a closed
 `animageo-space-marks/v1` sidecar `{format, camera, scale, guides,
 diagnostics}` (a sidecar without `diagnostics`, as 1.21.0 wrote it, is
 accepted).

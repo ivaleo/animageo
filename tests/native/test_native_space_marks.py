@@ -143,3 +143,41 @@ def test_the_render_report_carries_the_mark_diagnostics(tmp_path):
     result = render(doc, out=tmp_path / 'classes.svg')
     assert result.report['spaceMarkDiagnostics'] == [{'code': 'mark_classes_exhausted', 'source': 'op-M4'}]
     assert {m['source'] for m in result.report['spaceMarks']} == {'op-M1', 'op-M2', 'op-M3'}
+
+
+def _perpendicular_document(shift, distance, projection):
+    camera = {'projection': projection, 'azimuthDeg': -64, 'elevationDeg': 33, 'target': [shift] * 3}
+    if projection == 'perspective':
+        camera['distance'] = 20
+    b = space.SpaceBuilder('square', camera=camera)
+    b.point('A', shift, shift + 0.3, shift + 0.1)
+    b.point('B', shift + 4.7, shift + 1.1, shift - 0.2)
+    b.point('P', shift + 2.1, shift + 0.7, shift + distance)
+    b.segment('s', 'A', 'B')
+    b.line('l', 'A', 'B')
+    b.perpendicular_line('q', 'P', 'l')
+    return b.data()
+
+
+@pytest.mark.parametrize('projection', ['orthographic', 'perspective'])
+@pytest.mark.parametrize('distance', [3, 0.3])
+@pytest.mark.parametrize('shift', [0, 1e7, 1e8])
+def test_a_right_angle_survives_a_far_scene(shift, distance, projection):
+    doc = _perpendicular_document(shift, distance, projection)
+    bundle = space.prepare_render(space.flat_scene(doc), doc)
+    right = [g for g in bundle['marks']['guides'] if g['kind'] == 'right_angle']
+    assert [g['source'] for g in right] == ['op-q']
+    assert checked_marks(bundle['marks'], as_document(bundle['document'])) is not None
+    assert [m['kind'] for m in space.resolve_paint(doc)['marks']] == ['right_angle']
+
+
+def test_prepare_render_takes_the_inputs_of_the_flat_scene():
+    doc = construction()
+    inputs = {'B1': {'kind': 'point3', 'value': [7.0, 2.0, 0.0]}, 'A2': {'kind': 'point3', 'value': [-1.0, 4.0, 0.0]}}
+    ev = space.evaluate(doc, inputs=inputs)
+    flat = space.flat_scene(doc, evaluated=ev)
+    expected = space.prepare_render(flat, doc, evaluated=ev)
+    assert space.prepare_render(flat, doc, inputs=inputs) == expected
+    assert space.prepare_render(flat, doc)['marks'] != expected['marks']
+    with pytest.raises(ValueError, match='inputs or evaluated'):
+        space.prepare_render(flat, doc, inputs=inputs, evaluated=ev)
