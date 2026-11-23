@@ -741,7 +741,8 @@ def _render(doc, *, style_config=None, export_layout=None, fmt='svg', out=None,
 
 def _space_document(doc):
     """The parsed source of ``doc`` when it is a space document (``space:
-    "space"``, experimental, space registry 1.0), else ``None``."""
+    "space"``, experimental, with the version line of the space registry),
+    else ``None``."""
     from .document import NativeDocument, _read_source
     if isinstance(doc, NativeDocument):
         data = doc.data

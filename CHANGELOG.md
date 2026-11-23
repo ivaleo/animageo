@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Text blocks set the school symbols `° ∠ △ ⊥ ∥ π √ ² ³ ≤ ≥ ≠ ≈ × − · ′ ″ …
+  ∈ ∞ ∘`, including the ellipsis that phones type for three dots. They take
+  the glyphs and metrics of the other fonts of the label template and are
+  placed as the TeX they stand for. Such glyphs have layout codes from 256;
+  the text-block metrics version changes.
+- `native.UnsupportedGlyphError`, a `ValueError` with code
+  `unsupported_glyph`, names a character without a glyph and the code-point
+  offset of its grapheme in the plain text.
+- `space.min_registry_version(doc)` gives the oldest space registry a
+  document fits. A document that declares an older version than its
+  operations need gets the warning `needs_newer_registry`.
+- `space.prepare_render` accepts `inputs=`, the inputs of the flat scene
+  (not together with `evaluated=`).
+- The space mark sidecar may carry `diagnostics`; render reports expose them
+  as `spaceMarkDiagnostics`.
+
+### Changed
+
+- A fourth and later class of equal segments in space gets the diagnostic
+  `mark_classes_exhausted` and no ticks, as on the plane.
+- An `overlap_order` diagnostic carries `approximate: true` when a pair of
+  solids needs more separating-axis work than the per-pair budget; such a
+  pair is treated as overlapping.
+- The space fixture that probes a newer registry declares version `99.0`.
+
+### Fixed
+
+- The overlap test of convex solids no longer grows with the product of their
+  edge counts: parallel edges count once, a point inside both bodies proves
+  an overlap, and the work per pair is bounded.
+- The space mark sidecar check bounds tick and right-angle coordinates by the
+  sheet frame and bounds tick directions and right-angle reach; projected
+  marks never emit non-finite strokes.
+- A space scene of straight lines whose points are hidden no longer fails as
+  empty; it is framed by the points the lines are built from.
+- A right angle in space keeps its mark in scenes far from the origin.
+
 ## [1.21.0] - 2026-11-22
 
 ### Added
@@ -16,12 +55,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Existing space operations can still produce registry 1.0 documents.
 - Spatial rendering resolves styles, point labels and construction marks.
   New parity fixtures cover line projection and the spatial paint scene.
+- New space functions: `space.resolve_paint`, `space.prepare_render`,
+  `space.render_plane` and `space.layout_plane_labels`; `SpaceBuilder.line`,
+  `parallel`, `perpendicular_line`, `perpendicular_plane`, `projection_line`
+  and `projection_plane`.
+- Space documents take `viewDefaults.autoMarks` (`equalities`,
+  `rightAngles`), `suppressedMarks`, and the appearance overrides
+  `right_angle_marker` and `right_angle_size_px`.
+
+### Changed
+
+- Intersecting solids lose their fills: such a pair reports `overlap_order`,
+  and the solids keep their edge and section strokes.
 
 ### Fixed
 
 - Straight-line projections remain stable under large translations.
-- Intersecting solid interiors report `overlap_order`. The affected solids
-  keep their edge and section strokes while ambiguous fills are omitted.
 
 ## [1.20.0] - 2026-11-21
 
