@@ -69,7 +69,7 @@ from .kernel.evaluate import EVALUATED_FORMAT, Evaluated, producer_values
 from .kernel.evaluate import evaluate as _evaluate
 from .registry import REGISTRY_VERSION, Registry, registry, signature_hash
 from .labels import layout_labels
-from .text_block import layout_text_block, normalize_text_block, text_block_plain_text
+from .text_block import UnsupportedGlyphError, layout_text_block, normalize_text_block, text_block_plain_text
 from .commands import parse_commands, print_commands
 from .rendering import RenderResult, render, source_view
 from .steps import Step, StepError, assign_seq, steps, steps_merge, steps_split
@@ -178,6 +178,7 @@ __all__ = [
     'NativeDocument',
     'Registry',
     'RenderResult',
+    'UnsupportedGlyphError',
     '__registry_version__',
     'canonical_json',
     'check',

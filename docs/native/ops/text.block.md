@@ -62,6 +62,33 @@ the same font used for drawing. Unsupported glyphs produce an explicit error;
 there is no font substitution or estimated layout. Normalization can retain
 Unicode outside the drawing font's coverage.
 
+School symbols take glyphs of the other fonts of the same RusTex template
+(their metrics are in the same bundled file) and are placed by the TeX
+rules of the command each stands for, so a block sets them as a label sets
+that TeX:
+
+| Characters | Font, glyph | Set as |
+| --- | --- | --- |
+| `− · × ∘ ≤ ≥ ≈ ∞ ∈ △ ⊥ ∥` | `cmsy10` | `$-$`, `$\cdot$`, `$\times$`, `$\circ$`, `$\le$`, `$\ge$`, `$\approx$`, `$\infty$`, `$\in$`, `$\bigtriangleup$`, `$\perp$`, `$\parallel$` |
+| `≠` | `cmsy10` slash over `cmr10` `=` | `$\neq$` |
+| `π` | `cmmi10` | `$\pi$` with its italic correction |
+| `∠` | `msam10` angle | the amssymb glyph of `$\angle$` |
+| `° ′ ″` | `cmsy7` | `$^\circ$`, `$'$`, `$''$`: raised by `\fontdimen14` of `cmsy10`, plus `\scriptspace` |
+| `² ³` | `larm0700` digits | `\textsuperscript{2}`, `\textsuperscript{3}` |
+| `…` | three `larm1000` periods | `\textellipsis`: each period followed by `\fontdimen3` |
+| `√` | `cmsy10` radical | the radical `\sqrt` puts over a digit, without its bar |
+
+The template's own `\angle` and `\triangle` are scaled composites of fonts
+the metrics do not carry; a block uses the single glyphs above. A glyph of
+another font has a layout `code` from 256 (`GLYPH_FONTS` in
+`animageo/native/text_block.py` names its font and slot); codes below 256 are
+`larm1000` slots. Drawing uses the code as the key of the glyph atlas.
+
+A character without a glyph raises `native.UnsupportedGlyphError`, a
+`ValueError` with `code = "unsupported_glyph"`, the character `char` and
+`index`, the code-point offset of its grapheme in `text_block_plain_text`;
+`to_dict()` gives `{code, char, codepoint, index}`.
+
 The greedy algorithm wraps at spaces. Boundary spaces remain on the preceding
 line (blank advance may hang past its logical width); long words split at extended grapheme boundaries without inserting hyphens.
 A single grapheme exceeding the width fails explicitly. Input/glyph counts bound
@@ -86,7 +113,7 @@ SVG, PNG, PDF, EPS, TikZ, TeX and video frames consume the same positioned glyph
 No exporter repeats paragraph wrapping. TikZ/TeX emit positioned nodes directly
 from the layout without building Manim objects for blocks. Fully clipped lines
 remain in the layout and comments. Vector and video renderers build a fixed
-RusTex glyph atlas once per process. During anchor motion, each scene reuses the
+RusTex glyph atlas (the block font and the symbol glyphs) once per process. During anchor motion, each scene reuses the
 line contours and changes their world transform. PNG previews draw those paths
 onto the image surface directly. Native static/frame reports expose
 `elements[id].textBlock = {layout, emToWorld, origin}`; multiply em coordinates by

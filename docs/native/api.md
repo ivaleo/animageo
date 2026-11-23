@@ -68,6 +68,7 @@ See [text.block](ops/text.block.md) for the content, style and resource limits.
 - `normalize_text_block(text)` — Convert plain Unicode text to canonical `text-block/v1` paragraphs and runs.
 - `text_block_plain_text(content)` — Reconstruct plain text from canonical content, preserving line breaks and spaces.
 - `layout_text_block(content, widthEm=30, size=1, align='left', *, text_style=None)` — Lay out literal text in em and return the positioned lines, font metrics version and content hash without starting a renderer.
+- `exception UnsupportedGlyphError(char, index)` — A character of the content without a glyph: `code` (`unsupported_glyph`), `char` and `index`, the code-point offset of its grapheme in `text_block_plain_text`; `to_dict()` adds `codepoint`.
 
 ## Evaluation and checks
 

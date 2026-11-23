@@ -168,7 +168,7 @@ def _diff(expected: dict, actual: dict) -> list:
 class TestNative:
     def test_names(self, snapshot):
         assert native_api()['all'] == sorted(snapshot['native']['all'] +
-            ['layout_text_block', 'normalize_text_block', 'text_block_plain_text'])
+            ['UnsupportedGlyphError', 'layout_text_block', 'normalize_text_block', 'text_block_plain_text'])
 
     def test_signatures(self, snapshot):
         current = native_api()['names']
@@ -181,6 +181,8 @@ class TestNative:
             'text_block_plain_text': '(content)',
         }.items():
             assert current.pop(name) == {'kind': 'function', 'signature': expected}
+        assert current.pop('UnsupportedGlyphError') == {
+            'kind': 'exception', 'signature': '(char, index)', 'members': {'code': 'attribute', 'to_dict': '(self)'}}
         assert current['__registry_version__']['value'] == '1.14'
         current['__registry_version__'] = snapshot['native']['names']['__registry_version__']
         assert current['Evaluated']['signature'] == snapshot['native']['names']['Evaluated']['signature'].replace("registry='1.13'", "registry='1.14'")

@@ -502,3 +502,120 @@ def test_tikz_full_composite_block_compiles_with_default_tex_memory(tmp_path):
     compiled = subprocess.run(['pdflatex', '-interaction=nonstopmode', '-halt-on-error', 'full.tex'],
                                cwd=tmp_path, capture_output=True, timeout=30)
     assert compiled.returncode == 0, compiled.stdout[-2000:].decode(errors='replace')
+
+
+# School symbols: glyphs of the template's TeX fonts, placed by the TeX rules
+# of the commands they stand for, as the label measurer sets those commands.
+TEX_OF = {'°': r'^\circ', '²': r'^{\text{2}}', '³': r'^{\text{3}}', '′': "'", '″': "''", 'π': r'\pi',
+              '≤': r'\le', '≥': r'\ge', '≠': r'\neq', '≈': r'\approx', '×': r'\times', '−': '-',
+              '·': r'\cdot', '∈': r'\in', '∞': r'\infty', '∘': r'\circ', '⊥': r'\perp', '∥': r'\parallel'}
+SCHOOL_SYMBOLS = '°∠△⊥∥π√²³≤≥≠≈×−·′″…∈∞∘'
+
+
+def _single(char):
+    line = layout_text_block(normalize_text_block(char), 120)['lines'][0]
+    assert line['text'] == char
+    return line
+
+
+@pytest.mark.parametrize('char', sorted(TEX_OF))
+def test_school_symbols_take_the_metrics_of_their_tex(char):
+    from animageo.native.labels import tex
+    box = tex.math_box(tex.tokenize(TEX_OF[char]), tex.TEXT_STYLE)
+    line = _single(char)
+    assert line['width'] == pytest.approx(box.width / 10, abs=1e-6)   # \neq: measured by TeX, 5 digits
+    inks = [g['ink'] for g in line['glyphs']]
+    # A macro of the template (\neq) is measured whole: one ink box.
+    expected = box.inks if len(box.inks) == len(inks) else [
+        (min(b[0] for b in box.inks), min(b[1] for b in box.inks),
+         max(b[2] for b in box.inks), max(b[3] for b in box.inks))]
+    if len(expected) != len(inks):
+        inks = [[min(b[0] for b in inks), min(b[1] for b in inks), max(b[2] for b in inks), max(b[3] for b in inks)]]
+    for ink, (x0, y0, x1, y1) in zip(sorted(inks), sorted(expected)):
+        assert ink == pytest.approx([x0 / 10, -y1 / 10, x1 / 10, -y0 / 10], abs=1e-6)
+
+
+def test_the_ellipsis_is_the_t2a_textellipsis():
+    # LaTeX's \textellipsis in T2A: three periods, each followed by \fontdimen3.
+    from animageo.native.labels.tex import metrics
+    font = metrics()['fonts']['larm1000']
+    line = _single('…')
+    step = (font['chars'][46][0] + font['params'][2]) / 10
+    assert [g['code'] for g in line['glyphs']] == [46, 46, 46]
+    assert [g['x'] for g in line['glyphs']] == pytest.approx([0, step, 2 * step])
+    assert line['width'] == pytest.approx(1.333008, abs=1e-6)
+
+
+def test_angle_triangle_and_root_have_their_glyph_metrics():
+    from animageo.native.labels.tex import metrics
+    fonts = metrics()['fonts']
+    angle, triangle, root = _single('∠'), _single('△'), _single('√')
+    assert angle['width'] == pytest.approx(fonts['msam10']['chars'][0x5C][0] / 10)
+    assert triangle['width'] == pytest.approx(fonts['cmsy10']['chars'][0x34][0] / 10)
+    assert root['width'] == pytest.approx(fonts['cmsy10']['chars'][0x70][0] / 10)
+    # \sqrt over a digit: the radical's top is the bar over the digit.
+    theta = fonts['cmex10']['params'][7]
+    digit = fonts['larm1000']['chars'][0x30][1]
+    clear = theta + theta / 4
+    clear += (fonts['cmsy10']['chars'][0x70][2] - digit - clear) / 2
+    assert root['glyphs'][0]['ink'][1] == pytest.approx(-(digit + clear + theta) / 10, abs=1e-5)
+
+
+def test_all_school_symbols_lay_out_and_keep_older_glyphs():
+    source = 'Угол ∠ABC = 90°, △ABC: AB ⊥ BC, a ∥ b; π ≈ 3,14; √2; x² + y³ ≤ 1 ≥ 0 ≠ 2 × 3 − 4 · 5; A′ B″… x ∈ ∞ ∘'
+    layout = layout_text_block(normalize_text_block(source), 120)
+    assert [line['text'] for line in layout['lines']] == [source]
+    codes = {g['code'] for g in layout['lines'][0]['glyphs']}
+    assert 0xD3 in codes      # Cyrillic У keeps its T2A slot
+    symbols = {g['code'] for g in layout['lines'][0]['glyphs'] if g['code'] >= 256}
+    assert len(symbols) >= 19
+    for char in SCHOOL_SYMBOLS:
+        assert all(g['ink'] is not None for g in _single(char)['glyphs'])
+
+
+def test_an_unsupported_character_reports_itself_and_its_position():
+    from animageo.native import UnsupportedGlyphError
+    content = normalize_text_block('Дано: угол\n\nОтвет 中 и ∠')
+    with pytest.raises(UnsupportedGlyphError, match='glyph') as caught:
+        layout_text_block(content)
+    error = caught.value
+    assert isinstance(error, ValueError)
+    assert (error.code, error.char, error.index) == ('unsupported_glyph', '中', 18)
+    assert text_block_plain_text(content)[error.index] == '中'
+    assert error.to_dict() == {'code': 'unsupported_glyph', 'char': '中', 'codepoint': 'U+4E2D', 'index': 18}
+    assert 'U+4E2D' in str(error)
+
+
+def test_symbols_count_their_glyphs_in_the_scene_budget(monkeypatch):
+    from animageo.native import text_block
+    monkeypatch.setattr(text_block, 'MAX_SCENE_GLYPHS', 300)
+    text_block.check_render_budget(native.load(block_doc('…' * 100, widthEm=120)), ['op_t'])
+    with pytest.raises(ValueError, match=r'scene render limit is 300 glyphs'):
+        text_block.check_render_budget(native.load(block_doc('…' * 100 + '≠', widthEm=120)), ['op_t'])
+
+
+def test_symbol_outlines_match_their_metrics():
+    pytest.importorskip('manim')
+    from animageo.text_block_render import _glyph_outlines
+    atlas = _glyph_outlines()
+    for char in SCHOOL_SYMBOLS:
+        for glyph in _single(char)['glyphs']:
+            points = atlas[glyph['code']]
+            x0, x1 = float(points[:, 0].min()), float(points[:, 0].max())
+            y0, y1 = float(-points[:, 1].max()), float(-points[:, 1].min())
+            ink = glyph['ink']
+            assert [x0 + glyph['x'], y0 + glyph['y'], x1 + glyph['x'], y1 + glyph['y']] == pytest.approx(ink, abs=0.02)
+
+
+def test_symbols_render_in_every_format(tmp_path):
+    pytest.importorskip('manim')
+    import shutil
+    import subprocess
+    doc = block_doc('∠A = 90°, x² ≤ π…\nAB ⊥ CD ≠ √2 × 3 − 1 · ′ ″ ∈ ∞ ∘ △ ≈ ≥ ∥ ³', widthEm=40)
+    for fmt in ('svg', 'png', 'tikz', 'tex'):
+        result = native.render(doc, fmt=fmt, out=tmp_path / ('symbols.' + fmt))
+        assert Path(result.path).stat().st_size > 100
+    if shutil.which('pdflatex'):
+        compiled = subprocess.run(['pdflatex', '-interaction=nonstopmode', '-halt-on-error', 'symbols.tex'],
+                                   cwd=tmp_path, capture_output=True, timeout=30, check=False)
+        assert compiled.returncode == 0, compiled.stdout[-2000:].decode(errors='replace')

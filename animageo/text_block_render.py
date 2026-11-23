@@ -10,25 +10,37 @@ from xml.etree import ElementTree
 from .constants import GGB_FONT_SCALE
 from .geo.lib_elements import resolve_text_position
 from .native.labels.tex import metrics
-from .native.text_block import (ACCENT_OUTLINE_POINTS, BASE_OUTLINE_POINTS, EM_PT, FONT, _ACCENTS,
+from .native.text_block import (ACCENT_OUTLINE_POINTS, BASE_OUTLINE_POINTS, EM_PT, FONT, GLYPH_FONTS, _ACCENTS,
                                 block_font_size, drawing_glyphs, layout_ink, layout_text_block, line_tex)
 from .style.resolver import resolve
 
 
-# The atlas has a fixed 256-slot input. Text, positions and style never enter
-# its subprocesses. Cache only font paths globally; scene vectors stay local.
+# The atlas has a fixed input: the 256 slots of the block font on page 1 and
+# the symbol glyphs of the other template fonts, one font per page. Text,
+# positions and style never enter its subprocesses. Cache only font paths
+# globally; scene vectors stay local.
 @lru_cache(maxsize=1)
 def _glyph_outlines():
     from manim.mobject.svg.svg_mobject import VMobjectFromSVGPath
     from svgelements import Path as SVGPath
 
-    rows = [''.join(r'\hbox{\char%d}\kern1pt ' % code for code in range(start, start + 16))
-            for start in range(0, 256, 16)]
+    pages = [(FONT, {code: code for code in range(256)})]
+    for gid, (font, code) in GLYPH_FONTS.items():
+        if font != pages[-1][0]:
+            pages.append((font, {}))
+        pages[-1][1][code] = gid
+    if len({font for font, _ in pages}) != len(pages):
+        raise RuntimeError('text.block: symbol glyphs must be grouped by font')
+    bodies = []
+    for font, codes in pages:
+        boxes = [r'\hbox{\char%d}\kern1pt ' % code for code in codes]
+        rows = [''.join(boxes[start:start + 16]) for start in range(0, len(boxes), 16)]
+        bodies.append(r'\font\probe=' + font + r'\probe '
+                      + '\n'.join(r'\noindent ' + row + r'\par' for row in rows))
     source = (r'\documentclass{article}\begin{document}\pagestyle{empty} '
-              + r'\font\probe=' + FONT + r'\probe '
-              + '\n'.join(r'\noindent ' + row + r'\par' for row in rows) + r'\end{document}')
+              + '\n\\newpage\n'.join(bodies) + r'\end{document}')
     commands = (('latex', '-no-shell-escape', '-interaction=nonstopmode', '-halt-on-error', 'atlas.tex'),
-                ('dvisvgm', '--no-fonts', '--output=atlas.svg', 'atlas.dvi'))
+                ('dvisvgm', '--no-fonts', f'--page=1-{len(pages)}', '--output=atlas-%p.svg', 'atlas.dvi'))
     with tempfile.TemporaryDirectory(prefix='animageo_block_font_') as work:
         root = Path(work)
         (root / 'atlas.tex').write_text(source, encoding='ascii')
@@ -38,17 +50,25 @@ def _glyph_outlines():
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             except (OSError, subprocess.SubprocessError) as exc:
                 raise RuntimeError(f'text.block: could not build {FONT} outlines with {command[0]}: {exc}') from exc
-        svg = ElementTree.parse(root / 'atlas.svg')
+        files = sorted(root.glob('atlas-*.svg'), key=lambda path: int(path.stem.rsplit('-', 1)[1]))
+        if len(files) != len(pages):
+            raise RuntimeError(f'text.block: the glyph atlas has {len(files)} pages, not {len(pages)}')
+        svgs = [ElementTree.parse(path) for path in files]
     outlines = {}
-    for path in svg.findall('.//{http://www.w3.org/2000/svg}defs/{http://www.w3.org/2000/svg}path'):
-        code = int(path.attrib['id'].rsplit('-', 1)[1])
-        points = VMobjectFromSVGPath(SVGPath(path.attrib['d'])).points
-        limit = ACCENT_OUTLINE_POINTS if code in _ACCENTS.values() else BASE_OUTLINE_POINTS
-        if len(points) > limit:
-            raise RuntimeError(f'text.block: {FONT} glyph {code} exceeds the outline budget')
-        # SVG uses PostScript points and a downward y axis, at the font baseline.
-        points *= [72.27 / 72 / EM_PT, -72.27 / 72 / EM_PT, 1]
-        outlines[code] = points.astype('float32')
+    for (font, codes), svg in zip(pages, svgs):
+        for path in svg.findall('.//{http://www.w3.org/2000/svg}defs/{http://www.w3.org/2000/svg}path'):
+            code = int(path.attrib['id'].rsplit('-', 1)[1])
+            if code not in codes:
+                continue
+            gid = codes[code]
+            points = VMobjectFromSVGPath(SVGPath(path.attrib['d'])).points
+            limit = ACCENT_OUTLINE_POINTS if gid in _ACCENTS.values() else BASE_OUTLINE_POINTS
+            if len(points) > limit:
+                raise RuntimeError(f'text.block: {font} glyph {code} exceeds the outline budget')
+            # SVG uses PostScript points and a downward y axis, at the font
+            # baseline; every font is set at its design size.
+            points *= [72.27 / 72 / EM_PT, -72.27 / 72 / EM_PT, 1]
+            outlines[gid] = points.astype('float32')
     return outlines
 
 
