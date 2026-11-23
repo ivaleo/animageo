@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The sheet of a plane in a space flat scene is widened by 0.12 of the size
+  of its points and sections on each side (`section.SHEET_MARGIN`, the
+  default of `plane_sheet`) instead of 0.25: a cutting plane no longer shows
+  as a large parallelogram far beyond the solid. Flat scenes of planes change
+  in every look (the trace is cut by the sheet); the space flat-scene and paint
+  parity fixtures are regenerated.
+
 ## [1.22.0] - 2026-11-23
 
 ### Added
