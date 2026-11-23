@@ -243,3 +243,33 @@ def test_near_plane_limits_an_otherwise_visible_projection():
     assert piece['a'] == pytest.approx([0, 0])
     assert piece['b'] == pytest.approx([4e-7 / (1e-6 * scene['scale']), 0])
     assert stroke(scene, 'behind')['pieces'] == []
+
+
+def test_min_registry_version_is_public_and_drives_the_builder():
+    from animageo.native import space
+    b = SpaceBuilder('versions')
+    b.point('A', 0, 0, 0)
+    b.point('B', 2, 1, 0)
+    assert space.min_registry_version(b.data()) == '1.0'
+    b.line('l', 'A', 'B')
+    doc = b.data()
+    assert space.min_registry_version(doc) == '1.1' == doc['operationRegistryVersion']
+    doc['operations']['op-X'] = {'id': 'op-X', 'op': 'point3.on_sphere', 'args': {}, 'outputs': []}
+    assert space.min_registry_version(doc) == '1.1'
+    assert space.min_registry_version(space.load(doc, strict=False)) == '1.1'
+
+
+def test_an_understated_version_is_a_warning():
+    b = SpaceBuilder('understated')
+    b.point('A', 0, 0, 0)
+    b.point('B', 2, 1, 0)
+    b.line('l', 'A', 'B')
+    b.perpendicular_line('q', 'A', 'l')
+    doc = dict(b.data(), operationRegistryVersion='1.0')
+    issues = validate(doc)
+    assert [(i.code, i.severity, i.operationId, i.path) for i in issues] == [
+        ('needs_newer_registry', 'warning', 'op-l', '/operations/op-l/op'),
+        ('needs_newer_registry', 'warning', 'op-q', '/operations/op-q/op'),
+    ]
+    assert 'line3.by_points needs registry 1.1, the document declares 1.0' in issues[0].message
+    assert evaluate(doc).elements['l']['state'] == 'defined'

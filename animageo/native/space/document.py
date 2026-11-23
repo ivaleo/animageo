@@ -20,8 +20,10 @@ Inputs: ``{"kind": "point3", "value": [x, y, z]}`` (``point3.free``),
 ``{"kind": "pathParameter", "value": t}`` (``point3.on_path``) and
 ``{"kind": "surfaceParameter", "value": [u, v]}`` (``point3.on_surface``);
 the plane ``point`` input is refused. The operations are those of the
-space registry 1.0 (:mod:`.registry`, a version line of its own); an operation of the plane is
-``space_unsupported``.
+space registry (:mod:`.registry`, ``1.1``, a version line of its own); an
+operation of the plane is ``space_unsupported``. A document declares the
+oldest registry it fits (:func:`min_registry_version`); a lower declaration
+is the warning ``needs_newer_registry``.
 
 :func:`load` checks the structure with the rules of the plane plus the ones
 above; :func:`validate` adds the graph rules against the space registry.
@@ -48,7 +50,7 @@ from .camera import Camera
 from .registry import SPACE_REGISTRY_VERSION, space_registry
 
 __all__ = ['SPACE', 'GROUND_LOOKS', 'is_space', 'load', 'as_space_document', 'validate', 'camera_of',
-           'is_newer_space_registry', 'structure_issues']
+           'is_newer_space_registry', 'min_registry_version', 'structure_issues']
 
 SPACE = 'space'
 GROUND_LOOKS = ('none', 'sheet', 'grid')
@@ -163,6 +165,22 @@ def is_newer_space_registry(version) -> bool:
     return theirs is not None and theirs > _version_tuple(SPACE_REGISTRY_VERSION)
 
 
+def min_registry_version(doc) -> str:
+    """The oldest space registry a space document (a dict or a
+    :class:`NativeDocument`) fits: the newest ``since`` of its operations,
+    ``"1.0"`` without them. Operations this registry does not know are left
+    out. :class:`~.build.SpaceBuilder` declares this version."""
+    data = doc.data if isinstance(doc, NativeDocument) else doc
+    reg = space_registry()
+    best = '1.0'
+    for op in ((data or {}).get('operations') or {}).values():
+        record = reg.get(op.get('op')) if isinstance(op, dict) else None
+        since = record.get('since') if record is not None else None
+        if _version_tuple(since) is not None and _version_tuple(since) > _version_tuple(best):
+            best = since
+    return best
+
+
 def camera_of(doc) -> Camera:
     """The camera of the export: ``viewDefaults.camera`` or :class:`Camera` ()."""
     data = doc.data if isinstance(doc, NativeDocument) else doc
@@ -176,7 +194,9 @@ def validate(doc) -> list:
     ``space_unsupported`` (a plane operation), ``unknown_slot``,
     ``missing_slot``, ``dangling_ref``, ``type_mismatch``,
     ``producer_mismatch``, ``cycle``, ``input_not_free``, ``missing_input``
-    (errors); ``unknown_op``, ``newer_registry`` (warnings)."""
+    (errors); ``unknown_op``, ``newer_registry``, ``needs_newer_registry``
+    (warnings; an operation newer than the declared registry — a document
+    written before the declaration was raised still evaluates)."""
     if not isinstance(doc, NativeDocument):
         doc = load(doc, strict=False)
     if doc.schema_issues:
@@ -184,6 +204,7 @@ def validate(doc) -> list:
     reg = space_registry()
     plane = plane_registry()
     newer = is_newer_space_registry(doc.registry_version)
+    declared = _version_tuple(doc.registry_version)
     issues: list = []
     ops, elements, inputs = doc.operations, doc.elements, doc.inputs
     if newer:
@@ -209,9 +230,14 @@ def validate(doc) -> list:
                                     f"operation {op['op']!r} is not in registry {SPACE_REGISTRY_VERSION}",
                                     operationId=op_id, severity='warning'))
             continue
-        declared = {item['slot'] for item in record['inputs']} | {item['slot'] for item in record['params']}
+        since = record.get('since')
+        if declared is not None and _version_tuple(since) is not None and _version_tuple(since) > declared:
+            issues.append(Issue('needs_newer_registry', path + '/op',
+                                f"{op['op']} needs registry {since}, the document declares {doc.registry_version}",
+                                operationId=op_id, severity='warning'))
+        slots = {item['slot'] for item in record['inputs']} | {item['slot'] for item in record['params']}
         for slot in sorted(op['args']):
-            if slot not in declared:
+            if slot not in slots:
                 issues.append(Issue('unknown_slot', path + '/args' + _pointer(slot),
                                     f"{op['op']} has no argument slot {slot!r}", operationId=op_id))
         for item in record['inputs']:

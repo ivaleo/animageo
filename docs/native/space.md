@@ -12,9 +12,12 @@ browser kernel of the web app repeats §2–§5 in TypeScript; the fixtures
 
 A space document is `animageo-construction/v1` with `"space": "space"` and
 `operationRegistryVersion` on a version line separate from the plane
-registry. `SpaceBuilder` writes the lowest version needed by the document:
-`"1.0"` for the original operations and `"1.1"` when a straight line or
-projection is used. A later declaration such as `"1.2"` is reported as
+registry. `space.min_registry_version(doc)` is the lowest version a
+document fits — `"1.0"` for the original operations and `"1.1"` when a
+straight line or projection is used — and `SpaceBuilder` writes it. A
+lower declaration is the warning `needs_newer_registry` of
+`space.validate` (one per newer operation; the document still
+evaluates); a later declaration such as `"1.2"` is reported as
 `newer_registry`. `viewDefaults.camera` is the view of
 the export (`projection` `orthographic` | `oblique` | `perspective`,
 `azimuthDeg`, `elevationDeg`, `target`, `distance`, `oblique {angleDeg,
@@ -285,9 +288,9 @@ two or three cameras of a grid; numbers within `1e-9·max(1, scale)`).
 Numbers are rounded to 9 decimals. The additive `space_values_lines` and
 `space_flat_lines` fixtures cover registry 1.1, including feet outside the
 carriers, degenerate carriers, near-plane clipping and the shadows of
-solids. The seven registry 1.0 fixtures keep their original JSON; the
-historical future-version probe is evaluated with an actually newer
-declaration during replay.
+solids. The seven registry 1.0 fixtures keep their original JSON, except
+that the future-version probe `newer_registry` declares `"99.0"`, a
+version newer than any space registry.
 
 `python -m animageo.native.space.paint_fixtures [--check]` writes or checks
 `parity/v1/space_paint/space_paint_pieces.json`

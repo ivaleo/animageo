@@ -213,3 +213,11 @@ def test_fixture_source_data_is_literal_and_has_no_libm_calls():
     assert not any(isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
                    and isinstance(node.func.value, ast.Name) and node.func.value.id == 'math'
                    and node.func.attr in {'sin', 'cos', 'sqrt'} for node in ast.walk(tree))
+
+
+def test_the_future_version_probe_declares_a_future_version(shipped):
+    from animageo.native.space import fixtures
+    case = next(c for c in shipped['space_values_reasons.json']['cases'] if c['name'] == 'newer_registry')
+    assert case['document']['operationRegistryVersion'] == fixtures.FUTURE_REGISTRY_VERSION == '99.0'
+    assert case['expect']['elements']['X']['reason'] == 'newer_registry'
+    assert fixtures._values_expect(case['document']) == case['expect']

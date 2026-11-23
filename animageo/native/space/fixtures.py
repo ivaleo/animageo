@@ -47,6 +47,8 @@ __all__ = ['SPACE_PARITY_FORMAT', 'DEFAULT_DIR', 'CAMERAS', 'build_fixtures', 'w
 SPACE_PARITY_FORMAT = 'animageo-space-parity/v1'
 DEFAULT_DIR = Path(__file__).resolve().parents[1] / 'parity' / 'v1' / 'space'
 TOLERANCE = 1e-9
+# The declaration of the future-version probe: newer than any space registry.
+FUTURE_REGISTRY_VERSION = '99.0'
 CUBE = ['C', 'D', 'A_1', 'B_1', 'C_1', 'D_1']
 
 # The camera grid of the flat scenes (the target is the scene's).
@@ -277,7 +279,7 @@ def _reasons():
     doc['elements']['X'] = {'id': 'X', 'type': 'point', 'displayName': 'X',
                             'producer': {'operationId': 'op-X', 'slot': 'point'}}
     out.append(('plane_op_in_space', doc))
-    doc = dict(doc, operationRegistryVersion='1.1', documentId='newer_registry')
+    doc = dict(doc, operationRegistryVersion=FUTURE_REGISTRY_VERSION, documentId='newer_registry')
     doc['operations'] = dict(doc['operations'])
     doc['operations']['op-X'] = dict(doc['operations']['op-X'], op='point3.on_line')
     out.append(('newer_registry', doc))
@@ -516,12 +518,6 @@ def _document(item):
 
 
 def _values_expect(document, inputs=None, decisions=None) -> dict:
-    # The frozen 1.0 suite used 1.1 as a future version. Replay only this
-    # probe against an actually future declaration, keeping its stored JSON.
-    if (document['documentId'] == 'newer_registry' and document.get('operationRegistryVersion') == '1.1'
-            and document['operations'].get('op-X', {}).get('op') == 'point3.on_line'):
-        major, minor = map(int, SPACE_REGISTRY_VERSION.split('.'))
-        document = dict(document, operationRegistryVersion=f'{major}.{minor + 1}')
     result = evaluate(document, inputs=inputs, _decisions=decisions)
     return _round({'scale': result.scale, 'elements': result.elements})
 

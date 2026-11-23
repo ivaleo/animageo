@@ -43,7 +43,7 @@ from .bridge import render as _render_document
 from .bridge import to_document as _document_of_flat
 from .build import SpaceBuilder
 from .camera import PROJECTIONS, Camera, Projector
-from .document import camera_of, is_space, load, validate
+from .document import camera_of, is_space, load, min_registry_version, validate
 from .evaluate import evaluate
 from .flat import ScenePlane, ScenePoint, SceneSection, SceneSegment, SceneSolid, SpaceScene
 from .paint import layout_plane_labels, prepare_render, render_plane, resolve_paint
@@ -90,7 +90,8 @@ def render(source, out=None, **kwargs):
 
 __all__ = [
     'vec',
-    'SPACE_REGISTRY_VERSION', 'space_registry', 'is_space', 'load', 'validate', 'camera_of', 'evaluate',
+    'SPACE_REGISTRY_VERSION', 'space_registry', 'is_space', 'load', 'validate', 'min_registry_version',
+    'camera_of', 'evaluate',
     'SpaceBuilder', 'FLAT_SCENE_FORMAT', 'flat_scene', 'to_document', 'render', 'resolve_paint',
     'prepare_render', 'render_plane', 'layout_plane_labels',
     'HIDDEN_LOOKS', 'FACE_LOOKS', 'SPACE_STYLE_DEFAULTS', 'space_style', 'sheet_layout',

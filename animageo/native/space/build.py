@@ -17,7 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ..document import DOCUMENT_FORMAT
-from ..registry import _version_tuple
+from .document import min_registry_version
 from .registry import space_registry
 
 __all__ = ['SpaceBuilder', 'Made']
@@ -174,12 +174,10 @@ class SpaceBuilder:
             view['camera'] = dict(self.camera)
         if self.ground is not None:
             view['ground'] = dict(self.ground)
-        reg = space_registry()
-        versions = (reg.get(op['op'])['since'] for op in self.operations.values())
         doc = {
             'format': DOCUMENT_FORMAT,
             'documentId': self.document_id,
-            'operationRegistryVersion': max(versions, key=_version_tuple, default='1.0'),
+            'operationRegistryVersion': min_registry_version({'operations': self.operations}),
             'space': 'space',
             'operations': dict(self.operations),
             'elements': dict(self.elements),
