@@ -245,7 +245,13 @@ source operation. A ticks guide gives `half`, `count`, the projected
 center `at` and tangent `direction`. A right-angle guide gives the world
 `foot` and unit `arms`, the point-to-foot `length`, projected
 `reach` along the two visible carriers and an optional style override
-`sizePx`. This is render-job data derived by the space kernel.
+`sizePx`. This is render-job data derived by the space kernel. The
+check refuses a sidecar whose numbers are not finite, whose positions
+(`at`, the projected `foot`) lie off the sheet (`viewDefaults.bounds` of
+the plane document widened by its size on every side), whose tick
+`direction` or `reach` is longer than twice that size, or whose
+`planeId` is not a segment of the sheet; the projection drops any stroke
+that would not be finite.
 
 `render_plane(plane, out=None, *, marks=None, fmt='svg', style_config=None,
 export_layout=None, report=True)` validates the sidecar and draws its

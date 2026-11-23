@@ -226,8 +226,28 @@ def _coords(value, n):
     return isinstance(value, (list, tuple)) and len(value) == n and all(map(_finite, value))
 
 
+def _sheet(doc):
+    """The frame of the sheet widened by its size on every side, and that size."""
+    bounds = (doc.data.get('viewDefaults') or {}).get('bounds')
+    if not (_coords(bounds, 4) and bounds[0] < bounds[2] and bounds[1] < bounds[3]):
+        raise ValueError('invalid space mark sheet')
+    room = max(bounds[2] - bounds[0], bounds[3] - bounds[1])
+    if not _positive(room):
+        raise ValueError('invalid space mark sheet')
+    return (bounds[0] - room, bounds[1] - room, bounds[2] + room, bounds[3] + room), room
+
+
+def _on_sheet(point, frame):
+    return (len(point) >= 2 and _finite(point[0]) and _finite(point[1])
+            and frame[0] <= point[0] <= frame[2] and frame[1] <= point[1] <= frame[3])
+
+
 def checked_marks(sidecar, doc):
-    """Accept only the data produced by the space bridge, across process boundaries."""
+    """Accept only the data produced by the space bridge, across process boundaries.
+
+    Every position lies on the sheet (``viewDefaults.bounds`` of the plane
+    document) widened by its size; a tick direction and a reach are at most
+    twice that size."""
     if sidecar is None:
         return None
     if (not isinstance(sidecar, dict) or set(sidecar) != {'format', 'camera', 'scale', 'guides'}
@@ -237,6 +257,10 @@ def checked_marks(sidecar, doc):
     camera = Camera.from_dict(sidecar['camera'])
     if camera.to_dict() != sidecar['camera']:
         raise ValueError('invalid space mark camera')
+    if not sidecar['guides']:
+        return camera
+    frame, room = _sheet(doc)
+    projector = Projector(camera)
     for guide in sidecar['guides']:
         if (not isinstance(guide, dict) or not isinstance(guide.get('source'), str)
                 or not isinstance(guide.get('planeId'), str)
@@ -247,13 +271,15 @@ def checked_marks(sidecar, doc):
         if guide.get('kind') == 'ticks':
             valid = (set(guide) == keys | {'at', 'direction', 'half', 'count'} and _coords(guide['at'], 2)
                      and _coords(guide['direction'], 2) and type(guide['half']) is int and guide['half'] in (1, 2)
-                     and type(guide['count']) is int and 1 <= guide['count'] <= 3)
+                     and type(guide['count']) is int and 1 <= guide['count'] <= 3
+                     and _on_sheet(guide['at'], frame) and math.hypot(*guide['direction']) <= 2 * room)
         elif guide.get('kind') == 'right_angle':
             valid = (set(guide) == keys | {'foot', 'arms', 'length', 'reach', 'sizePx'} and _coords(guide['foot'], 3)
                      and isinstance(guide['arms'], (list, tuple)) and len(guide['arms']) == 2
                      and all(_coords(arm, 3) and abs(vec.norm(arm) - 1) <= 1e-9 for arm in guide['arms'])
                      and abs(vec.dot(*guide['arms'])) <= 1e-9
                      and _positive(guide['length']) and _coords(guide['reach'], 2) and all(map(_positive, guide['reach']))
+                     and max(guide['reach']) <= 2 * room and _on_sheet(projector.project(guide['foot']), frame)
                      and (guide['sizePx'] is None or _positive(guide['sizePx'])
                           or (isinstance(guide['sizePx'], str) and guide['sizePx'].startswith('presets.'))))
         else:
@@ -298,7 +324,8 @@ def projected_marks(sidecar, camera, unit, elements, cfg):
                 'tick_count': guide['count'], 'tick_length_px': style['lengthPx'],
                 'tick_width_px': style['widthPx'], 'tick_shift_px': style['shiftPx'],
             }.get)
-            if tick.get('lines') and tick['lengthPx'] > 0 and tick['widthPx'] > 0:
+            if (tick.get('lines') and tick['lengthPx'] > 0 and tick['widthPx'] > 0
+                    and all(map(math.isfinite, (c for line in tick['lines'] for c in line)))):
                 yield {**common, **tick, 'half': guide['half'], 'at': [x, y]}
             continue
         size = cfg.resolve_ref(guide['sizePx'])
@@ -316,6 +343,8 @@ def projected_marks(sidecar, camera, unit, elements, cfg):
         if a is None or b is None:
             continue
         corners = [projector.project(vec.add(foot, offset)) for offset in ((0, 0, 0), a, vec.add(a, b), b)]
+        if not all(map(math.isfinite, (c for corner in corners for c in corner))):
+            continue
         origin, v1, _, v2 = corners
         area = (v1[0] - origin[0]) * (v2[1] - origin[1]) - (v1[1] - origin[1]) * (v2[0] - origin[0])
         if abs(area) <= r * r * 1e-8 or (not projector.parallel and min(p[2] for p in corners) <= near):
